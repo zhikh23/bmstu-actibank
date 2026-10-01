@@ -5,25 +5,36 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
     "@react-router/node": "^7.14.2",
     "@react-router/serve": "^7.14.2",
+    "axios": "^1.6.0",
     "isbot": "^4.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.14.2"
+    "react-router": "^7.14.2",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
-    "@nrwl/nest": "^19.8.4",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.0",
     "@nx/eslint": "23.2.1",
     "@nx/eslint-plugin": "23.2.1",
     "@nx/jest": "23.2.1",
     "@nx/js": "23.2.1",
+    "@nx/nest": "^23.2.1",
+    "@nx/node": "23.2.1",
     "@nx/react": "23.2.1",
     "@nx/vite": "23.2.1",
     "@nx/web": "23.2.1",
+    "@nx/webpack": "^23.2.1",
     "@nx/workspace": "23.2.1",
     "@react-router/dev": "^7.14.2",
+    "@swc-node/register": "^1.12.1",
     "@swc/cli": "~0.8.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
@@ -53,7 +64,10 @@
     "tslib": "^2.3.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.58.0",
-    "vite": "^8.0.0"
+    "vite": "^8.0.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^7.0.0",
+    "webpack-dev-server": "^5.2.1"
   },
   "workspaces": [
     "apps/*"
