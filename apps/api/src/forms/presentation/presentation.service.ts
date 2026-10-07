@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
-  ConflictException,
   Injectable,
   InternalServerErrorException,
+  Logger,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateFormHandler } from '../use-cases/create-form/create-form.handler';
 import { CreateFormRequest } from './dto/create-form.request';
@@ -10,9 +10,9 @@ import { CreateFormResponse } from './dto/create-form.response';
 
 @Injectable()
 export class FormsService {
-  constructor(
-    private readonly createForm: CreateFormHandler,
-  ) {}
+  private readonly logger = new Logger(FormsService.name);
+
+  constructor(private readonly createForm: CreateFormHandler) {}
 
   async create(dto: CreateFormRequest): Promise<CreateFormResponse> {
     const createRes = await this.createForm.execute({
@@ -37,17 +37,16 @@ export class FormsService {
       const err = createRes.error;
       switch (err.kind) {
         case 'InvariantViolation':
-          throw new BadRequestException(err.message);
-        case 'AlreadyExists':
-          throw new ConflictException(err.message);
+          throw new UnprocessableEntityException(err.message);
         default:
-          throw new InternalServerErrorException()
+          this.logger.error(err);
+          throw new InternalServerErrorException();
       }
     }
 
     const form = createRes.value;
     return {
-      formId: form.id
-    }
+      formId: form.id,
+    };
   }
 }

@@ -1,9 +1,18 @@
 import { IsUUID } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class GuestDto {
-  @IsUUID('4')
+  @ApiProperty({
+    description: 'ID пользователя-гостя',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @IsUUID('loose')
   declare userId: string;
 
-  @IsUUID('4')
+  @ApiProperty({
+    description: 'ID уровня гостя',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @IsUUID('loose')
   declare rankId: string;
 }

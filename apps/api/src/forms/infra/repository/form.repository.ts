@@ -6,6 +6,6 @@ import { FormsError } from '../../domain/errors';
 @Injectable()
 export class FormRepository {
   save(f: Form): ResultAsync<void, FormsError> {
-    return errAsync(FormsError.repository("not implemented"));
+    return errAsync(FormsError.repository('not implemented'));
   }
 }

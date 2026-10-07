@@ -1,21 +1,26 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
 const globalPrefix = 'api/v1';
 
 async function bootstrap() {
-  const appOptions = { cors: true };
+  const appOptions = {
+    bufferLogs: true,
+  };
   const app = await NestFactory.create(AppModule, appOptions);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useLogger(app.get(Logger));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   app.setGlobalPrefix(globalPrefix);
+
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
   const docsConfig = new DocumentBuilder()
     .setTitle('bmstu-actibank')
@@ -23,11 +28,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const docFactory = () => SwaggerModule.createDocument(app, docsConfig);
-  SwaggerModule.setup('docs', app, docFactory);
+  SwaggerModule.setup(globalPrefix + '/docs', app, docFactory);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  Logger.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
 bootstrap();

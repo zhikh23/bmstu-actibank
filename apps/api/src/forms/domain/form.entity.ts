@@ -1,5 +1,6 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { FormStatus } from './status.enum';
-import { Guest, Member, Participants, Venue } from '../../shared/domain';
+import { Guest, Member, Participants } from '../../shared/domain';
 import { err, ok, Result } from 'neverthrow';
 import { FormsError } from './errors';
 import Instant = Temporal.Instant;
@@ -29,7 +30,7 @@ export interface FormInit {
   description: string;
   organizers: string[];
   links: string[];
-  venues: Venue[];
+  venues: string[];
   themes: string[];
   start: PlainDateTime;
   end: PlainDateTime;
@@ -56,7 +57,7 @@ export interface FormCreate {
   description: string;
   organizers: string[];
   links: string[];
-  venues: Venue[];
+  venues: string[];
   themes: string[];
   start: PlainDateTime;
   end: PlainDateTime;
@@ -75,7 +76,7 @@ export class Form {
   declare description: string;
   declare organizers: string[];
   declare links: string[];
-  declare venues: Venue[];
+  declare venues: string[];
   declare themes: string[];
   declare start: PlainDateTime;
   declare end: PlainDateTime;
@@ -99,22 +100,27 @@ export class Form {
     Object.assign(this, init);
   }
 
-  static create(init: FormCreate, now: Instant = Now.instant()): Result<Form, FormsError> {
+  static create(
+    init: FormCreate,
+    now: Instant = Now.instant(),
+  ): Result<Form, FormsError> {
     if (PlainDateTime.compare(init.start, init.end) >= 0) {
       return err(FormsError.invariant('start must be before end'));
     }
 
-    return ok(new Form({
-      ...init,
-      status: FormStatus.Draft,
-      reason: null,
-      createdAt: now,
-      updatedAt: now,
-      reviewedAt: null,
-      reviewerId: null,
-      canceledAt: null,
-      deletedAt: null,
-    }));
+    return ok(
+      new Form({
+        ...init,
+        status: FormStatus.Draft,
+        reason: null,
+        createdAt: now,
+        updatedAt: now,
+        reviewedAt: null,
+        reviewerId: null,
+        canceledAt: null,
+        deletedAt: null,
+      }),
+    );
   }
 
   static restore(init: FormInit): Result<Form, FormsError> {
@@ -167,7 +173,9 @@ export class Form {
     }
 
     if (init.status == FormStatus.Canceled && init.canceledAt == null) {
-      return err(FormsError.invariant('canceled form must have non-null canceledAt'))
+      return err(
+        FormsError.invariant('canceled form must have non-null canceledAt'),
+      );
     }
 
     return ok();

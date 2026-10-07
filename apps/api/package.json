@@ -67,6 +67,8 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/swagger": "^11.4.7",
     "class-validator": "^0.15.1",
+    "nestjs-pino": "^5.3.1",
+    "pino-pretty": "^13.2.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0",
     "temporal-gregorian": "^0.2.0",

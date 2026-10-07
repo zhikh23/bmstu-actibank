@@ -1,6 +1,6 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { FormInit } from './form.entity';
 import { FormStatus } from './status.enum';
-
 
 export const now = Temporal.Instant.from('2026-01-01T00:00:00Z');
 export const later = Temporal.Instant.from('2026-01-02T00:00:00Z');
@@ -41,8 +41,8 @@ export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
 });
 
 const STATUS_DEFAULTS: Record<FormStatus, Partial<FormInit>> = {
-  [FormStatus.Draft]: { },
-  [FormStatus.Pending]: { },
+  [FormStatus.Draft]: {},
+  [FormStatus.Pending]: {},
   [FormStatus.Canceled]: {
     canceledAt: later,
   },
