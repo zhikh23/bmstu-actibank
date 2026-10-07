@@ -99,8 +99,12 @@ export class Form {
     Object.assign(this, init);
   }
 
-  static create(init: FormCreate, now: Instant = Now.instant()) {
-    return new Form({
+  static create(init: FormCreate, now: Instant = Now.instant()): Result<Form, FormsError> {
+    if (PlainDateTime.compare(init.start, init.end) >= 0) {
+      return err(FormsError.invariant('start must be before end'));
+    }
+
+    return ok(new Form({
       ...init,
       status: FormStatus.Draft,
       reason: null,
@@ -110,7 +114,7 @@ export class Form {
       reviewerId: null,
       canceledAt: null,
       deletedAt: null,
-    });
+    }));
   }
 
   static restore(init: FormInit): Result<Form, FormsError> {
