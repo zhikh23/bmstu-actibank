@@ -1,7 +1,26 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { FormRepository } from './form.repository';
+import {
+  FormGuest,
+  FormLink,
+  FormMember,
+  FormModel,
+  FormTheme,
+  FormVenue,
+} from './form.model';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([
+      FormModel,
+      FormLink,
+      FormVenue,
+      FormTheme,
+      FormGuest,
+      FormMember,
+    ]),
+  ],
   providers: [FormRepository],
   exports: [FormRepository],
 })

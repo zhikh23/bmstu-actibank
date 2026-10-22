@@ -1,16 +1,9 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compileOnSave": false,
-  "files": [],
-  "references": [
-    {
-      "path": "./apps/web"
-    },
-    {
-      "path": "./apps/api-e2e"
-    },
-    {
-      "path": "./apps/api"
-    }
-  ]
+  "compilerOptions": {
+    "target": "es2025",
+    "strict": true,
+    "skipLibCheck": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext"
+  }
 }
