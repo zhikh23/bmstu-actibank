@@ -6,9 +6,10 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "typeorm": "typeorm-ts-node-commonjs -d src/shared/infra/database/data-source.ts",
-    "migration:generate": "pnpm run typeorm migration:generate src/shared/infra/database/migrations/$npm_config_name",
+    "migration:generate": "pnpm run typeorm migration:generate",
     "migration:run": "pnpm run typeorm migration:run",
-    "migration:revert": "pnpm run typeorm migration:revert"
+    "migration:revert": "pnpm run typeorm migration:revert",
+    "format": "prettier --write 'src/**/*.ts'"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -34,6 +35,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.5",
     "pg": "^8.23.1",
+    "prettier": "^3.9.10",
     "ts-node": "^10.9.2"
   }
 }

@@ -6,6 +6,7 @@ import {
   FormLink,
   FormMember,
   FormModel,
+  FormOrganizer,
   FormTheme,
   FormVenue,
 } from './form.model';
@@ -14,6 +15,7 @@ import {
   imports: [
     TypeOrmModule.forFeature([
       FormModel,
+      FormOrganizer,
       FormLink,
       FormVenue,
       FormTheme,

@@ -4,6 +4,7 @@ import {
   FormLink,
   FormMember,
   FormModel,
+  FormOrganizer,
   FormTheme,
   FormVenue,
 } from './form.model';
@@ -13,7 +14,7 @@ import {
   instantToDate,
   plainDateTimeToDate,
 } from '../../../shared/utils/dates';
-import { Participants } from '../../../shared/domain';
+import { Guest, Member, Participants } from '../../../shared/domain';
 import { Result } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
 
@@ -40,6 +41,14 @@ export class FormMapper {
     model.reviewed_at = f.reviewedAt ? instantToDate(f.reviewedAt) : null;
     model.canceled_at = f.canceledAt ? instantToDate(f.canceledAt) : null;
     model.deleted_at = f.deletedAt ? instantToDate(f.deletedAt) : null;
+    model.organizers = f.organizers.map((organizer, number) =>
+      Object.assign(new FormOrganizer(), {
+        form_id: f.id,
+        number,
+        organizer,
+        form: model,
+      }),
+    );
     model.links = f.links.map((link, number) =>
       Object.assign(new FormLink(), {
         form_id: f.id,
@@ -85,7 +94,7 @@ export class FormMapper {
     return model;
   }
 
-  static fromModel(m: FormModel): Result<Form, FormsError> {
+  static toDomain(m: FormModel): Result<Form, FormsError> {
     return Form.restore({
       canceledAt: m.canceled_at ? dateToInstant(m.canceled_at) : null,
       createdAt: dateToInstant(m.created_at),
@@ -93,16 +102,16 @@ export class FormMapper {
       description: m.description,
       end: dateToPlainDateTime(m.end),
       formatId: m.format_id,
-      guests: [],
+      guests: m.guests.map((g) => new Guest(g.user_id, g.rank_id)),
       id: m.id,
       levelId: m.level_id,
-      links: [],
+      links: m.links.map((l) => l.link),
       name: m.name,
-      organizers: [],
+      organizers: m.organizers.map((o) => o.organizer_id),
       participants: new Participants(
         m.participants_students,
         m.participants_employees,
-        m.participants_others
+        m.participants_others,
       ),
       reason: m.reason,
       reviewedAt: m.reviewed_at ? dateToInstant(m.reviewed_at) : null,
@@ -110,11 +119,11 @@ export class FormMapper {
       start: dateToPlainDateTime(m.start),
       status: m.status,
       submitterId: m.submitter_id,
-      team: [],
-      themes: [],
+      team: m.team.map((m) => new Member(m.user_id, m.role_id)),
+      themes: m.themes.map((t) => t.theme_id),
       typeId: m.type_id,
       updatedAt: dateToInstant(m.updated_at),
-      venues: []
+      venues: m.venues.map((v) => v.venue_id),
     });
   }
 }

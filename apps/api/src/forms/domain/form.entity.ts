@@ -276,4 +276,8 @@ export class Form {
   public delete(now: Instant = Now.instant()) {
     this.deletedAt = now;
   }
+
+  public isActive(): boolean {
+    return this.deletedAt != null;
+  }
 }

@@ -23,4 +23,31 @@ export class FormRepository {
         ),
     ).map(() => undefined);
   }
+
+  get(id: string): ResultAsync<Form, FormsError> {
+    return ResultAsync.fromPromise(
+      this.repository.findOne({
+        where: { id },
+        relations: {
+          organizers: true,
+          links: true,
+          venues: true,
+          themes: true,
+          guests: true,
+          team: true,
+        },
+      }),
+      (error): FormsError =>
+        FormsError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).andThen((model) =>
+      model
+        ? FormMapper.toDomain(model)
+        : ResultAsync.fromPromise(
+            Promise.reject(new Error(`form with id "${id} not found"`)),
+            (): FormsError => FormsError.notFound(id),
+          ),
+    );
+  }
 }

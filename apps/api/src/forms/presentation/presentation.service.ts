@@ -2,17 +2,23 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateFormHandler } from '../use-cases/create-form/create-form.handler';
 import { CreateFormRequest } from './dto/create-form.request';
 import { CreateFormResponse } from './dto/create-form.response';
+import { GetFormHandler } from '../use-cases/get-form/get-form.handler';
+import { GetFormResponse } from './dto/get-form.response';
 
 @Injectable()
 export class FormsService {
   private readonly logger = new Logger(FormsService.name);
 
-  constructor(private readonly createForm: CreateFormHandler) {}
+  constructor(
+    private readonly createForm: CreateFormHandler,
+    private readonly getForm: GetFormHandler,
+  ) {}
 
   async create(dto: CreateFormRequest): Promise<CreateFormResponse> {
     const createRes = await this.createForm.execute({
@@ -47,6 +53,61 @@ export class FormsService {
     const form = createRes.value;
     return {
       formId: form.id,
+    };
+  }
+
+  async get(id: string): Promise<GetFormResponse> {
+    const getRes = await this.getForm.execute({
+      id,
+      actorId: '00000000-0000-0000-0000-000000000000',
+    });
+
+    if (getRes.isErr()) {
+      const err = getRes.error;
+      switch (err.kind) {
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+
+    const form = getRes.value;
+    return {
+      id: form.id,
+      name: form.name,
+      description: form.description,
+      organizers: form.organizers,
+      links: form.links,
+      venues: form.venues,
+      themes: form.themes,
+      start: form.start,
+      end: form.end,
+      formatId: form.formatId,
+      typeId: form.typeId,
+      levelId: form.levelId,
+      participants: {
+        students: form.participants.students,
+        employees: form.participants.employees,
+        others: form.participants.others,
+      },
+      guests: form.guests.map((g) => ({
+        userId: g.userId,
+        rankId: g.rankId,
+      })),
+      team: form.team.map((m) => ({
+        userId: m.userId,
+        roleId: m.roleId,
+      })),
+      status: form.status,
+      reason: form.reason,
+      submitterId: form.submitterId,
+      reviewerId: form.reviewerId,
+      createdAt: form.createdAt.toISOString(),
+      updatedAt: form.updatedAt.toISOString(),
+      reviewedAt: form.reviewedAt ? form.reviewedAt.toISOString() : null,
+      canceledAt: form.canceledAt ? form.canceledAt.toISOString() : null,
     };
   }
 }

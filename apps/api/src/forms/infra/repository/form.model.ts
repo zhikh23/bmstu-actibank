@@ -10,6 +10,22 @@ import {
 import type { Relation } from 'typeorm';
 import { FormStatus } from '../../domain/status.enum';
 
+@Entity('forms_organizers')
+export class FormOrganizer {
+  @PrimaryColumn('uuid')
+  declare form_id: string;
+
+  @PrimaryColumn('integer')
+  declare number: number;
+
+  @Column('uuid')
+  declare organizer_id: string;
+
+  @ManyToOne(() => FormModel, (form) => form.organizers)
+  @JoinColumn({ name: 'form_id' })
+  declare form: Relation<FormModel>;
+}
+
 @Entity('forms_links')
 export class FormLink {
   @PrimaryColumn('uuid')
@@ -76,7 +92,6 @@ export class FormGuest {
   @JoinColumn({ name: 'form_id' })
   declare form: Relation<FormModel>;
 }
-
 
 @Entity('forms_members')
 export class FormMember {
@@ -161,6 +176,11 @@ export class FormModel {
 
   @Column({ type: 'timestamptz', nullable: true })
   declare deleted_at: Date | null;
+
+  @OneToMany(() => FormOrganizer, (organizer) => organizer.form, {
+    cascade: true,
+  })
+  declare organizers: FormOrganizer[];
 
   @OneToMany(() => FormLink, (link) => link.form, { cascade: true })
   declare links: FormLink[];
