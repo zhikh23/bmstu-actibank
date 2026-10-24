@@ -14,9 +14,11 @@ import {
   instantToDate,
   plainDateTimeToDate,
 } from '../../../shared/utils/dates';
-import { Guest, Member, Participants } from '../../../shared/domain';
 import { Result } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
+import { Guest } from '../../domain/guest.entity';
+import { Participants } from '../../domain/participants.entity';
+import { Member } from '../../domain/member.entity';
 
 export class FormMapper {
   static toModel(f: Form): FormModel {

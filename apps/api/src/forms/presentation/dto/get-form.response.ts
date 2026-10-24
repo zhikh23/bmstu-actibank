@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dto';
 import { GuestDto } from '../../../shared/presentation/dto/guest.dto';
 import { MemberDto } from '../../../shared/presentation/dto/member.dto';
+import { VenueDto } from '../../../shared/presentation/dto/venue.dto';
 
 export class GetFormResponse {
   @ApiProperty({
@@ -37,9 +38,9 @@ export class GetFormResponse {
 
   @ApiProperty({
     description: 'Места проведения мероприятия',
-    example: ['00000000-0000-0000-0000-000000000000'],
+    type: [VenueDto],
   })
-  declare venues: string[];
+  declare venues: VenueDto[];
 
   @ApiProperty({
     description: 'Список ID тем, связанных с мероприятием',

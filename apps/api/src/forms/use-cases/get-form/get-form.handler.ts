@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Result, err } from 'neverthrow';
+import { Result, ResultAsync, err } from 'neverthrow';
 import { FormRepository } from '../../infra/repository/form.repository';
 import { FormsError } from '../../domain/errors';
 import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
@@ -8,6 +8,7 @@ import {
   plainDateTimeToDate,
 } from '../../../shared/utils/dates';
 import { FormType } from './get-form.data';
+import { VenueProvider } from '../../../events/external/venue-provider/venue-provider.service';
 
 export type GetFormCommand = {
   id: string;
@@ -16,7 +17,10 @@ export type GetFormCommand = {
 
 @Injectable()
 export class GetFormHandler {
-  constructor(private readonly formRepository: FormRepository) {}
+  constructor(
+    private readonly formRepository: FormRepository,
+    private readonly venueProvider: VenueProvider,
+  ) {}
 
   async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
     const getResult = await this.formRepository.get(cmd.id);
@@ -24,6 +28,18 @@ export class GetFormHandler {
       return err(getResult.error);
     }
     const form = getResult.value;
+
+    const venueResults = await Promise.all(
+      form.venues.map((v) => this.venueProvider.getVenue(v)),
+    );
+
+    const venuesResult = Result.combine(venueResults);
+    if (venuesResult.isErr()) {
+      return err(venuesResult.error);
+    }
+    if (venuesResult.isErr()) return err(venuesResult.error);
+    const venues = venuesResult.value;
+
     return AccessDecision.toResult(
       FormAccess.canView(form, { actorId: cmd.actorId }),
       {
@@ -32,7 +48,7 @@ export class GetFormHandler {
         description: form.description,
         organizers: form.organizers,
         links: form.links,
-        venues: form.venues,
+        venues: venues,
         themes: form.themes,
         start: plainDateTimeToDate(form.start),
         end: plainDateTimeToDate(form.end),

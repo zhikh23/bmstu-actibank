@@ -4,12 +4,13 @@ import { err, ok, Result } from 'neverthrow';
 import { Form } from '../../domain/form.entity';
 import { FormsError } from '../../domain/errors';
 import { UUID_PORT, type UuidPort } from '../../../shared/infra/uuid/uuid.port';
-import { Guest, Member } from '../../../shared/domain';
 import { ParticipantsType } from '../../../shared/types/participants.type';
 import { GuestType } from '../../../shared/types/guest.type';
 import { MemberType } from '../../../shared/types/member.type';
 
 import PlainDateTime = Temporal.PlainDateTime;
+import { Member } from '../../domain/member.entity';
+import { Guest } from '../../domain/guest.entity';
 
 export type CreateFormCommand = {
   name: string;

@@ -8,7 +8,14 @@ export type FormType = {
   description: string;
   organizers: string[];
   links: string[];
-  venues: string[];
+  venues: {
+    id: string;
+    name: string;
+    building: {
+      id: string;
+      name: string;
+    };
+  }[];
   themes: string[];
   start: Date;
   end: Date;

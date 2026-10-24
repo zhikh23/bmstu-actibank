@@ -1,11 +1,13 @@
 import { FormStatus } from './status.enum';
-import { Guest, Member, Participants } from '../../shared/domain';
 import { err, ok, Result } from 'neverthrow';
 import { FormsError } from './errors';
 
 import Instant = Temporal.Instant;
 import Now = Temporal.Now;
 import PlainDateTime = Temporal.PlainDateTime;
+import { Participants } from './participants.entity';
+import { Guest } from './guest.entity';
+import { Member } from './member.entity';
 
 const FORM_STATUS_TRANSITIONS: Record<FormStatus, FormStatus[]> = {
   [FormStatus.Draft]: [FormStatus.Pending, FormStatus.Canceled],
