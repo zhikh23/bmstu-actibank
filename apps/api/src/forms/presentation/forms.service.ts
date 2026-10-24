@@ -84,9 +84,9 @@ export class FormsService {
       themes: form.themes,
       start: form.start,
       end: form.end,
-      formatId: form.formatId,
-      typeId: form.typeId,
-      levelId: form.levelId,
+      format: form.format,
+      type: form.type,
+      level: form.level,
       participants: {
         students: form.participants.students,
         employees: form.participants.employees,

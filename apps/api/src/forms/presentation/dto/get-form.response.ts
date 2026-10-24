@@ -4,6 +4,9 @@ import { GuestDto } from '../../../shared/presentation/dto/guest.dto';
 import { MemberDto } from '../../../shared/presentation/dto/member.dto';
 import { VenueDto } from '../../../shared/presentation/dto/venue.dto';
 import { ThemeDto } from '../../../shared/presentation/dto/theme.dto';
+import { EventTypeDto } from '../../../shared/presentation/dto/event-type.dto';
+import { FormatDto } from '../../../shared/presentation/dto/format.dto';
+import { LevelDto } from '../../../shared/presentation/dto/level.dto';
 
 export class GetFormResponse {
   @ApiProperty({
@@ -62,22 +65,22 @@ export class GetFormResponse {
   declare end: Date;
 
   @ApiProperty({
-    description: 'ID формата мероприятия',
-    example: '00000000-0000-0000-0000-000000000000',
+    description: 'Формат мероприятия',
+    type: FormatDto,
   })
-  declare formatId: string;
+  declare format: FormatDto;
 
   @ApiProperty({
-    description: 'ID формы мероприятия',
-    example: '00000000-0000-0000-0000-000000000000',
+    description: 'Форма мероприятия',
+    type: EventTypeDto,
   })
-  declare typeId: string;
+  declare type: EventTypeDto;
 
   @ApiProperty({
-    description: 'ID уровня мероприятия',
-    example: '00000000-0000-0000-0000-000000000000',
+    description: 'Уровень мероприятия',
+    type: LevelDto,
   })
-  declare levelId: string;
+  declare level: LevelDto;
 
   @ApiProperty({ type: ParticipantsDto })
   declare participants: ParticipantsDto;

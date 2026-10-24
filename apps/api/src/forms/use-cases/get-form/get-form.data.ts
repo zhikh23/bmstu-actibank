@@ -22,9 +22,18 @@ export type FormType = {
   }[];
   start: Date;
   end: Date;
-  formatId: string;
-  typeId: string;
-  levelId: string;
+  format: {
+    id: string;
+    label: string;
+  };
+  type: {
+    id: string;
+    label: string;
+  };
+  level: {
+    id: string;
+    label: string;
+  };
   participants: ParticipantsType;
   guests: GuestType[];
   team: MemberType[];

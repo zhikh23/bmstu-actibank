@@ -3,6 +3,7 @@ import { FormsModule } from './forms/forms.module';
 import { LoggerModule } from 'nestjs-pino';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
     FormsModule,
+    CatalogModule,
   ],
 })
 export class AppModule {}

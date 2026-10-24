@@ -10,6 +10,9 @@ import {
 import { FormType } from './get-form.data';
 import { VenueProvider } from '../../../catalog/external/venue-provider/venue-provider.service';
 import { ThemeProvider } from '../../../catalog/external/theme-provider/theme-provider.service';
+import { EventTypeProvider } from '../../../catalog/external/event-type-provider/event-type-provider.service';
+import { FormatProvider } from '../../../catalog/external/format-provider/format-provider.service';
+import { LevelProvider } from '../../../catalog/external/level-provider/level-provider.service';
 
 export type GetFormCommand = {
   id: string;
@@ -20,6 +23,9 @@ export type GetFormCommand = {
 export class GetFormHandler {
   constructor(
     private readonly formRepository: FormRepository,
+    private readonly eventTypeProvider: EventTypeProvider,
+    private readonly formatProvider: FormatProvider,
+    private readonly levelProvider: LevelProvider,
     private readonly venueProvider: VenueProvider,
     private readonly themeProvider: ThemeProvider,
   ) {}
@@ -39,6 +45,25 @@ export class GetFormHandler {
     if (themesResult.isErr()) return err(themesResult.error);
     const themes = themesResult.value;
 
+    const format = (
+      await this.formatProvider.getFormat(form.formatId)
+    ).unwrapOr({
+      id: form.formatId,
+      label: '',
+    });
+
+    const eventType = (
+      await this.eventTypeProvider.getEventType(form.typeId)
+    ).unwrapOr({
+      id: form.typeId,
+      label: '',
+    });
+
+    const level = (await this.levelProvider.getLevel(form.levelId)).unwrapOr({
+      id: form.levelId,
+      label: '',
+    });
+
     return AccessDecision.toResult(
       FormAccess.canView(form, { actorId: cmd.actorId }),
       {
@@ -51,9 +76,9 @@ export class GetFormHandler {
         themes: themes,
         start: plainDateTimeToDate(form.start),
         end: plainDateTimeToDate(form.end),
-        formatId: form.formatId,
-        typeId: form.typeId,
-        levelId: form.levelId,
+        format: format,
+        type: eventType,
+        level: level,
         participants: {
           students: form.participants.students,
           employees: form.participants.employees,
