@@ -36,6 +36,26 @@ export class FormRepository {
           guests: true,
           team: true,
         },
+        order: {
+          organizers: {
+            number: 'ASC'
+          },
+          links: {
+            number: 'ASC'
+          },
+          venues: {
+            number: 'ASC'
+          },
+          themes: {
+            number: 'ASC'
+          },
+          guests: {
+            number: 'ASC'
+          },
+          team: {
+            number: 'ASC'
+          },
+        },
       }),
       (error): FormsError =>
         FormsError.repository(
