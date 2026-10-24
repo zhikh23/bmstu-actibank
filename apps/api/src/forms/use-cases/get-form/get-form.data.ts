@@ -35,8 +35,21 @@ export type FormType = {
     label: string;
   };
   participants: ParticipantsType;
-  guests: GuestType[];
-  team: MemberType[];
+  guests: {
+    userId: string;
+    rankId: string;
+  }[];
+  team: {
+    userId: string;
+    role: {
+      id: string;
+      label: string;
+      category: {
+        id: string;
+        label: string;
+      };
+    };
+  }[];
   status: string;
   reason: string | null;
   submitterId: string;

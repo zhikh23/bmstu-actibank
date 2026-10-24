@@ -1,6 +1,12 @@
-import { Entity, ManyToOne, OneToMany, PrimaryColumn, Relation } from 'typeorm';
-import { JoinColumn } from 'typeorm/browser';
-import { Column } from 'typeorm/browser';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 
 @Entity('buildings')
 export class BuildingModel {

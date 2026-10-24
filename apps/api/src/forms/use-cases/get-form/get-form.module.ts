@@ -6,6 +6,7 @@ import { ThemeProviderModule } from '../../../catalog/external/theme-provider/th
 import { EventTypeProviderModule } from '../../../catalog/external/event-type-provider/event-type.module';
 import { FormatProviderModule } from '../../../catalog/external/format-provider/format-provider.module';
 import { LevelProviderModule } from '../../../catalog/external/level-provider/level-provider.module';
+import { RoleProviderModule } from '../../../catalog/external/role-provider/role-provider.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { LevelProviderModule } from '../../../catalog/external/level-provider/le
     LevelProviderModule,
     VenueProviderModule,
     ThemeProviderModule,
+    RoleProviderModule,
   ],
   providers: [GetFormHandler],
   exports: [GetFormHandler],

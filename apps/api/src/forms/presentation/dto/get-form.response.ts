@@ -7,6 +7,21 @@ import { ThemeDto } from '../../../shared/presentation/dto/theme.dto';
 import { EventTypeDto } from '../../../shared/presentation/dto/event-type.dto';
 import { FormatDto } from '../../../shared/presentation/dto/format.dto';
 import { LevelDto } from '../../../shared/presentation/dto/level.dto';
+import { RoleDto } from '../../../shared/presentation/dto/role.dto';
+
+export class GetFormMemberDto {
+  @ApiProperty({
+    description: 'ID члена оргкомитета',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  declare userId: string;
+
+  @ApiProperty({
+    description: 'Роль члена оргкомитета',
+    type: RoleDto,
+  })
+  declare role: RoleDto;
+}
 
 export class GetFormResponse {
   @ApiProperty({
@@ -88,8 +103,8 @@ export class GetFormResponse {
   @ApiProperty({ type: [GuestDto] })
   declare guests: GuestDto[];
 
-  @ApiProperty({ type: [MemberDto] })
-  declare team: MemberDto[];
+  @ApiProperty({ type: [GetFormMemberDto] })
+  declare team: GetFormMemberDto[];
 
   @ApiProperty({
     description: 'Статус формы',

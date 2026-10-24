@@ -13,6 +13,7 @@ import { ThemeProvider } from '../../../catalog/external/theme-provider/theme-pr
 import { EventTypeProvider } from '../../../catalog/external/event-type-provider/event-type-provider.service';
 import { FormatProvider } from '../../../catalog/external/format-provider/format-provider.service';
 import { LevelProvider } from '../../../catalog/external/level-provider/level-provider.service';
+import { RoleProvider } from '../../../catalog/external/role-provider/role-provider.service';
 
 export type GetFormCommand = {
   id: string;
@@ -28,6 +29,7 @@ export class GetFormHandler {
     private readonly levelProvider: LevelProvider,
     private readonly venueProvider: VenueProvider,
     private readonly themeProvider: ThemeProvider,
+    private readonly roleProvider: RoleProvider,
   ) {}
 
   async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
@@ -64,6 +66,12 @@ export class GetFormHandler {
       label: '',
     });
 
+    const rolesResult = await this.roleProvider.getRoles(
+      form.team.map((m) => m.roleId),
+    );
+    if (rolesResult.isErr()) return err(rolesResult.error);
+    const rolesMap = new Map(rolesResult.value.map((r) => [r.id, r]));
+
     return AccessDecision.toResult(
       FormAccess.canView(form, { actorId: cmd.actorId }),
       {
@@ -89,8 +97,15 @@ export class GetFormHandler {
           rankId: g.rankId,
         })),
         team: form.team.map((t) => ({
-          userId: t.userID,
-          roleId: t.roleID,
+          userId: t.userId,
+          role: {
+            id: t.roleId,
+            label: rolesMap.get(t.roleId)?.label ?? '',
+            category: rolesMap.get(t.roleId)?.category ?? {
+              id: '',
+              label: '',
+            },
+          },
         })),
         status: form.status,
         reason: form.reason,

@@ -98,7 +98,7 @@ export class FormsService {
       })),
       team: form.team.map((m) => ({
         userId: m.userId,
-        roleId: m.roleId,
+        role: m.role,
       })),
       status: form.status,
       reason: form.reason,

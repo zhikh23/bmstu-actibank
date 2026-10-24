@@ -88,8 +88,8 @@ export class FormMapper {
       Object.assign(new FormMember(), {
         form_id: f.id,
         number,
-        user_id: member.userID,
-        role_id: member.roleID,
+        user_id: member.userId,
+        role_id: member.roleId,
         form: model,
       }),
     );
