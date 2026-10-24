@@ -8,8 +8,8 @@ import {
   plainDateTimeToDate,
 } from '../../../shared/utils/dates';
 import { FormType } from './get-form.data';
-import { VenueProvider } from '../../../events/external/venue-provider/venue-provider.service';
-import { ThemeProvider } from '../../../events/external/theme-provider/theme-provider.service';
+import { VenueProvider } from '../../../catalog/external/venue-provider/venue-provider.service';
+import { ThemeProvider } from '../../../catalog/external/theme-provider/theme-provider.service';
 
 export type GetFormCommand = {
   id: string;

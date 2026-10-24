@@ -4,7 +4,7 @@ import { In, Repository } from 'typeorm';
 import { ResultAsync, okAsync, errAsync } from 'neverthrow';
 import { VenueModel } from './venue.model';
 import { VenueWithBuilding } from './venue-with-building.read-model';
-import { EventsError } from '../../../domain/errors';
+import { CatalogError } from '../../../domain/errors';
 import { VenueWithBuildingMapper } from './venue.mapper';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class VenueRepository {
     private readonly repository: Repository<VenueModel>,
   ) {}
 
-  getWithBuilding(id: string): ResultAsync<VenueWithBuilding, EventsError> {
+  getWithBuilding(id: string): ResultAsync<VenueWithBuilding, CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.findOne({
         where: { id },
@@ -22,20 +22,20 @@ export class VenueRepository {
           building: true,
         },
       }),
-      (error): EventsError =>
-        EventsError.repository(
+      (error): CatalogError =>
+        CatalogError.repository(
           error instanceof Error ? error.message : String(error),
         ),
     ).andThen((model) =>
       model
         ? okAsync(VenueWithBuildingMapper.toReadModel(model))
-        : errAsync(EventsError.notFound(`venue with id "${id}" not found`)),
+        : errAsync(CatalogError.notFound(`venue with id "${id}" not found`)),
     );
   }
 
   getAllWithBuildings(
     ids: string[],
-  ): ResultAsync<VenueWithBuilding[], EventsError> {
+  ): ResultAsync<VenueWithBuilding[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { id: In(ids) },
@@ -43,8 +43,8 @@ export class VenueRepository {
           building: true,
         },
       }),
-      (error): EventsError =>
-        EventsError.repository(
+      (error): CatalogError =>
+        CatalogError.repository(
           error instanceof Error ? error.message : String(error),
         ),
     ).andThen((models) => {

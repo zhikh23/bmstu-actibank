@@ -2,7 +2,7 @@ import { Entity, ManyToOne, OneToMany, PrimaryColumn, Relation } from 'typeorm';
 import { JoinColumn } from 'typeorm/browser';
 import { Column } from 'typeorm/browser';
 
-@Entity('events_buildings')
+@Entity('buildings')
 export class BuildingModel {
   @PrimaryColumn('uuid')
   declare id: string;
@@ -14,7 +14,7 @@ export class BuildingModel {
   declare venues: VenueModel[];
 }
 
-@Entity('events_venues')
+@Entity('venues')
 export class VenueModel {
   @PrimaryColumn('uuid')
   declare id: string;

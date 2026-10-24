@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ThemeRepository } from '../../infra/repository/theme/theme.repository';
 import { Result } from 'neverthrow';
 import { ThemeType } from './get-themes.data';
-import { EventsError } from '../../domain/errors';
+import { CatalogError } from '../../domain/errors';
 
 export type GetThemesQuery = {
   ids: string[];
@@ -12,7 +12,7 @@ export type GetThemesQuery = {
 export class GetThemesHandler {
   constructor(private readonly themeRepository: ThemeRepository) {}
 
-  async execute(q: GetThemesQuery): Promise<Result<ThemeType[], EventsError>> {
+  async execute(q: GetThemesQuery): Promise<Result<ThemeType[], CatalogError>> {
     return this.themeRepository.getAll(q.ids);
   }
 }

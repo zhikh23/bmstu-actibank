@@ -4,7 +4,7 @@ import { ThemeModel } from './theme.model';
 import { In, Repository } from 'typeorm';
 import { okAsync, ResultAsync } from 'neverthrow';
 import { Theme } from '../../../domain/theme.entity';
-import { EventsError } from '../../../domain/errors';
+import { CatalogError } from '../../../domain/errors';
 import { ThemeMapper } from './theme.mapper';
 
 @Injectable()
@@ -14,13 +14,13 @@ export class ThemeRepository {
     private readonly repository: Repository<ThemeModel>,
   ) {}
 
-  getAll(ids: string[]): ResultAsync<Theme[], EventsError> {
+  getAll(ids: string[]): ResultAsync<Theme[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { id: In(ids) },
       }),
-      (error): EventsError =>
-        EventsError.repository(
+      (error): CatalogError =>
+        CatalogError.repository(
           error instanceof Error ? error.message : String(error),
         ),
     ).andThen((models) => {

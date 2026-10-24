@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('events_themes')
+@Entity('themes')
 export class ThemeModel {
   @PrimaryColumn('uuid')
   declare id: string;
