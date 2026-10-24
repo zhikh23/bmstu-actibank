@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ResultAsync, okAsync, errAsync } from 'neverthrow';
 import { VenueModel } from './venue.model';
 import { VenueWithBuilding } from './venue-with-building.read-model';
@@ -31,5 +31,33 @@ export class VenueRepository {
         ? okAsync(VenueWithBuildingMapper.toReadModel(model))
         : errAsync(EventsError.notFound(`venue with id "${id}" not found`)),
     );
+  }
+
+  getAllWithBuildings(
+    ids: string[],
+  ): ResultAsync<VenueWithBuilding[], EventsError> {
+    return ResultAsync.fromPromise(
+      this.repository.find({
+        where: { id: In(ids) },
+        relations: {
+          building: true,
+        },
+      }),
+      (error): EventsError =>
+        EventsError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).andThen((models) => {
+      // Сохранить изначальный порядок
+      const byId = new Map(models.map((m) => [m.id, m]));
+      return okAsync(
+        ids.map((id) => {
+          const model = byId.get(id);
+          return model
+            ? VenueWithBuildingMapper.toReadModel(model)
+            : { id, name: '', building: { id: '', name: '' } };
+        }),
+      );
+    });
   }
 }

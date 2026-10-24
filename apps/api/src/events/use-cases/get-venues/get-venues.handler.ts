@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { Result } from 'neverthrow';
 import { EventsError } from '../../domain/errors';
 import { VenueRepository } from '../../infra/repository/venue/venue.repository';
-import { VenueType } from './get-venue.data';
+import { VenueType } from './get-venues.data';
 
-export type GetVenueQuery = {
-  id: string;
+export type GetVenuesQuery = {
+  ids: string[];
 };
 
 @Injectable()
-export class GetVenueHandler {
+export class GetVenuesHandler {
   constructor(private readonly venueRepository: VenueRepository) {}
 
-  async execute(q: GetVenueQuery): Promise<Result<VenueType, EventsError>> {
-    return this.venueRepository.getWithBuilding(q.id);
+  async execute(q: GetVenuesQuery): Promise<Result<VenueType[], EventsError>> {
+    return this.venueRepository.getAllWithBuildings(q.ids);
   }
 }

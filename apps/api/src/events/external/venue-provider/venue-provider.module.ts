@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GetVenueModule } from '../../use-cases/get-venue/get-venue.module';
+import { GetVenuesModule } from '../../use-cases/get-venues/get-venues.module';
 import { VenueProvider } from './venue-provider.service';
 
 @Module({
-  imports: [GetVenueModule],
+  imports: [GetVenuesModule],
   providers: [VenueProvider],
   exports: [VenueProvider],
 })

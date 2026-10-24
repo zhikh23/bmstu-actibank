@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Result, ResultAsync, err } from 'neverthrow';
+import { Result, err } from 'neverthrow';
 import { FormRepository } from '../../infra/repository/form.repository';
 import { FormsError } from '../../domain/errors';
 import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
@@ -29,14 +29,7 @@ export class GetFormHandler {
     }
     const form = getResult.value;
 
-    const venueResults = await Promise.all(
-      form.venues.map((v) => this.venueProvider.getVenue(v)),
-    );
-
-    const venuesResult = Result.combine(venueResults);
-    if (venuesResult.isErr()) {
-      return err(venuesResult.error);
-    }
+    const venuesResult = await this.venueProvider.getVenues(form.venues);
     if (venuesResult.isErr()) return err(venuesResult.error);
     const venues = venuesResult.value;
 

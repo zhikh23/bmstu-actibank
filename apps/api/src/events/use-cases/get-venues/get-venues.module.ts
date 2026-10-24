@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { VenueRepositoryModule } from '../../infra/repository/venue/venue.module';
-import { GetVenueHandler } from './get-venue.handler';
+import { GetVenuesHandler } from './get-venues.handler';
 
 @Module({
   imports: [VenueRepositoryModule],
-  providers: [GetVenueHandler],
-  exports: [GetVenueHandler],
+  providers: [GetVenuesHandler],
+  exports: [GetVenuesHandler],
 })
-export class GetVenueModule {}
+export class GetVenuesModule {}
