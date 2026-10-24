@@ -38,22 +38,22 @@ export class FormRepository {
         },
         order: {
           organizers: {
-            number: 'ASC'
+            number: 'ASC',
           },
           links: {
-            number: 'ASC'
+            number: 'ASC',
           },
           venues: {
-            number: 'ASC'
+            number: 'ASC',
           },
           themes: {
-            number: 'ASC'
+            number: 'ASC',
           },
           guests: {
-            number: 'ASC'
+            number: 'ASC',
           },
           team: {
-            number: 'ASC'
+            number: 'ASC',
           },
         },
       }),

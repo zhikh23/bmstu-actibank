@@ -9,6 +9,7 @@ import {
 } from '../../../shared/utils/dates';
 import { FormType } from './get-form.data';
 import { VenueProvider } from '../../../events/external/venue-provider/venue-provider.service';
+import { ThemeProvider } from '../../../events/external/theme-provider/theme-provider.service';
 
 export type GetFormCommand = {
   id: string;
@@ -20,6 +21,7 @@ export class GetFormHandler {
   constructor(
     private readonly formRepository: FormRepository,
     private readonly venueProvider: VenueProvider,
+    private readonly themeProvider: ThemeProvider,
   ) {}
 
   async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
@@ -33,6 +35,10 @@ export class GetFormHandler {
     if (venuesResult.isErr()) return err(venuesResult.error);
     const venues = venuesResult.value;
 
+    const themesResult = await this.themeProvider.getThemes(form.themes);
+    if (themesResult.isErr()) return err(themesResult.error);
+    const themes = themesResult.value;
+
     return AccessDecision.toResult(
       FormAccess.canView(form, { actorId: cmd.actorId }),
       {
@@ -42,7 +48,7 @@ export class GetFormHandler {
         organizers: form.organizers,
         links: form.links,
         venues: venues,
-        themes: form.themes,
+        themes: themes,
         start: plainDateTimeToDate(form.start),
         end: plainDateTimeToDate(form.end),
         formatId: form.formatId,

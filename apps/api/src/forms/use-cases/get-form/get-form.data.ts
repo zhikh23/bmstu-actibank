@@ -16,7 +16,10 @@ export type FormType = {
       name: string;
     };
   }[];
-  themes: string[];
+  themes: {
+    id: string;
+    title: string;
+  }[];
   start: Date;
   end: Date;
   formatId: string;

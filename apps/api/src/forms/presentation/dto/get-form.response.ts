@@ -3,6 +3,7 @@ import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dt
 import { GuestDto } from '../../../shared/presentation/dto/guest.dto';
 import { MemberDto } from '../../../shared/presentation/dto/member.dto';
 import { VenueDto } from '../../../shared/presentation/dto/venue.dto';
+import { ThemeDto } from '../../../shared/presentation/dto/theme.dto';
 
 export class GetFormResponse {
   @ApiProperty({
@@ -43,10 +44,10 @@ export class GetFormResponse {
   declare venues: VenueDto[];
 
   @ApiProperty({
-    description: 'Список ID тем, связанных с мероприятием',
-    example: ['00000000-0000-0000-0000-000000000000'],
+    description: 'Список тем, связанных с мероприятием',
+    type: [ThemeDto],
   })
-  declare themes: string[];
+  declare themes: ThemeDto[];
 
   @ApiProperty({
     description: 'Дата и время начала мероприятия',
