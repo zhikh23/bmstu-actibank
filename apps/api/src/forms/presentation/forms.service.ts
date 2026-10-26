@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -10,6 +11,7 @@ import { CreateFormRequest } from './dto/create-form.request';
 import { CreateFormResponse } from './dto/create-form.response';
 import { GetFormHandler } from '../use-cases/get-form/get-form.handler';
 import { GetFormResponse } from './dto/get-form.response';
+import { MarkFormReadyHandler } from '../use-cases/mark-form-ready/mark-form-ready.handler';
 
 @Injectable()
 export class FormsService {
@@ -18,6 +20,7 @@ export class FormsService {
   constructor(
     private readonly createForm: CreateFormHandler,
     private readonly getForm: GetFormHandler,
+    private readonly markFormReady: MarkFormReadyHandler,
   ) {}
 
   async create(dto: CreateFormRequest): Promise<CreateFormResponse> {
@@ -109,5 +112,27 @@ export class FormsService {
       reviewedAt: form.reviewedAt ? form.reviewedAt.toISOString() : null,
       canceledAt: form.canceledAt ? form.canceledAt.toISOString() : null,
     };
+  }
+
+  async markReady(id: string): Promise<void> {
+    const result = await this.markFormReady.execute({
+      formId: id,
+      actorId: '00000000-0000-0000-0000-000000000000',
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        case 'InvalidStateTransition':
+          throw new BadRequestException(
+            'Form is not in a state that allows marking as ready',
+          );
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
   }
 }

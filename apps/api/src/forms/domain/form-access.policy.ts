@@ -72,4 +72,13 @@ export const FormAccess = {
       'form can be canceled only by submitter',
     );
   },
+
+  canMarkReady(form: Form, ctx: AccessContext): AccessDecision {
+    return checkAccess(
+      form,
+      ctx,
+      Role.Submitter,
+      'form can be marked ready only by submitter',
+    );
+  },
 };

@@ -212,7 +212,7 @@ describe('Form.ready', () => {
   describe('successfully marked as pending', () => {
     it('return ok when form is draft', () => {
       const form = expectOk(Form.restore(validInit(FormStatus.Draft)));
-      expectOk(form.ready());
+      expectOk(form.markReady());
       expect(form.status).toBe(FormStatus.Pending);
     });
   });
@@ -226,7 +226,7 @@ describe('Form.ready', () => {
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
       const form = expectOk(Form.restore(validInit(status)));
-      expectInvalidTransitionError(form.ready());
+      expectInvalidTransitionError(form.markReady());
     });
   });
 });

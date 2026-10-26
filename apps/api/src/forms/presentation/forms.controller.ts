@@ -1,21 +1,49 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { FormsService } from './forms.service';
 import { CreateFormRequest } from './dto/create-form.request';
 import { CreateFormResponse } from './dto/create-form.response';
-import { ApiOkResponse, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
 import { GetFormResponse } from './dto/get-form.response';
 
 @Controller('forms')
+@ApiTags('Forms')
 export class FormsController {
   constructor(private readonly formService: FormsService) {}
 
   @Post('')
+  @ApiOperation({
+    summary: 'Создать форму',
+    description:
+      'Создаёт форму мероприятия и возвращает идентификатор созданной формы.',
+  })
   @ApiOkResponse({
     description: 'Форма успешно создана',
     type: CreateFormResponse,
   })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST })
-  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY })
+  @ApiBadRequestResponse({
+    description: 'Переданы некорректные данные запроса.',
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'Данные формы нарушают бизнес-правила.',
+  })
   async createForm(
     @Body() dto: CreateFormRequest,
   ): Promise<CreateFormResponse> {
@@ -23,17 +51,50 @@ export class FormsController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Получить форму',
+    description: 'Возвращает форму мероприятия по её идентификатору.',
+  })
   @ApiParam({
     name: 'id',
     type: String,
-    description: 'Form ID',
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
   })
   @ApiOkResponse({
-    description: 'Форма найдена',
+    description: 'Форма успешно найдена.',
     type: GetFormResponse,
   })
-  @ApiResponse({ status: HttpStatus.NOT_FOUND })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
   async getForm(@Param('id') id: string): Promise<GetFormResponse> {
     return this.formService.get(id);
+  }
+
+  @Post(':id/mark-ready')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Отметить форму готовой',
+    description:
+      'Переводит форму в состояние, в котором она готова к проверке модератором.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiNoContentResponse({
+    description: 'Форма успешно помечена как готовая',
+  })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Форма не находится в состоянии, допускающем эту операцию.',
+  })
+  async markFormReady(@Param('id') id: string): Promise<void> {
+    return this.formService.markReady(id);
   }
 }

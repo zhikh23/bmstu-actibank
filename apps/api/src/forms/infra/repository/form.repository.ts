@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Form } from '../../domain/form.entity';
-import { ResultAsync } from 'neverthrow';
+import { errAsync, ResultAsync } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
 import { FormMapper } from './form.mapper';
 import { FormModel } from './form.model';
@@ -22,6 +22,26 @@ export class FormRepository {
           error instanceof Error ? error.message : String(error),
         ),
     ).map(() => undefined);
+  }
+
+  update(f: Form): ResultAsync<void, FormsError> {
+    return ResultAsync.fromPromise(
+      this.repository.findOneBy({ id: f.id }),
+      (error): FormsError =>
+        FormsError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).andThen((model) =>
+      model
+        ? ResultAsync.fromPromise(
+            this.repository.save(FormMapper.toModel(f)),
+            (error): FormsError =>
+              FormsError.repository(
+                error instanceof Error ? error.message : String(error),
+              ),
+          ).map(() => undefined)
+        : errAsync(FormsError.notFound(`form with id "${f.id}" not found`)),
+    );
   }
 
   get(id: string): ResultAsync<Form, FormsError> {

@@ -216,7 +216,7 @@ export class Form {
   }
 
   // Преобразовывает заявку в состояние, готовое к модерации.
-  public ready(now: Instant = Now.instant()): Result<void, FormsError> {
+  public markReady(now: Instant = Now.instant()): Result<void, FormsError> {
     const t = this.transition(FormStatus.Pending, now);
     if (t.isErr()) {
       return t;
