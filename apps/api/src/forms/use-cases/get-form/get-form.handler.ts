@@ -18,7 +18,7 @@ import { OrganizationProvider } from '../../../catalog/external/organization-pro
 import { RankProvider } from '../../../catalog/external/rank-provider/rank-provider.service';
 
 export type GetFormCommand = {
-  id: string;
+  formId: string;
   actorId: string;
 };
 
@@ -37,7 +37,7 @@ export class GetFormHandler {
   ) {}
 
   async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
-    const getResult = await this.formRepository.get(cmd.id);
+    const getResult = await this.formRepository.get(cmd.formId);
     if (getResult.isErr()) {
       return err(getResult.error);
     }

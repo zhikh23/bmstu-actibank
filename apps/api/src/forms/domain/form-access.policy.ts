@@ -64,15 +64,6 @@ export const FormAccess = {
     return checkAccess(form, ctx, VIEW_POLICY[form.status], 'can not see form');
   },
 
-  canCancel(form: Form, ctx: AccessContext): AccessDecision {
-    return checkAccess(
-      form,
-      ctx,
-      Role.Submitter,
-      'form can be canceled only by submitter',
-    );
-  },
-
   canConvertToDraft(form: Form, ctx: AccessContext): AccessDecision {
     return checkAccess(
       form,
@@ -88,6 +79,42 @@ export const FormAccess = {
       ctx,
       Role.Submitter,
       'form can be marked ready only by submitter',
+    );
+  },
+
+  canStartReview(form: Form, ctx: AccessContext): AccessDecision {
+    return checkAccess(
+      form,
+      ctx,
+      Role.Moderator,
+      'form can be started review only by moderator',
+    );
+  },
+
+  canApprove(form: Form, ctx: AccessContext): AccessDecision {
+    return checkAccess(
+      form,
+      ctx,
+      Role.Moderator,
+      'form can be approved only by moderator',
+    );
+  },
+
+  canReject(form: Form, ctx: AccessContext): AccessDecision {
+    return checkAccess(
+      form,
+      ctx,
+      Role.Moderator,
+      'form can be rejected only by moderator',
+    );
+  },
+
+  canCancel(form: Form, ctx: AccessContext): AccessDecision {
+    return checkAccess(
+      form,
+      ctx,
+      Role.Submitter,
+      'form can be canceled only by submitter',
     );
   },
 };

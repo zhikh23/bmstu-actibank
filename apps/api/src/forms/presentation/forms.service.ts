@@ -14,17 +14,74 @@ import { GetFormHandler } from '../use-cases/get-form/get-form.handler';
 import { GetFormResponse } from './dto/get-form.response';
 import { MarkFormReadyHandler } from '../use-cases/mark-form-ready/mark-form-ready.handler';
 import { ConvertToDraftFormHandler } from '../use-cases/convert-to-draft-form/convert-to-draft-form-handler.service';
+import { ApproveFormHandler } from '../use-cases/approve-form/approve-form.handler';
+import { CancelFormHandler } from '../use-cases/cancel-form/cancel-form.handler';
+import { RejectFormHandler } from '../use-cases/reject-form/reject-form.handler';
+import { StartFormReviewHandler } from '../use-cases/start-form-review/start-form-review.handler';
+import { RejectFormRequest } from './dto/reject-form.request';
 
 @Injectable()
 export class FormsService {
   private readonly logger = new Logger(FormsService.name);
 
   constructor(
+    private readonly approveForm: ApproveFormHandler,
+    private readonly cancelForm: CancelFormHandler,
+    private readonly convertToDraftForm: ConvertToDraftFormHandler,
     private readonly createForm: CreateFormHandler,
     private readonly getForm: GetFormHandler,
-    private readonly convertToDraftForm: ConvertToDraftFormHandler,
     private readonly markFormReady: MarkFormReadyHandler,
+    private readonly rejectForm: RejectFormHandler,
+    private readonly startFormReview: StartFormReviewHandler,
   ) {}
+
+  async approve(formId: string): Promise<void> {
+    const result = await this.approveForm.execute({
+      formId,
+      actorId: '00000000-0000-0000-0000-000000000000',
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'InvalidStateTransition':
+          throw new BadRequestException(
+            'Form is not in a state that allows approving',
+          );
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  async cancel(formId: string): Promise<void> {
+    const result = await this.cancelForm.execute({
+      formId,
+      actorId: '00000000-0000-0000-0000-000000000000',
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'InvalidStateTransition':
+          throw new BadRequestException(
+            'Form is not in a state that allows canceling',
+          );
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+  }
 
   async create(dto: CreateFormRequest): Promise<CreateFormResponse> {
     const createRes = await this.createForm.execute({
@@ -62,9 +119,33 @@ export class FormsService {
     };
   }
 
-  async get(id: string): Promise<GetFormResponse> {
+  async convertToDraft(formId: string): Promise<void> {
+    const result = await this.convertToDraftForm.execute({
+      formId,
+      actorId: '00000000-0000-0000-0000-000000000000',
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'InvalidStateTransition':
+          throw new BadRequestException(
+            'Form is not in a state that allows converting to draft',
+          );
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  async get(formId: string): Promise<GetFormResponse> {
     const getRes = await this.getForm.execute({
-      id,
+      formId,
       actorId: '00000000-0000-0000-0000-000000000000',
     });
 
@@ -119,9 +200,9 @@ export class FormsService {
     };
   }
 
-  async markReady(id: string): Promise<void> {
+  async markReady(formId: string): Promise<void> {
     const result = await this.markFormReady.execute({
-      formId: id,
+      formId,
       actorId: '00000000-0000-0000-0000-000000000000',
     });
 
@@ -143,9 +224,34 @@ export class FormsService {
     }
   }
 
-  async convertToDraft(id: string): Promise<void> {
-    const result = await this.convertToDraftForm.execute({
-      formId: id,
+  async reject(formId: string, dto: RejectFormRequest): Promise<void> {
+    const result = await this.rejectForm.execute({
+      formId,
+      actorId: '00000000-0000-0000-0000-000000000000',
+      reason: dto.reason ?? null,
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'InvalidStateTransition':
+          throw new BadRequestException(
+            'Form is not in a state that allows rejecting',
+          );
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  async startReview(formId: string): Promise<void> {
+    const result = await this.startFormReview.execute({
+      formId,
       actorId: '00000000-0000-0000-0000-000000000000',
     });
 
@@ -154,7 +260,7 @@ export class FormsService {
       switch (err.kind) {
         case 'InvalidStateTransition':
           throw new BadRequestException(
-            'Form is not in a state that allows converting to draft',
+            'Form is not in a state that allows starting review',
           );
         case 'Forbidden':
           throw new ForbiddenException(err.reason);
