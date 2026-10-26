@@ -4,9 +4,15 @@ import { FormsController } from './presentation/forms.controller';
 import { FormsService } from './presentation/forms.service';
 import { GetFormModule } from './use-cases/get-form/get-form.module';
 import { MarkFormReadyModule } from './use-cases/mark-form-ready/mark-form-ready.module';
+import { ConvertToDraftModule } from './use-cases/convert-to-draft-form/convert-to-draft.module';
 
 @Module({
-  imports: [CreateFormModule, GetFormModule, MarkFormReadyModule],
+  imports: [
+    CreateFormModule,
+    ConvertToDraftModule,
+    GetFormModule,
+    MarkFormReadyModule,
+  ],
   controllers: [FormsController],
   providers: [FormsService],
 })

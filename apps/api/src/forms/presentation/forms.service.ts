@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -12,6 +13,7 @@ import { CreateFormResponse } from './dto/create-form.response';
 import { GetFormHandler } from '../use-cases/get-form/get-form.handler';
 import { GetFormResponse } from './dto/get-form.response';
 import { MarkFormReadyHandler } from '../use-cases/mark-form-ready/mark-form-ready.handler';
+import { ConvertToDraftFormHandler } from '../use-cases/convert-to-draft-form/convert-to-draft-form-handler.service';
 
 @Injectable()
 export class FormsService {
@@ -20,6 +22,7 @@ export class FormsService {
   constructor(
     private readonly createForm: CreateFormHandler,
     private readonly getForm: GetFormHandler,
+    private readonly convertToDraftForm: ConvertToDraftFormHandler,
     private readonly markFormReady: MarkFormReadyHandler,
   ) {}
 
@@ -68,6 +71,8 @@ export class FormsService {
     if (getRes.isErr()) {
       const err = getRes.error;
       switch (err.kind) {
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
         case 'NotFound':
           throw new NotFoundException(err.message);
         default:
@@ -123,12 +128,38 @@ export class FormsService {
     if (result.isErr()) {
       const err = result.error;
       switch (err.kind) {
-        case 'NotFound':
-          throw new NotFoundException(err.message);
         case 'InvalidStateTransition':
           throw new BadRequestException(
             'Form is not in a state that allows marking as ready',
           );
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  async convertToDraft(id: string): Promise<void> {
+    const result = await this.convertToDraftForm.execute({
+      formId: id,
+      actorId: '00000000-0000-0000-0000-000000000000',
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'InvalidStateTransition':
+          throw new BadRequestException(
+            'Form is not in a state that allows converting to draft',
+          );
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
         default:
           this.logger.error(err);
           throw new InternalServerErrorException();

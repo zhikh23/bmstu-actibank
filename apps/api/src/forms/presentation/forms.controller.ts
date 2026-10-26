@@ -12,7 +12,7 @@ import { CreateFormRequest } from './dto/create-form.request';
 import { CreateFormResponse } from './dto/create-form.response';
 import {
   ApiBadRequestResponse,
-  ApiInternalServerErrorResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -65,6 +65,9 @@ export class FormsController {
     description: 'Форма успешно найдена.',
     type: GetFormResponse,
   })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на выполнение этой операции.',
+  })
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
@@ -88,13 +91,45 @@ export class FormsController {
   @ApiNoContentResponse({
     description: 'Форма успешно помечена как готовая',
   })
+  @ApiBadRequestResponse({
+    description: 'Форма не находится в состоянии, допускающем эту операцию.',
+  })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на выполнение этой операции.',
+  })
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
+  })
+  async markFormReady(@Param('id') id: string): Promise<void> {
+    return this.formService.markReady(id);
+  }
+
+  @Post(':id/convert-to-draft')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Конвертировать форму в черновик',
+    description:
+      'Переводит форму в состояние черновика, позволяя вносить изменения в её содержимое.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiNoContentResponse({
+    description: 'Форма успешно помечена как черновик',
   })
   @ApiBadRequestResponse({
     description: 'Форма не находится в состоянии, допускающем эту операцию.',
   })
-  async markFormReady(@Param('id') id: string): Promise<void> {
-    return this.formService.markReady(id);
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на выполнение этой операции.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
+  async convertToDraft(@Param('id') id: string): Promise<void> {
+    return this.formService.convertToDraft(id);
   }
 }

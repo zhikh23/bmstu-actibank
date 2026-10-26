@@ -73,6 +73,15 @@ export const FormAccess = {
     );
   },
 
+  canConvertToDraft(form: Form, ctx: AccessContext): AccessDecision {
+    return checkAccess(
+      form,
+      ctx,
+      Role.Submitter | Role.Moderator,
+      'form can be converted to draft only by submitter or moderator',
+    );
+  },
+
   canMarkReady(form: Form, ctx: AccessContext): AccessDecision {
     return checkAccess(
       form,
