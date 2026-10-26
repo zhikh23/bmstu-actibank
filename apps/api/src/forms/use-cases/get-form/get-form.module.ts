@@ -8,6 +8,7 @@ import { FormatProviderModule } from '../../../catalog/external/format-provider/
 import { LevelProviderModule } from '../../../catalog/external/level-provider/level-provider.module';
 import { RoleProviderModule } from '../../../catalog/external/role-provider/role-provider.module';
 import { OrganizationProviderModule } from '../../../catalog/external/organization-provider/organization-provider.module';
+import { RankProviderModule } from '../../../catalog/external/rank-provider/rank-provider.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OrganizationProviderModule } from '../../../catalog/external/organizati
     ThemeProviderModule,
     RoleProviderModule,
     OrganizationProviderModule,
+    RankProviderModule,
   ],
   providers: [GetFormHandler],
   exports: [GetFormHandler],

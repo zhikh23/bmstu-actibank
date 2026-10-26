@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dto';
-import { GuestDto } from '../../../shared/presentation/dto/guest.dto';
-import { MemberDto } from '../../../shared/presentation/dto/member.dto';
 import { VenueDto } from '../../../shared/presentation/dto/venue.dto';
 import { ThemeDto } from '../../../shared/presentation/dto/theme.dto';
 import { EventTypeDto } from '../../../shared/presentation/dto/event-type.dto';
@@ -9,6 +7,21 @@ import { FormatDto } from '../../../shared/presentation/dto/format.dto';
 import { LevelDto } from '../../../shared/presentation/dto/level.dto';
 import { RoleDto } from '../../../shared/presentation/dto/role.dto';
 import { OrganizationDto } from '../../../shared/presentation/dto/organization.dto';
+import { RankDto } from '../../../shared/presentation/dto/rank.dto';
+
+export class GetFormGuestDto {
+  @ApiProperty({
+    description: 'ID пользователя-гостя',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  declare userId: string;
+
+  @ApiProperty({
+    description: 'Звание гостя',
+    type: RankDto,
+  })
+  declare rank: RankDto;
+}
 
 export class GetFormMemberDto {
   @ApiProperty({
@@ -101,8 +114,11 @@ export class GetFormResponse {
   @ApiProperty({ type: ParticipantsDto })
   declare participants: ParticipantsDto;
 
-  @ApiProperty({ type: [GuestDto] })
-  declare guests: GuestDto[];
+  @ApiProperty({
+    description: 'Список гостей мероприятия',
+    type: [GetFormGuestDto],
+  })
+  declare guests: GetFormGuestDto[];
 
   @ApiProperty({ type: [GetFormMemberDto] })
   declare team: GetFormMemberDto[];

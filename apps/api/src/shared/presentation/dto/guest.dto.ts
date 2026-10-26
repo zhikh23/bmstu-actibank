@@ -10,7 +10,7 @@ export class GuestDto {
   declare userId: string;
 
   @ApiProperty({
-    description: 'ID уровня гостя',
+    description: 'ID звания гостя',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')

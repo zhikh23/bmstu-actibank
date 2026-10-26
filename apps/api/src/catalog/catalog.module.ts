@@ -5,6 +5,7 @@ import { GetLevelModule } from './use-cases/get-level/get-level.module';
 import { GetThemesModule } from './use-cases/get-themes/get-themes.module';
 import { GetVenuesModule } from './use-cases/get-venues/get-venues.module';
 import { GetOrganizationModule } from './use-cases/get-organization/get-organization.module';
+import { GetRanksModule } from './use-cases/get-ranks/get-ranks.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { GetOrganizationModule } from './use-cases/get-organization/get-organiza
     GetThemesModule,
     GetVenuesModule,
     GetOrganizationModule,
+    GetRanksModule,
   ],
   controllers: [],
   providers: [],

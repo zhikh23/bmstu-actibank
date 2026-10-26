@@ -15,6 +15,7 @@ import { FormatProvider } from '../../../catalog/external/format-provider/format
 import { LevelProvider } from '../../../catalog/external/level-provider/level-provider.service';
 import { RoleProvider } from '../../../catalog/external/role-provider/role-provider.service';
 import { OrganizationProvider } from '../../../catalog/external/organization-provider/organization-provider.service';
+import { RankProvider } from '../../../catalog/external/rank-provider/rank-provider.service';
 
 export type GetFormCommand = {
   id: string;
@@ -32,6 +33,7 @@ export class GetFormHandler {
     private readonly themeProvider: ThemeProvider,
     private readonly roleProvider: RoleProvider,
     private readonly organizationProvider: OrganizationProvider,
+    private readonly rankProvider: RankProvider,
   ) {}
 
   async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
@@ -58,6 +60,12 @@ export class GetFormHandler {
     const themesResult = await this.themeProvider.getThemes(form.themes);
     if (themesResult.isErr()) return err(themesResult.error);
     const themes = themesResult.value;
+
+    const ranksResult = await this.rankProvider.getRanks(
+      form.guests.map((g) => g.rankId),
+    );
+    if (ranksResult.isErr()) return err(ranksResult.error);
+    const ranksMap = new Map(ranksResult.value.map((rank) => [rank.id, rank]));
 
     const format = (
       await this.formatProvider.getFormat(form.formatId)
@@ -106,7 +114,7 @@ export class GetFormHandler {
         },
         guests: form.guests.map((g) => ({
           userId: g.userId,
-          rankId: g.rankId,
+          rank: ranksMap.get(g.rankId) ?? { id: g.rankId, title: '' },
         })),
         team: form.team.map((t) => ({
           userId: t.userId,

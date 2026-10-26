@@ -94,7 +94,7 @@ export class FormsService {
       },
       guests: form.guests.map((g) => ({
         userId: g.userId,
-        rankId: g.rankId,
+        rank: g.rank,
       })),
       team: form.team.map((m) => ({
         userId: m.userId,

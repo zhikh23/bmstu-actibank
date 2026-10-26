@@ -1,5 +1,3 @@
-import { GuestType } from '../../../shared/types/guest.type';
-import { MemberType } from '../../../shared/types/member.type';
 import { ParticipantsType } from '../../../shared/types/participants.type';
 
 type FormOrganizationCategoryType = {
@@ -47,7 +45,10 @@ export type FormType = {
   participants: ParticipantsType;
   guests: {
     userId: string;
-    rankId: string;
+    rank: {
+      id: string;
+      title: string;
+    };
   }[];
   team: {
     userId: string;
