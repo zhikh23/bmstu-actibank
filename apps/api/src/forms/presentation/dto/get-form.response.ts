@@ -8,6 +8,7 @@ import { EventTypeDto } from '../../../shared/presentation/dto/event-type.dto';
 import { FormatDto } from '../../../shared/presentation/dto/format.dto';
 import { LevelDto } from '../../../shared/presentation/dto/level.dto';
 import { RoleDto } from '../../../shared/presentation/dto/role.dto';
+import { OrganizationDto } from '../../../shared/presentation/dto/organization.dto';
 
 export class GetFormMemberDto {
   @ApiProperty({
@@ -45,9 +46,9 @@ export class GetFormResponse {
   @ApiProperty({
     description:
       'Список организаций, которые приняли участие в организации мероприятия',
-    example: ['00000000-0000-0000-0000-000000000000'],
+    type: [OrganizationDto],
   })
-  declare organizers: string[];
+  declare organizers: OrganizationDto[];
 
   @ApiProperty({
     description: 'Ссылки на упоминание мероприяти в социальных сетях',

@@ -14,6 +14,7 @@ import { EventTypeProvider } from '../../../catalog/external/event-type-provider
 import { FormatProvider } from '../../../catalog/external/format-provider/format-provider.service';
 import { LevelProvider } from '../../../catalog/external/level-provider/level-provider.service';
 import { RoleProvider } from '../../../catalog/external/role-provider/role-provider.service';
+import { OrganizationProvider } from '../../../catalog/external/organization-provider/organization-provider.service';
 
 export type GetFormCommand = {
   id: string;
@@ -30,6 +31,7 @@ export class GetFormHandler {
     private readonly venueProvider: VenueProvider,
     private readonly themeProvider: ThemeProvider,
     private readonly roleProvider: RoleProvider,
+    private readonly organizationProvider: OrganizationProvider,
   ) {}
 
   async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
@@ -38,6 +40,16 @@ export class GetFormHandler {
       return err(getResult.error);
     }
     const form = getResult.value;
+
+    const organizations = await Promise.all(
+      form.organizers.map(async (id) =>
+        (await this.organizationProvider.getOrganization(id)).unwrapOr({
+          id,
+          name: '',
+          category: { id: '', name: '' },
+        }),
+      ),
+    );
 
     const venuesResult = await this.venueProvider.getVenues(form.venues);
     if (venuesResult.isErr()) return err(venuesResult.error);
@@ -78,7 +90,7 @@ export class GetFormHandler {
         id: form.id,
         name: form.name,
         description: form.description,
-        organizers: form.organizers,
+        organizers: organizations,
         links: form.links,
         venues: venues,
         themes: themes,

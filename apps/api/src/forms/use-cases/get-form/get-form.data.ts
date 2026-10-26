@@ -2,11 +2,21 @@ import { GuestType } from '../../../shared/types/guest.type';
 import { MemberType } from '../../../shared/types/member.type';
 import { ParticipantsType } from '../../../shared/types/participants.type';
 
+type FormOrganizationCategoryType = {
+  id: string;
+  name: string;
+  parent?: FormOrganizationCategoryType | null;
+};
+
 export type FormType = {
   id: string;
   name: string;
   description: string;
-  organizers: string[];
+  organizers: {
+    id: string;
+    name: string;
+    category: FormOrganizationCategoryType;
+  }[];
   links: string[];
   venues: {
     id: string;

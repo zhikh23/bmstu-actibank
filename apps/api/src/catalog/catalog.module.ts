@@ -4,6 +4,7 @@ import { GetFormatModule } from './use-cases/get-format/get-format.module';
 import { GetLevelModule } from './use-cases/get-level/get-level.module';
 import { GetThemesModule } from './use-cases/get-themes/get-themes.module';
 import { GetVenuesModule } from './use-cases/get-venues/get-venues.module';
+import { GetOrganizationModule } from './use-cases/get-organization/get-organization.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { GetVenuesModule } from './use-cases/get-venues/get-venues.module';
     GetLevelModule,
     GetThemesModule,
     GetVenuesModule,
+    GetOrganizationModule,
   ],
   controllers: [],
   providers: [],
