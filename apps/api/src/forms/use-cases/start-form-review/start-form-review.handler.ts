@@ -7,6 +7,7 @@ import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
 export type StartFormReviewCommand = {
   formId: string;
   actorId: string;
+  isModerator?: boolean;
 };
 
 @Injectable()
@@ -21,7 +22,10 @@ export class StartFormReviewHandler {
     const form = formResult.value;
 
     const accessResult = AccessDecision.toResult(
-      FormAccess.canStartReview(form, { actorId: cmd.actorId }),
+      FormAccess.canStartReview(form, {
+        actorId: cmd.actorId,
+        isModerator: cmd.isModerator,
+      }),
       undefined,
     );
     if (accessResult.isErr()) return err(accessResult.error);

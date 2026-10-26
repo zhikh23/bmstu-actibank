@@ -7,6 +7,7 @@ import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
 export type RejectFormCommand = {
   formId: string;
   actorId: string;
+  isModerator?: boolean;
   reason: string | null;
 };
 
@@ -20,7 +21,10 @@ export class RejectFormHandler {
     const form = formResult.value;
 
     const accessResult = AccessDecision.toResult(
-      FormAccess.canReject(form, { actorId: cmd.actorId }),
+      FormAccess.canReject(form, {
+        actorId: cmd.actorId,
+        isModerator: cmd.isModerator,
+      }),
       undefined,
     );
     if (accessResult.isErr()) return err(accessResult.error);

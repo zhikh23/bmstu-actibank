@@ -20,6 +20,7 @@ import { RankProvider } from '../../../catalog/external/rank-provider/rank-provi
 export type GetFormCommand = {
   formId: string;
   actorId: string;
+  isModerator?: boolean;
 };
 
 @Injectable()
@@ -93,7 +94,10 @@ export class GetFormHandler {
     const rolesMap = new Map(rolesResult.value.map((r) => [r.id, r]));
 
     return AccessDecision.toResult(
-      FormAccess.canView(form, { actorId: cmd.actorId }),
+      FormAccess.canView(form, {
+        actorId: cmd.actorId,
+        isModerator: cmd.isModerator,
+      }),
       {
         id: form.id,
         name: form.name,

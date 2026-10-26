@@ -7,6 +7,7 @@ import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
 export type ApproveFormCommand = {
   formId: string;
   actorId: string;
+  isModerator?: boolean;
 };
 
 @Injectable()
@@ -19,7 +20,10 @@ export class ApproveFormHandler {
     const form = formResult.value;
 
     const accessResult = AccessDecision.toResult(
-      FormAccess.canApprove(form, { actorId: cmd.actorId }),
+      FormAccess.canApprove(form, {
+        actorId: cmd.actorId,
+        isModerator: cmd.isModerator,
+      }),
       undefined,
     );
     if (accessResult.isErr()) return err(accessResult.error);

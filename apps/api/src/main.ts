@@ -24,8 +24,14 @@ async function bootstrap() {
 
   const docsConfig = new DocumentBuilder()
     .setTitle('bmstu-actibank')
-    .setDescription('Сервис регистрации мероприятий в МГТУ им. Н.Э. Баумана')
+    .setDescription('Сервис регистрации мероприятий в МГТУ им. Н.Э. Баумана.')
     .setVersion('1.0')
+    .addCookieAuth('actibank_session', {
+      type: 'apiKey',
+      in: 'cookie',
+      description:
+        'Серверная сессия, устанавливаемая после OIDC-аутентификации.',
+    })
     .build();
   const docFactory = () => SwaggerModule.createDocument(app, docsConfig);
   SwaggerModule.setup(globalPrefix + '/docs', app, docFactory);

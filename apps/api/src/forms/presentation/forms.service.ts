@@ -35,10 +35,11 @@ export class FormsService {
     private readonly startFormReview: StartFormReviewHandler,
   ) {}
 
-  async approve(formId: string): Promise<void> {
+  async approve(formId: string, actorId: string): Promise<void> {
     const result = await this.approveForm.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
+      isModerator: true,
     });
 
     if (result.isErr()) {
@@ -59,10 +60,10 @@ export class FormsService {
     }
   }
 
-  async cancel(formId: string): Promise<void> {
+  async cancel(formId: string, actorId: string): Promise<void> {
     const result = await this.cancelForm.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
     });
 
     if (result.isErr()) {
@@ -83,7 +84,10 @@ export class FormsService {
     }
   }
 
-  async create(dto: CreateFormRequest): Promise<CreateFormResponse> {
+  async create(
+    dto: CreateFormRequest,
+    submitterId: string,
+  ): Promise<CreateFormResponse> {
     const createRes = await this.createForm.execute({
       name: dto.name,
       description: dto.description,
@@ -99,7 +103,7 @@ export class FormsService {
       participants: dto.participants,
       guests: dto.guests,
       team: dto.team,
-      submitterId: dto.submitterId,
+      submitterId,
     });
 
     if (createRes.isErr()) {
@@ -119,10 +123,15 @@ export class FormsService {
     };
   }
 
-  async convertToDraft(formId: string): Promise<void> {
+  async convertToDraft(
+    formId: string,
+    actorId: string,
+    isModerator: boolean,
+  ): Promise<void> {
     const result = await this.convertToDraftForm.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
+      isModerator,
     });
 
     if (result.isErr()) {
@@ -143,10 +152,15 @@ export class FormsService {
     }
   }
 
-  async get(formId: string): Promise<GetFormResponse> {
+  async get(
+    formId: string,
+    actorId: string,
+    isModerator: boolean,
+  ): Promise<GetFormResponse> {
     const getRes = await this.getForm.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
+      isModerator,
     });
 
     if (getRes.isErr()) {
@@ -200,10 +214,10 @@ export class FormsService {
     };
   }
 
-  async markReady(formId: string): Promise<void> {
+  async markReady(formId: string, actorId: string): Promise<void> {
     const result = await this.markFormReady.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
     });
 
     if (result.isErr()) {
@@ -224,10 +238,15 @@ export class FormsService {
     }
   }
 
-  async reject(formId: string, dto: RejectFormRequest): Promise<void> {
+  async reject(
+    formId: string,
+    dto: RejectFormRequest,
+    actorId: string,
+  ): Promise<void> {
     const result = await this.rejectForm.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
+      isModerator: true,
       reason: dto.reason ?? null,
     });
 
@@ -249,10 +268,11 @@ export class FormsService {
     }
   }
 
-  async startReview(formId: string): Promise<void> {
+  async startReview(formId: string, actorId: string): Promise<void> {
     const result = await this.startFormReview.execute({
       formId,
-      actorId: '00000000-0000-0000-0000-000000000000',
+      actorId,
+      isModerator: true,
     });
 
     if (result.isErr()) {

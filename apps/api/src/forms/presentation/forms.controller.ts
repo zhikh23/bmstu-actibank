@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { FormsService } from './forms.service';
 import { CreateFormRequest } from './dto/create-form.request';
@@ -13,6 +14,7 @@ import { CreateFormResponse } from './dto/create-form.response';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiCookieAuth,
   ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -24,9 +26,13 @@ import {
 } from '@nestjs/swagger';
 import { GetFormResponse } from './dto/get-form.response';
 import { RejectFormRequest } from './dto/reject-form.request';
+import { Role, AuthenticatedUser } from '../../auth/domain/user.entity';
+import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
+import { RolesGuard } from '../../auth/presentation/auth.guards';
 
 @Controller('forms')
 @ApiTags('Forms')
+@ApiCookieAuth('actibank_session')
 export class FormsController {
   constructor(private readonly formService: FormsService) {}
 
@@ -54,8 +60,13 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  async approve(@Param('id') id: string): Promise<void> {
-    return this.formService.approve(id);
+  @Roles(Role.Moderator)
+  @UseGuards(RolesGuard)
+  async approve(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.approve(id, user.id);
   }
 
   @Post(':id/cancel')
@@ -82,8 +93,13 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  async cancel(@Param('id') id: string): Promise<void> {
-    return this.formService.cancel(id);
+  @Roles(Role.Applicant)
+  @UseGuards(RolesGuard)
+  async cancel(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.cancel(id, user.id);
   }
 
   @Post(':id/convert-to-draft')
@@ -111,11 +127,22 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  async convertToDraft(@Param('id') id: string): Promise<void> {
-    return this.formService.convertToDraft(id);
+  @Roles(Role.Applicant, Role.Moderator)
+  @UseGuards(RolesGuard)
+  async convertToDraft(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.convertToDraft(
+      id,
+      user.id,
+      user.roles.includes(Role.Moderator),
+    );
   }
 
   @Post('')
+  @Roles(Role.Applicant)
+  @UseGuards(RolesGuard)
   @ApiOperation({
     summary: 'Создать форму',
     description:
@@ -133,8 +160,9 @@ export class FormsController {
   })
   async createForm(
     @Body() dto: CreateFormRequest,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<CreateFormResponse> {
-    return this.formService.create(dto);
+    return this.formService.create(dto, user.id);
   }
 
   @Get(':id')
@@ -158,8 +186,15 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  async getForm(@Param('id') id: string): Promise<GetFormResponse> {
-    return this.formService.get(id);
+  async getForm(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<GetFormResponse> {
+    return this.formService.get(
+      id,
+      user.id,
+      user.roles.includes(Role.Moderator),
+    );
   }
 
   @Post(':id/mark-ready')
@@ -187,8 +222,13 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  async markFormReady(@Param('id') id: string): Promise<void> {
-    return this.formService.markReady(id);
+  @Roles(Role.Applicant)
+  @UseGuards(RolesGuard)
+  async markFormReady(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.markReady(id, user.id);
   }
 
   @Post(':id/reject')
@@ -219,11 +259,14 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
+  @Roles(Role.Moderator)
+  @UseGuards(RolesGuard)
   async reject(
     @Param('id') id: string,
     @Body() dto: RejectFormRequest,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.reject(id, dto);
+    return this.formService.reject(id, dto, user.id);
   }
 
   @Post(':id/start-review')
@@ -250,7 +293,12 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  async startReview(@Param('id') id: string): Promise<void> {
-    return this.formService.startReview(id);
+  @Roles(Role.Moderator)
+  @UseGuards(RolesGuard)
+  async startReview(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.startReview(id, user.id);
   }
 }

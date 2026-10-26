@@ -7,6 +7,7 @@ import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
 export type ConvertToDraftFormCommand = {
   formId: string;
   actorId: string;
+  isModerator?: boolean;
 };
 
 @Injectable()
@@ -21,7 +22,10 @@ export class ConvertToDraftFormHandler {
     const form = formResult.value;
 
     const accessResult = AccessDecision.toResult(
-      FormAccess.canConvertToDraft(form, { actorId: cmd.actorId }),
+      FormAccess.canConvertToDraft(form, {
+        actorId: cmd.actorId,
+        isModerator: cmd.isModerator,
+      }),
       undefined,
     );
     if (accessResult.isErr()) return err(accessResult.error);

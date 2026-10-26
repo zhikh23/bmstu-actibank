@@ -4,6 +4,7 @@ import {
   IsString,
   IsUUID,
   Length,
+  IsOptional,
   ValidateNested,
 } from 'class-validator';
 import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dto';
@@ -124,5 +125,6 @@ export class CreateFormRequest {
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
-  declare submitterId: string;
+  @IsOptional()
+  declare submitterId?: string;
 }

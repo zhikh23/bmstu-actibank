@@ -4,6 +4,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CatalogModule } from './catalog/catalog.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CatalogModule } from './catalog/catalog.module';
     }),
     FormsModule,
     CatalogModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
