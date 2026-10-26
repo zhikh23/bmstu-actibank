@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ParticipantsDto {
   @ApiProperty({
-    description: 'Количество студентов МГТУ им. Н.Э. Баумана на мероприятии',
+    description: 'Количество студентов МГТУ им. Н.Э. Баумана',
     example: 50,
   })
   @IsInt()
@@ -11,7 +11,7 @@ export class ParticipantsDto {
   declare students: number;
 
   @ApiProperty({
-    description: 'Количество сотрудников МГТУ им. Н.Э. Баумана на мероприятии',
+    description: 'Количество сотрудников МГТУ им. Н.Э. Баумана',
     example: 2,
   })
   @IsInt()
@@ -19,7 +19,7 @@ export class ParticipantsDto {
   declare employees: number;
 
   @ApiProperty({
-    description: 'Количество участников не из МГТУ им. Н.Э. Баумана',
+    description: 'Количество участников из других организаций',
     example: 2,
   })
   @IsInt()

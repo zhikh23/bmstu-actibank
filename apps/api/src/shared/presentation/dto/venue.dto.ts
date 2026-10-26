@@ -4,15 +4,14 @@ import { BuildingDto } from './building.dto';
 
 export class VenueDto {
   @ApiProperty({
-    description: 'ID локации для проведения мероприятия',
+    description: 'Идентификатор места проведения',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare id: string;
 
   @ApiProperty({
-    description:
-      'Название места проведения мероприятия. Включает в себя наименьшую территориальную единицу, в рамках которой проходило мероприятие или его часть',
+    description: 'Название аудитории или другого места проведения',
     example: '501ю',
   })
   @IsString()
@@ -20,7 +19,7 @@ export class VenueDto {
   declare name: string;
 
   @ApiProperty({
-    description: 'Здание места проведения мероприятия',
+    description: 'Здание, в котором находится место проведения',
     type: BuildingDto,
   })
   declare building: BuildingDto;

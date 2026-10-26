@@ -6,5 +6,5 @@ export class RankModel {
   declare id: string;
 
   @Column('varchar')
-  declare title: string;
+  declare name: string;
 }

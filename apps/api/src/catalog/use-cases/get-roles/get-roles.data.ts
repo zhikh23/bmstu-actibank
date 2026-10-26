@@ -1,8 +1,8 @@
 export type RoleType = {
   id: string;
-  label: string;
+  name: string;
   category: {
     id: string;
-    label: string;
+    name: string;
   };
 };

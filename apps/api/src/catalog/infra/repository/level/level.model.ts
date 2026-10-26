@@ -6,5 +6,5 @@ export class LevelModel {
   declare id: string;
 
   @Column('varchar')
-  declare label: string;
+  declare name: string;
 }

@@ -1,4 +1,4 @@
 export type EventType = {
   id: string;
-  label: string;
+  name: string;
 };

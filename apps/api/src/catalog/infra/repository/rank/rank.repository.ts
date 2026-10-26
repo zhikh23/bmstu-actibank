@@ -28,7 +28,7 @@ export class RankRepository {
       return okAsync(
         ids.map((id) => {
           const model = byId.get(id);
-          return model ? RankMapper.toDomain(model) : { id, title: '' };
+          return model ? RankMapper.toDomain(model) : { id, name: '' };
         }),
       );
     });

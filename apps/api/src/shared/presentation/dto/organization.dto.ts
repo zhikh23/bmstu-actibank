@@ -5,7 +5,7 @@ import { OrganizationCategoryDto } from './organization-category.dto';
 
 export class OrganizationDto {
   @ApiProperty({
-    description: 'ID организации',
+    description: 'Идентификатор организации',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
@@ -20,7 +20,7 @@ export class OrganizationDto {
   declare name: string;
 
   @ApiProperty({
-    description: 'Категория организации',
+    description: 'Категория, к которой относится организация',
     type: OrganizationCategoryDto,
   })
   declare category: OrganizationCategoryDto;

@@ -3,17 +3,17 @@ import { IsString, IsUUID, Length } from 'class-validator';
 
 export class LevelDto {
   @ApiProperty({
-    description: 'ID уровня проведения мероприятия',
+    description: 'Идентификатор уровня мероприятия',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare id: string;
 
   @ApiProperty({
-    description: 'Текстовое обозначение уровня мероприятия',
+    description: 'Название уровня мероприятия',
     example: 'университет',
   })
   @IsString()
   @Length(1, 32)
-  declare label: string;
+  declare name: string;
 }

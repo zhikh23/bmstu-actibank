@@ -1,4 +1,4 @@
 export type FormatDto = {
   id: string;
-  label: string;
+  name: string;
 };

@@ -1,8 +1,8 @@
 export type RoleWithCategory = {
   id: string;
-  label: string;
+  name: string;
   category: {
     id: string;
-    label: string;
+    name: string;
   };
 };

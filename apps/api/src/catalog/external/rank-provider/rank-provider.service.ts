@@ -9,9 +9,7 @@ export type RankProviderError = { kind: 'RepositoryError'; message: string };
 export class RankProvider {
   constructor(private readonly getRanksHandler: GetRanksHandler) {}
 
-  async getRanks(
-    ids: string[],
-  ): Promise<Result<RankDto[], RankProviderError>> {
+  async getRanks(ids: string[]): Promise<Result<RankDto[], RankProviderError>> {
     const res = await this.getRanksHandler.execute({ ids });
     if (res.isErr()) {
       const error = res.error;

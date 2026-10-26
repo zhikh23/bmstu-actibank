@@ -5,10 +5,10 @@ export class RoleWithCategoryMapper {
   static toReadModel(m: RoleModel): RoleWithCategory {
     return {
       id: m.id,
-      label: m.label,
+      name: m.name,
       category: {
         id: m.category.id,
-        label: m.category.label,
+        name: m.category.name,
       },
     };
   }

@@ -11,7 +11,7 @@ import { RankDto } from '../../../shared/presentation/dto/rank.dto';
 
 export class GetFormGuestDto {
   @ApiProperty({
-    description: 'ID пользователя-гостя',
+    description: 'Идентификатор пользователя-гостя',
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare userId: string;
@@ -25,7 +25,7 @@ export class GetFormGuestDto {
 
 export class GetFormMemberDto {
   @ApiProperty({
-    description: 'ID члена оргкомитета',
+    description: 'Идентификатор пользователя — члена оргкомитета',
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare userId: string;
@@ -39,7 +39,7 @@ export class GetFormMemberDto {
 
 export class GetFormResponse {
   @ApiProperty({
-    description: 'ID формы',
+    description: 'Идентификатор формы',
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare id: string;
@@ -57,14 +57,13 @@ export class GetFormResponse {
   declare description: string;
 
   @ApiProperty({
-    description:
-      'Список организаций, которые приняли участие в организации мероприятия',
+    description: 'Организации-организаторы мероприятия',
     type: [OrganizationDto],
   })
   declare organizers: OrganizationDto[];
 
   @ApiProperty({
-    description: 'Ссылки на упоминание мероприяти в социальных сетях',
+    description: 'Ссылки на упоминания мероприятия',
     example: ['https://vk.ru/'],
   })
   declare links: string[];
@@ -88,7 +87,7 @@ export class GetFormResponse {
   declare start: Date;
 
   @ApiProperty({
-    description: 'Дата и время начала мероприятия',
+    description: 'Дата и время окончания мероприятия',
     example: '2026-01-01T17:00:00',
   })
   declare end: Date;
@@ -100,7 +99,7 @@ export class GetFormResponse {
   declare format: FormatDto;
 
   @ApiProperty({
-    description: 'Форма мероприятия',
+    description: 'Форма проведения мероприятия',
     type: EventTypeDto,
   })
   declare type: EventTypeDto;
@@ -111,7 +110,10 @@ export class GetFormResponse {
   })
   declare level: LevelDto;
 
-  @ApiProperty({ type: ParticipantsDto })
+  @ApiProperty({
+    description: 'Количество участников по категориям',
+    type: ParticipantsDto,
+  })
   declare participants: ParticipantsDto;
 
   @ApiProperty({
@@ -120,53 +122,56 @@ export class GetFormResponse {
   })
   declare guests: GetFormGuestDto[];
 
-  @ApiProperty({ type: [GetFormMemberDto] })
+  @ApiProperty({
+    description: 'Члены оргкомитета и их роли',
+    type: [GetFormMemberDto],
+  })
   declare team: GetFormMemberDto[];
 
   @ApiProperty({
-    description: 'Статус формы',
+    description: 'Текущий статус формы',
     example: 'pending',
   })
   declare status: string;
 
   @ApiProperty({
-    description: 'Причина, по которой заявка была отклонена модератором',
+    description: 'Причина отклонения формы, если она была отклонена',
     example: 'Данное мероприятие ещё не состоялось',
   })
   declare reason: string | null;
 
   @ApiProperty({
-    description: 'ID заявителя',
+    description: 'Идентификатор пользователя-заявителя',
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare submitterId: string;
 
   @ApiProperty({
-    description: 'ID модератора, который совершает или совершил ревью',
+    description: 'Идентификатор пользователя-модератора',
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare reviewerId: string | null;
 
   @ApiProperty({
-    description: 'Время создания формы',
+    description: 'Дата и время создания формы',
     example: '2026-01-01T10:00:00',
   })
   declare createdAt: string;
 
   @ApiProperty({
-    description: 'Время последнего обновления формы',
+    description: 'Дата и время последнего обновления формы',
     example: '2026-01-01T10:00:00',
   })
   declare updatedAt: string;
 
   @ApiProperty({
-    description: 'Время принятия решения при просмотре формы модератором',
+    description: 'Дата и время рассмотрения формы модератором',
     example: '2026-01-01T10:00:00',
   })
   declare reviewedAt: string | null;
 
   @ApiProperty({
-    description: 'Время отмены формы',
+    description: 'Дата и время отмены формы',
     example: '2026-01-01T10:00:00',
   })
   declare canceledAt: string | null;

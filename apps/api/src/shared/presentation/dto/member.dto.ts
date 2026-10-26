@@ -3,14 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class MemberDto {
   @ApiProperty({
-    description: 'ID члена оргкомитета',
+    description: 'Идентификатор пользователя - члена оргкомитета',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare userId: string;
 
   @ApiProperty({
-    description: 'ID роли члена оргкомитета',
+    description: 'Идентификатор роли члена оргкомитета',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')

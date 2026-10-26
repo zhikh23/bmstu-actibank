@@ -71,19 +71,19 @@ export class GetFormHandler {
       await this.formatProvider.getFormat(form.formatId)
     ).unwrapOr({
       id: form.formatId,
-      label: '',
+      name: '',
     });
 
     const eventType = (
       await this.eventTypeProvider.getEventType(form.typeId)
     ).unwrapOr({
       id: form.typeId,
-      label: '',
+      name: '',
     });
 
     const level = (await this.levelProvider.getLevel(form.levelId)).unwrapOr({
       id: form.levelId,
-      label: '',
+      name: '',
     });
 
     const rolesResult = await this.roleProvider.getRoles(
@@ -114,16 +114,16 @@ export class GetFormHandler {
         },
         guests: form.guests.map((g) => ({
           userId: g.userId,
-          rank: ranksMap.get(g.rankId) ?? { id: g.rankId, title: '' },
+          rank: ranksMap.get(g.rankId) ?? { id: g.rankId, name: '' },
         })),
         team: form.team.map((t) => ({
           userId: t.userId,
           role: {
             id: t.roleId,
-            label: rolesMap.get(t.roleId)?.label ?? '',
+            name: rolesMap.get(t.roleId)?.name ?? '',
             category: rolesMap.get(t.roleId)?.category ?? {
               id: '',
-              label: '',
+              name: '',
             },
           },
         })),

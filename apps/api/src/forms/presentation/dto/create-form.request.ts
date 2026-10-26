@@ -30,8 +30,7 @@ export class CreateFormRequest {
   declare description: string;
 
   @ApiProperty({
-    description:
-      'Список организаций, которые приняли участие в организации мероприятия',
+    description: 'Идентификаторы организаций-организаторов',
     example: ['00000000-0000-0000-0000-000000000000'],
   })
   @IsArray()
@@ -39,7 +38,7 @@ export class CreateFormRequest {
   declare organizers: string[];
 
   @ApiProperty({
-    description: 'Ссылки на упоминание мероприяти в социальных сетях',
+    description: 'Ссылки на упоминания мероприятия',
     example: ['https://vk.ru/'],
   })
   @IsArray()
@@ -47,7 +46,7 @@ export class CreateFormRequest {
   declare links: string[];
 
   @ApiProperty({
-    description: 'Места проведения мероприятия',
+    description: 'Идентификаторы мест проведения',
     example: ['00000000-0000-0000-0000-000000000000'],
   })
   @IsArray()
@@ -55,7 +54,7 @@ export class CreateFormRequest {
   declare venues: string[];
 
   @ApiProperty({
-    description: 'Список ID тем, связанных с мероприятием',
+    description: 'Идентификаторы тем мероприятия',
     example: ['00000000-0000-0000-0000-000000000000'],
   })
   @IsArray()
@@ -63,59 +62,65 @@ export class CreateFormRequest {
   declare themes: string[];
 
   @ApiProperty({
-    description: 'Дата и время начала мероприятия',
+    description: 'Дата и время начала мероприятия в формате ISO 8601',
     example: '2026-01-01T17:00:00',
   })
   @IsISO8601()
   declare start: string;
 
   @ApiProperty({
-    description: 'Дата и время конца мероприятия',
+    description: 'Дата и время окончания мероприятия в формате ISO 8601',
     example: '2026-01-01T19:00:00',
   })
   @IsISO8601()
   declare end: string;
 
   @ApiProperty({
-    description: 'ID формата мероприятия',
+    description: 'Идентификатор формата мероприятия',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare formatId: string;
 
   @ApiProperty({
-    description: 'ID формы мероприятия',
+    description: 'Идентификатор формы проведения',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare typeId: string;
 
   @ApiProperty({
-    description: 'ID уровня мероприятия',
+    description: 'Идентификатор уровня мероприятия',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare levelId: string;
 
-  @ApiProperty({ type: ParticipantsDto })
+  @ApiProperty({
+    description: 'Количество участников по категориям',
+    type: ParticipantsDto,
+  })
   @ValidateNested()
   @Type(() => ParticipantsDto)
   declare participants: ParticipantsDto;
 
-  @ApiProperty({ type: [GuestDto] })
+  @ApiProperty({ description: 'Гости мероприятия', type: [GuestDto] })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => GuestDto)
   declare guests: GuestDto[];
 
-  @ApiProperty({ type: [MemberDto] })
+  @ApiProperty({
+    description: 'Члены оргкомитета и их роли',
+    type: [MemberDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => MemberDto)
   declare team: MemberDto[];
 
   @ApiProperty({
-    description: 'ID заявителя',
+    description: 'Идентификатор пользователя-заявителя',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')

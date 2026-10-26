@@ -28,7 +28,7 @@ export class ThemeRepository {
       return okAsync(
         ids.map((id) => {
           const model = byId.get(id);
-          return model ? ThemeMapper.toDomain(model) : { id, title: '' };
+          return model ? ThemeMapper.toDomain(model) : { id, name: '' };
         }),
       );
     });

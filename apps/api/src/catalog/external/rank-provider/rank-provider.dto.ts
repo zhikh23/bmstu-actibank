@@ -1,4 +1,4 @@
 export type RankDto = {
   id: string;
-  title: string;
+  name: string;
 };

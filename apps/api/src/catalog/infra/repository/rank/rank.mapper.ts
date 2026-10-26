@@ -3,6 +3,6 @@ import { RankModel } from './rank.model';
 
 export class RankMapper {
   static toDomain(m: RankModel): Rank {
-    return new Rank(m.id, m.title);
+    return new Rank(m.id, m.name);
   }
 }

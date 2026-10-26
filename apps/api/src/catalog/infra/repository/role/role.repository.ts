@@ -54,7 +54,7 @@ export class RoleRepository {
           const model = byId.get(id);
           return model
             ? RoleWithCategoryMapper.toReadModel(model)
-            : { id, label: '', category: { id: '', label: '' } };
+            : { id, name: '', category: { id: '', name: '' } };
         }),
       );
     });

@@ -3,15 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class BuildingDto {
   @ApiProperty({
-    description: 'ID здания проведения мероприятия',
+    description: 'Идентификатор здания',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare id: string;
 
   @ApiProperty({
-    description:
-      'Название здания или иной структурно объединяющей единицы места проведения площадки',
+    description: 'Название здания или корпуса',
     example: 'ГУК',
   })
   @IsString()

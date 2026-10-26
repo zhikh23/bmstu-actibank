@@ -3,17 +3,17 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class FormatDto {
   @ApiProperty({
-    description: 'ID формата проведения мероприятия',
+    description: 'Идентификатор формата проведения',
     example: '00000000-0000-0000-0000-000000000000',
   })
   @IsUUID('loose')
   declare id: string;
 
   @ApiProperty({
-    description: 'Текстовое обозначение формата проведения мероприятия',
+    description: 'Название формата проведения',
     example: 'очный',
   })
   @IsString()
   @Length(1, 32)
-  declare label: string;
+  declare name: string;
 }

@@ -26,38 +26,38 @@ export type FormType = {
   }[];
   themes: {
     id: string;
-    title: string;
+    name: string;
   }[];
   start: Date;
   end: Date;
   format: {
     id: string;
-    label: string;
+    name: string;
   };
   type: {
     id: string;
-    label: string;
+    name: string;
   };
   level: {
     id: string;
-    label: string;
+    name: string;
   };
   participants: ParticipantsType;
   guests: {
     userId: string;
     rank: {
       id: string;
-      title: string;
+      name: string;
     };
   }[];
   team: {
     userId: string;
     role: {
       id: string;
-      label: string;
+      name: string;
       category: {
         id: string;
-        label: string;
+        name: string;
       };
     };
   }[];
