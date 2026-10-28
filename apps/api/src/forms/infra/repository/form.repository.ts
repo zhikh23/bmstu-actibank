@@ -84,10 +84,7 @@ export class FormRepository {
     ).andThen((model) =>
       model
         ? FormMapper.toDomain(model)
-        : ResultAsync.fromPromise(
-            Promise.reject(new Error(`form with id "${id} not found"`)),
-            (): FormsError => FormsError.notFound(id),
-          ),
+        : errAsync(FormsError.notFound(`form with id "${id} not found"`)),
     );
   }
 }

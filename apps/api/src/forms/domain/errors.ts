@@ -4,7 +4,9 @@ export type FormsError =
   | { kind: 'AlreadyExists'; message: string }
   | { kind: 'RepositoryError'; message: string }
   | { kind: 'NotFound'; message: string }
-  | { kind: 'Forbidden'; reason: string };
+  | { kind: 'Forbidden'; reason: string }
+  | { kind: 'StorageError'; message: string }
+  | { kind: 'InvalidOperationError'; message: string };
 
 export const FormsError = {
   invalidTransition: (from: string, to: string): FormsError => ({
@@ -31,5 +33,13 @@ export const FormsError = {
   forbidden: (reason: string): FormsError => ({
     kind: 'Forbidden',
     reason,
+  }),
+  storageError: (message: string): FormsError => ({
+    kind: 'StorageError',
+    message,
+  }),
+  invalidOp: (message: string): FormsError => ({
+    kind: 'InvalidOperationError',
+    message,
   }),
 };

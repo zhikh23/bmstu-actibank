@@ -134,6 +134,7 @@ export class GetFormHandler {
         status: form.status,
         reason: form.reason,
         submitterId: form.submitterId,
+        signedScanId: form.signedScanId,
         reviewerId: form.reviewerId,
         createdAt: instantToDate(form.createdAt),
         updatedAt: instantToDate(form.updatedAt),

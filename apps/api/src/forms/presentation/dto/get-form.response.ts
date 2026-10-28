@@ -147,6 +147,12 @@ export class GetFormResponse {
   declare submitterId: string;
 
   @ApiProperty({
+    description: 'ID файла с актуальным подписанным сканом',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  declare signedScanId: string | null;
+
+  @ApiProperty({
     description: 'Идентификатор пользователя-модератора',
     example: '00000000-0000-0000-0000-000000000000',
   })

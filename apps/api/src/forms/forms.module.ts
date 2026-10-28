@@ -9,6 +9,8 @@ import { ApproveFormModule } from './use-cases/approve-form/approve-form.module'
 import { CancelFormModule } from './use-cases/cancel-form/cancel-form.module';
 import { RejectFormModule } from './use-cases/reject-form/reject-form.module';
 import { StartFormReviewModule } from './use-cases/start-form-review/start-form-review.module';
+import { UploadScannedModule } from './use-cases/upload-scanned/upload-scanned.module';
+import { ReadFileModule } from './use-cases/read-file/read-file.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { StartFormReviewModule } from './use-cases/start-form-review/start-form-
     MarkFormReadyModule,
     RejectFormModule,
     StartFormReviewModule,
+    UploadScannedModule,
+    ReadFileModule,
   ],
   controllers: [FormsController],
   providers: [FormsService],

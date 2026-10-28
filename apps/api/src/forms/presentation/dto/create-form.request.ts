@@ -4,7 +4,6 @@ import {
   IsString,
   IsUUID,
   Length,
-  IsOptional,
   ValidateNested,
 } from 'class-validator';
 import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dto';
@@ -119,12 +118,4 @@ export class CreateFormRequest {
   @ValidateNested({ each: true })
   @Type(() => MemberDto)
   declare team: MemberDto[];
-
-  @ApiProperty({
-    description: 'Идентификатор пользователя-заявителя',
-    example: '00000000-0000-0000-0000-000000000000',
-  })
-  @IsUUID('loose')
-  @IsOptional()
-  declare submitterId?: string;
 }

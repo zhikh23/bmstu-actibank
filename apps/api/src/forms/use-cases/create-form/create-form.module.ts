@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { FormRepositoryModule } from '../../infra/repository/form.module';
 import { UuidModule } from '../../../shared/infra/uuid/uuid.module';
 import { CreateFormHandler } from './create-form.handler';
+import { FormRepositoryModule } from '../../infra/repository/repository.module';
 
 @Module({
   imports: [FormRepositoryModule, UuidModule],

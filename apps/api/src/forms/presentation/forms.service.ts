@@ -19,6 +19,10 @@ import { CancelFormHandler } from '../use-cases/cancel-form/cancel-form.handler'
 import { RejectFormHandler } from '../use-cases/reject-form/reject-form.handler';
 import { StartFormReviewHandler } from '../use-cases/start-form-review/start-form-review.handler';
 import { RejectFormRequest } from './dto/reject-form.request';
+import { UploadScannedHandler } from '../use-cases/upload-scanned/upload-scanned.handler';
+import { ReadFileHandler } from '../use-cases/read-file/read-file.handler';
+import { ReadFileResult } from '../use-cases/read-file/read-file.data';
+import { IncomingFile } from './dto/upload-file.request';
 
 @Injectable()
 export class FormsService {
@@ -33,6 +37,8 @@ export class FormsService {
     private readonly markFormReady: MarkFormReadyHandler,
     private readonly rejectForm: RejectFormHandler,
     private readonly startFormReview: StartFormReviewHandler,
+    private readonly uploadScanned: UploadScannedHandler,
+    private readonly readFileHandler: ReadFileHandler,
   ) {}
 
   async approve(formId: string, actorId: string): Promise<void> {
@@ -206,6 +212,7 @@ export class FormsService {
       status: form.status,
       reason: form.reason,
       submitterId: form.submitterId,
+      signedScanId: form.signedScanId,
       reviewerId: form.reviewerId,
       createdAt: form.createdAt.toISOString(),
       updatedAt: form.updatedAt.toISOString(),
@@ -227,6 +234,8 @@ export class FormsService {
           throw new BadRequestException(
             'Form is not in a state that allows marking as ready',
           );
+        case 'InvalidOperationError':
+          throw new BadRequestException(err.message);
         case 'Forbidden':
           throw new ForbiddenException(err.reason);
         case 'NotFound':
@@ -291,5 +300,67 @@ export class FormsService {
           throw new InternalServerErrorException();
       }
     }
+  }
+
+  async uploadFile(
+    formId: string,
+    actorId: string,
+    file: IncomingFile,
+  ): Promise<{ documentId: string }> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+
+    const result = await this.uploadScanned.execute({
+      formId,
+      actorId,
+      body: file.buffer,
+      filename: file.originalname,
+      contentType: file.mimetype || 'application/octet-stream',
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+
+    return result.value;
+  }
+
+  async readFile(
+    formId: string,
+    documentId: string,
+    actorId: string,
+    isModerator: boolean,
+  ): Promise<ReadFileResult> {
+    const result = await this.readFileHandler.execute({
+      formId,
+      documentId,
+      actorId,
+      isModerator,
+    });
+
+    if (result.isErr()) {
+      const err = result.error;
+      switch (err.kind) {
+        case 'Forbidden':
+          throw new ForbiddenException(err.reason);
+        case 'NotFound':
+          throw new NotFoundException(err.message);
+        default:
+          this.logger.error(err);
+          throw new InternalServerErrorException();
+      }
+    }
+
+    return result.value;
   }
 }

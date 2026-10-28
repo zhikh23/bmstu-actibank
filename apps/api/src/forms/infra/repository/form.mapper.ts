@@ -24,6 +24,7 @@ export class FormMapper {
   static toModel(f: Form): FormModel {
     const model = new FormModel();
     model.id = f.id;
+    model.revision = f.revision;
     model.name = f.name;
     model.description = f.description;
     model.start = plainDateTimeToDate(f.start);
@@ -37,17 +38,18 @@ export class FormMapper {
     model.status = f.status;
     model.reason = f.reason;
     model.submitter_id = f.submitterId;
+    model.signed_scan_id = f.signedScanId;
     model.reviewer_id = f.reviewerId;
     model.created_at = instantToDate(f.createdAt);
     model.updated_at = instantToDate(f.updatedAt);
     model.reviewed_at = f.reviewedAt ? instantToDate(f.reviewedAt) : null;
     model.canceled_at = f.canceledAt ? instantToDate(f.canceledAt) : null;
     model.deleted_at = f.deletedAt ? instantToDate(f.deletedAt) : null;
-    model.organizers = f.organizers.map((organizer, number) =>
+    model.organizers = f.organizers.map((organizer_id, number) =>
       Object.assign(new FormOrganizer(), {
         form_id: f.id,
         number,
-        organizer,
+        organizer_id,
         form: model,
       }),
     );
@@ -118,6 +120,8 @@ export class FormMapper {
       reason: m.reason,
       reviewedAt: m.reviewed_at ? dateToInstant(m.reviewed_at) : null,
       reviewerId: m.reviewer_id,
+      revision: m.revision,
+      signedScanId: m.signed_scan_id,
       start: dateToPlainDateTime(m.start),
       status: m.status,
       submitterId: m.submitter_id,

@@ -1,13 +1,12 @@
 import { FormStatus } from './status.enum';
 import { err, ok, Result } from 'neverthrow';
 import { FormsError } from './errors';
-
-import Instant = Temporal.Instant;
-import Now = Temporal.Now;
-import PlainDateTime = Temporal.PlainDateTime;
 import { Participants } from './participants.entity';
 import { Guest } from './guest.entity';
 import { Member } from './member.entity';
+import Instant = Temporal.Instant;
+import Now = Temporal.Now;
+import PlainDateTime = Temporal.PlainDateTime;
 
 const FORM_STATUS_TRANSITIONS: Record<FormStatus, FormStatus[]> = {
   [FormStatus.Draft]: [FormStatus.Pending, FormStatus.Canceled],
@@ -28,6 +27,7 @@ const FORM_STATUS_TRANSITIONS: Record<FormStatus, FormStatus[]> = {
 
 export interface FormInit {
   id: string;
+  revision: number;
   name: string;
   description: string;
   organizers: string[];
@@ -45,6 +45,7 @@ export interface FormInit {
   status: FormStatus;
   reason: string | null;
   submitterId: string;
+  signedScanId: string | null;
   createdAt: Instant;
   updatedAt: Instant;
   reviewedAt: Instant | null;
@@ -74,6 +75,7 @@ export interface FormCreate {
 
 export class Form {
   declare id: string;
+  declare revision: number;
   declare name: string;
   declare description: string;
   declare organizers: string[];
@@ -91,6 +93,7 @@ export class Form {
   declare status: FormStatus;
   declare reason: string | null;
   declare submitterId: string;
+  declare signedScanId: string | null;
   declare createdAt: Instant;
   declare updatedAt: Instant;
   declare reviewedAt: Instant | null;
@@ -113,8 +116,10 @@ export class Form {
     return ok(
       new Form({
         ...init,
+        revision: 1,
         status: FormStatus.Draft,
         reason: null,
+        signedScanId: null,
         createdAt: now,
         updatedAt: now,
         reviewedAt: null,
@@ -190,6 +195,11 @@ export class Form {
     const allowed = FORM_STATUS_TRANSITIONS[this.status];
     if (!allowed.includes(status)) {
       return err(FormsError.invalidTransition(this.status, status));
+    }
+    if (status == FormStatus.Pending && !this.signedScanId) {
+      return err(
+        FormsError.invalidOp('signed scan is required if status is pending'),
+      );
     }
     this.status = status;
     this.updatedAt = now;
@@ -277,6 +287,18 @@ export class Form {
   // Идемпотентная операция удаления сущности.
   public delete(now: Instant = Now.instant()) {
     this.deletedAt = now;
+  }
+
+  public attachSignedScan(scanId: string): Result<void, FormsError> {
+    if (this.status != FormStatus.Draft) {
+      return err(
+        FormsError.invalidOp(
+          `scanned document can be attached to form only if status is draft (status="${this.status}")`,
+        ),
+      );
+    }
+    this.signedScanId = scanId;
+    return ok();
   }
 
   public isActive(): boolean {
