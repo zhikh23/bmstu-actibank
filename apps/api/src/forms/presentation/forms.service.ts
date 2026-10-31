@@ -19,6 +19,7 @@ import { CancelFormHandler } from '../use-cases/cancel-form/cancel-form.handler'
 import { RejectFormHandler } from '../use-cases/reject-form/reject-form.handler';
 import { StartFormReviewHandler } from '../use-cases/start-form-review/start-form-review.handler';
 import { RejectFormRequest } from './dto/reject-form.request';
+import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
 
 @Injectable()
 export class FormsService {
@@ -35,12 +36,8 @@ export class FormsService {
     private readonly startFormReview: StartFormReviewHandler,
   ) {}
 
-  async approve(formId: string, actorId: string): Promise<void> {
-    const result = await this.approveForm.execute({
-      formId,
-      actorId,
-      isModerator: true,
-    });
+  async approve(actor: AuthenticatedUser, formId: string): Promise<void> {
+    const result = await this.approveForm.execute({ actor, formId });
 
     if (result.isErr()) {
       const err = result.error;
@@ -60,11 +57,8 @@ export class FormsService {
     }
   }
 
-  async cancel(formId: string, actorId: string): Promise<void> {
-    const result = await this.cancelForm.execute({
-      formId,
-      actorId,
-    });
+  async cancel(actor: AuthenticatedUser, formId: string): Promise<void> {
+    const result = await this.cancelForm.execute({ actor, formId });
 
     if (result.isErr()) {
       const err = result.error;
@@ -85,10 +79,11 @@ export class FormsService {
   }
 
   async create(
+    actor: AuthenticatedUser,
     dto: CreateFormRequest,
-    submitterId: string,
   ): Promise<CreateFormResponse> {
     const createRes = await this.createForm.execute({
+      actor,
       name: dto.name,
       description: dto.description,
       organizers: dto.organizers,
@@ -103,7 +98,6 @@ export class FormsService {
       participants: dto.participants,
       guests: dto.guests,
       team: dto.team,
-      submitterId,
     });
 
     if (createRes.isErr()) {
@@ -124,15 +118,10 @@ export class FormsService {
   }
 
   async convertToDraft(
+    actor: AuthenticatedUser,
     formId: string,
-    actorId: string,
-    isModerator: boolean,
   ): Promise<void> {
-    const result = await this.convertToDraftForm.execute({
-      formId,
-      actorId,
-      isModerator,
-    });
+    const result = await this.convertToDraftForm.execute({ actor, formId });
 
     if (result.isErr()) {
       const err = result.error;
@@ -153,15 +142,10 @@ export class FormsService {
   }
 
   async get(
+    actor: AuthenticatedUser,
     formId: string,
-    actorId: string,
-    isModerator: boolean,
   ): Promise<GetFormResponse> {
-    const getRes = await this.getForm.execute({
-      formId,
-      actorId,
-      isModerator,
-    });
+    const getRes = await this.getForm.execute({ actor, formId });
 
     if (getRes.isErr()) {
       const err = getRes.error;
@@ -214,11 +198,8 @@ export class FormsService {
     };
   }
 
-  async markReady(formId: string, actorId: string): Promise<void> {
-    const result = await this.markFormReady.execute({
-      formId,
-      actorId,
-    });
+  async markReady(actor: AuthenticatedUser, formId: string): Promise<void> {
+    const result = await this.markFormReady.execute({ actor, formId });
 
     if (result.isErr()) {
       const err = result.error;
@@ -241,14 +222,13 @@ export class FormsService {
   }
 
   async reject(
+    actor: AuthenticatedUser,
     formId: string,
     dto: RejectFormRequest,
-    actorId: string,
   ): Promise<void> {
     const result = await this.rejectForm.execute({
+      actor,
       formId,
-      actorId,
-      isModerator: true,
       reason: dto.reason ?? null,
     });
 
@@ -270,12 +250,8 @@ export class FormsService {
     }
   }
 
-  async startReview(formId: string, actorId: string): Promise<void> {
-    const result = await this.startFormReview.execute({
-      formId,
-      actorId,
-      isModerator: true,
-    });
+  async startReview(actor: AuthenticatedUser, formId: string): Promise<void> {
+    const result = await this.startFormReview.execute({ actor, formId });
 
     if (result.isErr()) {
       const err = result.error;

@@ -1,5 +1,7 @@
+import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+
 export type UploadFileCommand = {
-  actorId: string;
+  actor: AuthenticatedUser;
   filename: string;
   contentType: string;
   body: Buffer;

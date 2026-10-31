@@ -30,7 +30,7 @@ import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
 import { RolesGuard } from '../../auth/presentation/auth.guards';
 import {
   AuthenticatedUser,
-  Role,
+  UserRole,
 } from '../../shared/domain/authenticated-user.entity';
 
 @Controller('forms')
@@ -63,13 +63,13 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  @Roles(Role.Moderator)
+  @Roles(UserRole.Moderator)
   @UseGuards(RolesGuard)
   async approve(
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.approve(id, user.id);
+    return this.formService.approve(user, id);
   }
 
   @Post(':id/cancel')
@@ -96,13 +96,13 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  @Roles(Role.Applicant)
+  @Roles(UserRole.Applicant)
   @UseGuards(RolesGuard)
   async cancel(
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.cancel(id, user.id);
+    return this.formService.cancel(user, id);
   }
 
   @Post(':id/convert-to-draft')
@@ -130,21 +130,17 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  @Roles(Role.Applicant, Role.Moderator)
+  @Roles(UserRole.Applicant, UserRole.Moderator)
   @UseGuards(RolesGuard)
   async convertToDraft(
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.convertToDraft(
-      id,
-      user.id,
-      user.roles.includes(Role.Moderator),
-    );
+    return this.formService.convertToDraft(user, id);
   }
 
   @Post('')
-  @Roles(Role.Applicant)
+  @Roles(UserRole.Applicant)
   @UseGuards(RolesGuard)
   @ApiOperation({
     summary: 'Создать форму',
@@ -158,6 +154,9 @@ export class FormsController {
   @ApiBadRequestResponse({
     description: 'Переданы некорректные данные запроса.',
   })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на создание формы мероприятия.',
+  })
   @ApiUnprocessableEntityResponse({
     description: 'Данные формы нарушают бизнес-правила.',
   })
@@ -165,7 +164,7 @@ export class FormsController {
     @Body() dto: CreateFormRequest,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<CreateFormResponse> {
-    return this.formService.create(dto, user.id);
+    return this.formService.create(user, dto);
   }
 
   @Get(':id')
@@ -184,7 +183,7 @@ export class FormsController {
     type: GetFormResponse,
   })
   @ApiForbiddenResponse({
-    description: 'У пользователя нет прав на выполнение этой операции.',
+    description: 'У пользователя нет прав на чтение формы.',
   })
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
@@ -193,11 +192,7 @@ export class FormsController {
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<GetFormResponse> {
-    return this.formService.get(
-      id,
-      user.id,
-      user.roles.includes(Role.Moderator),
-    );
+    return this.formService.get(user, id);
   }
 
   @Post(':id/mark-ready')
@@ -225,13 +220,13 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  @Roles(Role.Applicant)
+  @Roles(UserRole.Applicant)
   @UseGuards(RolesGuard)
   async markFormReady(
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.markReady(id, user.id);
+    return this.formService.markReady(user, id);
   }
 
   @Post(':id/reject')
@@ -262,14 +257,14 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  @Roles(Role.Moderator)
+  @Roles(UserRole.Moderator)
   @UseGuards(RolesGuard)
   async reject(
     @Param('id') id: string,
     @Body() dto: RejectFormRequest,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.reject(id, dto, user.id);
+    return this.formService.reject(user, id, dto);
   }
 
   @Post(':id/start-review')
@@ -296,12 +291,12 @@ export class FormsController {
   @ApiNotFoundResponse({
     description: 'Форма с указанным идентификатором не найдена.',
   })
-  @Roles(Role.Moderator)
+  @Roles(UserRole.Moderator)
   @UseGuards(RolesGuard)
   async startReview(
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
-    return this.formService.startReview(id, user.id);
+    return this.formService.startReview(user, id);
   }
 }

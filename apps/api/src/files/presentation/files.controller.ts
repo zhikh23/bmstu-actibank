@@ -27,7 +27,7 @@ import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
 import { UploadFileResponse } from './dto/upload-file.response';
 import {
   AuthenticatedUser,
-  Role,
+  UserRole,
 } from '../../shared/domain/authenticated-user.entity';
 
 @Controller('files')
@@ -37,7 +37,7 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post()
-  @Roles(Role.Applicant)
+  @Roles(UserRole.Applicant)
   @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({
@@ -67,7 +67,7 @@ export class FilesController {
     @UploadedFile() file: FormDataFileDto,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<UploadFileResponse> {
-    return this.filesService.upload(file, user.id);
+    return this.filesService.upload(user, file);
   }
 
   @Get(':id')
@@ -101,10 +101,6 @@ export class FilesController {
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<StreamableFile> {
-    return await this.filesService.download(
-      id,
-      user.id,
-      user.roles.includes(Role.Moderator),
-    );
+    return await this.filesService.download(user, id);
   }
 }

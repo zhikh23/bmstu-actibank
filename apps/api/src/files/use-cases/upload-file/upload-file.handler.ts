@@ -33,7 +33,7 @@ export class UploadFileHandler {
 
     const file = File.create({
       id: this.uuid.generate(),
-      ownerId: cmd.actorId,
+      ownerId: cmd.actor.id,
       storageKey,
       contentType: cmd.contentType,
       size: cmd.body.length,

@@ -3,10 +3,11 @@ import { FormRepository } from '../../infra/repository/form.repository';
 import { err, ok, Result } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
 import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
+import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 
 export type MarkFormReadyCommand = {
+  actor: AuthenticatedUser;
   formId: string;
-  actorId: string;
 };
 
 @Injectable()
@@ -19,7 +20,7 @@ export class MarkFormReadyHandler {
     const form = formResult.value;
 
     const accessResult = AccessDecision.toResult(
-      FormAccess.canMarkReady(form, { actorId: cmd.actorId }),
+      FormAccess.canMarkReady(form, cmd.actor),
       undefined,
     );
     if (accessResult.isErr()) return err(accessResult.error);

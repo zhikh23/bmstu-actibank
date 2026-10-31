@@ -2,11 +2,10 @@ import { err, ok, Result } from 'neverthrow';
 import { Form } from './form.entity';
 import { FormStatus } from './status.enum';
 import { FormsError } from './errors';
-
-export interface AccessContext {
-  actorId: string;
-  isModerator?: boolean;
-}
+import {
+  AuthenticatedUser,
+  UserRole,
+} from '../../shared/domain/authenticated-user.entity';
 
 export type AccessDecision =
   { allowed: true } | { allowed: false; reason?: string };
@@ -23,9 +22,16 @@ export const AccessDecision = {
 };
 
 const enum Role {
-  Public = 1 << 0,
-  Moderator = 1 << 1,
-  Submitter = 1 << 2,
+  Public = 0,
+  Moderator = 1 << 0,
+  Submitter = 1 << 1,
+}
+
+function userToRole(user: AuthenticatedUser, form: Form): Role {
+  let role = Role.Public;
+  if (user.id === form.submitterId) role = role & Role.Submitter;
+  if (user.roles.includes(UserRole.Moderator)) role = role & Role.Moderator;
+  return role;
 }
 
 const VIEW_POLICY: Record<FormStatus, Role> = {
@@ -37,82 +43,77 @@ const VIEW_POLICY: Record<FormStatus, Role> = {
   [FormStatus.Canceled]: Role.Submitter,
 };
 
-function ctxToRole(form: Form, ctx: AccessContext): Role {
-  if (ctx.isModerator) {
-    return Role.Moderator;
-  } else if (ctx.actorId == form.submitterId) {
-    return Role.Submitter;
-  } else {
-    return Role.Public;
-  }
-}
-
 function checkAccess(
   form: Form,
-  ctx: AccessContext,
+  user: AuthenticatedUser,
   maskRequired: Role,
   denyReason: string = 'forbidden',
 ): AccessDecision {
-  const role = ctxToRole(form, ctx);
+  const role = userToRole(user, form);
   return (role & maskRequired) !== 0
     ? AccessDecision.allowed
     : AccessDecision.denied(denyReason);
 }
 
 export const FormAccess = {
-  canView(form: Form, ctx: AccessContext): AccessDecision {
-    return checkAccess(form, ctx, VIEW_POLICY[form.status], 'can not see form');
-  },
-
-  canConvertToDraft(form: Form, ctx: AccessContext): AccessDecision {
+  canView(form: Form, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
-      ctx,
+      user,
+      VIEW_POLICY[form.status],
+      'can not see form',
+    );
+  },
+
+  canConvertToDraft(form: Form, user: AuthenticatedUser): AccessDecision {
+    return checkAccess(
+      form,
+      user,
       Role.Submitter | Role.Moderator,
       'form can be converted to draft only by submitter or moderator',
     );
   },
 
-  canMarkReady(form: Form, ctx: AccessContext): AccessDecision {
+  canMarkReady(form: Form, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
-      ctx,
+      user,
       Role.Submitter,
       'form can be marked ready only by submitter',
     );
   },
 
-  canStartReview(form: Form, ctx: AccessContext): AccessDecision {
+  canStartReview(form: Form, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
-      ctx,
+      user,
       Role.Moderator,
       'form can be started review only by moderator',
     );
   },
 
-  canApprove(form: Form, ctx: AccessContext): AccessDecision {
+  canApprove(form: Form, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
-      ctx,
+      user,
       Role.Moderator,
       'form can be approved only by moderator',
     );
   },
 
-  canReject(form: Form, ctx: AccessContext): AccessDecision {
+  canReject(form: Form, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
-      ctx,
+      user,
       Role.Moderator,
       'form can be rejected only by moderator',
     );
   },
 
-  canCancel(form: Form, ctx: AccessContext): AccessDecision {
+  canCancel(form: Form, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
-      ctx,
+      user,
       Role.Submitter,
       'form can be canceled only by submitter',
     );

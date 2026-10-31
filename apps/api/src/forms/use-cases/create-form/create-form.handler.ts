@@ -11,8 +11,13 @@ import { MemberType } from '../../../shared/types/member.type';
 import PlainDateTime = Temporal.PlainDateTime;
 import { Member } from '../../domain/member.entity';
 import { Guest } from '../../domain/guest.entity';
+import {
+  AuthenticatedUser,
+  UserRole,
+} from '../../../shared/domain/authenticated-user.entity';
 
 export type CreateFormCommand = {
+  actor: AuthenticatedUser;
   name: string;
   description: string;
   organizers: string[];
@@ -27,7 +32,6 @@ export type CreateFormCommand = {
   participants: ParticipantsType;
   guests: GuestType[];
   team: MemberType[];
-  submitterId: string;
 };
 
 @Injectable()
@@ -38,6 +42,11 @@ export class CreateFormHandler {
   ) {}
 
   async execute(cmd: CreateFormCommand): Promise<Result<Form, FormsError>> {
+    if (cmd.actor.roles.includes(UserRole.Applicant))
+      return err(
+        FormsError.forbidden(`form can be created only by applicants`),
+      );
+
     const id = this.uuid.generate();
     const formResult = Form.create({
       id: id,
@@ -55,7 +64,7 @@ export class CreateFormHandler {
       participants: cmd.participants,
       guests: cmd.guests.map((g) => new Guest(g.userId, g.rankId)),
       team: cmd.team.map((m) => new Member(m.userId, m.roleId)),
-      submitterId: cmd.submitterId,
+      submitterId: cmd.actor.id,
     });
     if (formResult.isErr()) {
       return err(formResult.error);

@@ -5,6 +5,7 @@ import { StoragePort } from '../../infra/storage/storage.port';
 import { DownloadFileCommand, DownloadFileResult } from './download-file.data';
 import { err, ok, Result } from 'neverthrow';
 import { FilesError } from '../../domain/errors';
+import { UserRole } from '../../../shared/domain/authenticated-user.entity';
 
 @Injectable()
 export class DownloadFileHandler {
@@ -20,7 +21,10 @@ export class DownloadFileHandler {
     if (fileRes.isErr()) return err(fileRes.error);
     const file = fileRes.value;
 
-    if (!cmd.isModerator && cmd.actorId != file.ownerId) {
+    if (
+      !cmd.actor.roles.includes(UserRole.Moderator) &&
+      cmd.actor.id != file.ownerId
+    ) {
       return err(
         FilesError.forbidden('file can be viewed only by owner or moderator'),
       );

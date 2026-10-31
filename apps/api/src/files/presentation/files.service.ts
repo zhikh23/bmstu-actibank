@@ -10,6 +10,7 @@ import { UploadFileHandler } from '../use-cases/upload-file/upload-file.handler'
 import { DownloadFileHandler } from '../use-cases/download-file/download-file.handler';
 import { FormDataFileDto } from './dto/form-data-file.dto';
 import { UploadFileResponse } from './dto/upload-file.response';
+import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
 
 @Injectable()
 export class FilesService {
@@ -21,11 +22,11 @@ export class FilesService {
   ) {}
 
   async upload(
+    actor: AuthenticatedUser,
     req: FormDataFileDto,
-    actorId: string,
   ): Promise<UploadFileResponse> {
     const result = await this.uploadFile.execute({
-      actorId,
+      actor,
       contentType: req.mimetype,
       filename: req.originalname,
       body: req.buffer,
@@ -46,14 +47,12 @@ export class FilesService {
   }
 
   async download(
+    actor: AuthenticatedUser,
     fileId: string,
-    actorId: string,
-    isModerator: boolean,
   ): Promise<StreamableFile> {
     const result = await this.downloadFile.execute({
+      actor,
       fileId,
-      actorId,
-      isModerator,
     });
 
     return result.match(

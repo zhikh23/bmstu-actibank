@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  createHash,
-  createPublicKey,
-  randomBytes,
-  verify,
-} from 'node:crypto';
+import { createHash, createPublicKey, randomBytes, verify } from 'node:crypto';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
 import { AuthError } from '../../domain/errors';
 

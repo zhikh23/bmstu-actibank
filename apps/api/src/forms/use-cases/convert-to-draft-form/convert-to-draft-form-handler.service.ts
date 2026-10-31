@@ -3,11 +3,11 @@ import { FormRepository } from '../../infra/repository/form.repository';
 import { err, ok, Result } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
 import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
+import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 
 export type ConvertToDraftFormCommand = {
+  actor: AuthenticatedUser;
   formId: string;
-  actorId: string;
-  isModerator?: boolean;
 };
 
 @Injectable()
@@ -22,10 +22,7 @@ export class ConvertToDraftFormHandler {
     const form = formResult.value;
 
     const accessResult = AccessDecision.toResult(
-      FormAccess.canConvertToDraft(form, {
-        actorId: cmd.actorId,
-        isModerator: cmd.isModerator,
-      }),
+      FormAccess.canConvertToDraft(form, cmd.actor),
       undefined,
     );
     if (accessResult.isErr()) return err(accessResult.error);

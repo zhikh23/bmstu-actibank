@@ -16,11 +16,11 @@ import { LevelProvider } from '../../../catalog/external/level-provider/level-pr
 import { RoleProvider } from '../../../catalog/external/role-provider/role-provider.service';
 import { OrganizationProvider } from '../../../catalog/external/organization-provider/organization-provider.service';
 import { RankProvider } from '../../../catalog/external/rank-provider/rank-provider.service';
+import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 
 export type GetFormCommand = {
+  actor: AuthenticatedUser;
   formId: string;
-  actorId: string;
-  isModerator?: boolean;
 };
 
 @Injectable()
@@ -93,53 +93,47 @@ export class GetFormHandler {
     if (rolesResult.isErr()) return err(rolesResult.error);
     const rolesMap = new Map(rolesResult.value.map((r) => [r.id, r]));
 
-    return AccessDecision.toResult(
-      FormAccess.canView(form, {
-        actorId: cmd.actorId,
-        isModerator: cmd.isModerator,
-      }),
-      {
-        id: form.id,
-        name: form.name,
-        description: form.description,
-        organizers: organizations,
-        links: form.links,
-        venues: venues,
-        themes: themes,
-        start: plainDateTimeToDate(form.start),
-        end: plainDateTimeToDate(form.end),
-        format: format,
-        type: eventType,
-        level: level,
-        participants: {
-          students: form.participants.students,
-          employees: form.participants.employees,
-          others: form.participants.others,
-        },
-        guests: form.guests.map((g) => ({
-          userId: g.userId,
-          rank: ranksMap.get(g.rankId) ?? { id: g.rankId, name: '' },
-        })),
-        team: form.team.map((t) => ({
-          userId: t.userId,
-          role: {
-            id: t.roleId,
-            name: rolesMap.get(t.roleId)?.name ?? '',
-            category: rolesMap.get(t.roleId)?.category ?? {
-              id: '',
-              name: '',
-            },
-          },
-        })),
-        status: form.status,
-        reason: form.reason,
-        submitterId: form.submitterId,
-        reviewerId: form.reviewerId,
-        createdAt: instantToDate(form.createdAt),
-        updatedAt: instantToDate(form.updatedAt),
-        reviewedAt: form.reviewedAt ? instantToDate(form.reviewedAt) : null,
-        canceledAt: form.canceledAt ? instantToDate(form.canceledAt) : null,
+    return AccessDecision.toResult(FormAccess.canView(form, cmd.actor), {
+      id: form.id,
+      name: form.name,
+      description: form.description,
+      organizers: organizations,
+      links: form.links,
+      venues: venues,
+      themes: themes,
+      start: plainDateTimeToDate(form.start),
+      end: plainDateTimeToDate(form.end),
+      format: format,
+      type: eventType,
+      level: level,
+      participants: {
+        students: form.participants.students,
+        employees: form.participants.employees,
+        others: form.participants.others,
       },
-    );
+      guests: form.guests.map((g) => ({
+        userId: g.userId,
+        rank: ranksMap.get(g.rankId) ?? { id: g.rankId, name: '' },
+      })),
+      team: form.team.map((t) => ({
+        userId: t.userId,
+        role: {
+          id: t.roleId,
+          name: rolesMap.get(t.roleId)?.name ?? '',
+          category: rolesMap.get(t.roleId)?.category ?? {
+            id: '',
+            name: '',
+          },
+        },
+      })),
+      status: form.status,
+      reason: form.reason,
+      submitterId: form.submitterId,
+      reviewerId: form.reviewerId,
+      createdAt: instantToDate(form.createdAt),
+      updatedAt: instantToDate(form.updatedAt),
+      reviewedAt: form.reviewedAt ? instantToDate(form.reviewedAt) : null,
+      canceledAt: form.canceledAt ? instantToDate(form.canceledAt) : null,
+    });
   }
 }

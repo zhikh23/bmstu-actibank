@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { AuthRequest } from './http.types';
 import {
   AuthenticatedUser,
-  Role,
+  UserRole,
 } from '../../shared/domain/authenticated-user.entity';
 
 @Injectable()
@@ -44,7 +44,7 @@ export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.getAllAndOverride<Role[]>('roles', [
+    const roles = this.reflector.getAllAndOverride<UserRole[]>('roles', [
       context.getHandler(),
       context.getClass(),
     ]);

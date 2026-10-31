@@ -8,7 +8,7 @@ import {
   Unique,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
-import { Role } from '../../../shared/domain/authenticated-user.entity';
+import { UserRole } from '../../../shared/domain/authenticated-user.entity';
 
 @Entity('users')
 @Unique(['subject'])
@@ -29,7 +29,7 @@ export class UserRoleModel {
   declare user_id: string;
 
   @PrimaryColumn('varchar')
-  declare role: Role;
+  declare role: UserRole;
 
   @ManyToOne(() => UserModel, (user) => user.roles)
   @JoinColumn({ name: 'user_id' })
