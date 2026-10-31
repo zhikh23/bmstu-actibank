@@ -45,7 +45,6 @@ export type FormCreate = {
 };
 
 export type FormInit = FormCreate & {
-  id: string;
   status: FormStatus;
   reason: string | null;
   submitterId: string;
