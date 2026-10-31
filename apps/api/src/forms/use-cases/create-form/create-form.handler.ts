@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FormRepository } from '../../infra/repository/form.repository';
 import { err, ok, Result } from 'neverthrow';
-import { Form } from '../../domain/form.entity';
+import { FormEntity } from '../../domain/form.entity';
 import { FormsError } from '../../domain/errors';
 import { UUID_PORT, type UuidPort } from '../../../shared/infra/uuid/uuid.port';
 import { ParticipantsType } from '../../../shared/types/participants.type';
@@ -41,14 +41,16 @@ export class CreateFormHandler {
     @Inject(UUID_PORT) private readonly uuid: UuidPort,
   ) {}
 
-  async execute(cmd: CreateFormCommand): Promise<Result<Form, FormsError>> {
+  async execute(
+    cmd: CreateFormCommand,
+  ): Promise<Result<FormEntity, FormsError>> {
     if (cmd.actor.roles.includes(UserRole.Applicant))
       return err(
         FormsError.forbidden(`form can be created only by applicants`),
       );
 
     const id = this.uuid.generate();
-    const formResult = Form.create({
+    const formResult = FormEntity.create({
       id: id,
       name: cmd.name,
       description: cmd.description,

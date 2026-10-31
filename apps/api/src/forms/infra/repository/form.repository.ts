@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Form } from '../../domain/form.entity';
+import { FormEntity } from '../../domain/form.entity';
 import { errAsync, ResultAsync } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
 import { FormMapper } from './form.mapper';
@@ -14,7 +14,7 @@ export class FormRepository {
     private readonly repository: Repository<FormModel>,
   ) {}
 
-  save(f: Form): ResultAsync<void, FormsError> {
+  save(f: FormEntity): ResultAsync<void, FormsError> {
     return ResultAsync.fromPromise(
       this.repository.save(FormMapper.toModel(f)),
       (error): FormsError =>
@@ -24,7 +24,7 @@ export class FormRepository {
     ).map(() => undefined);
   }
 
-  update(f: Form): ResultAsync<void, FormsError> {
+  update(f: FormEntity): ResultAsync<void, FormsError> {
     return ResultAsync.fromPromise(
       this.repository.findOneBy({ id: f.id }),
       (error): FormsError =>
@@ -44,7 +44,7 @@ export class FormRepository {
     );
   }
 
-  get(id: string): ResultAsync<Form, FormsError> {
+  get(id: string): ResultAsync<FormEntity, FormsError> {
     return ResultAsync.fromPromise(
       this.repository.findOne({
         where: { id },

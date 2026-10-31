@@ -29,7 +29,6 @@ export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
   team: [],
   status: FormStatus.Draft,
   reason: null,
-  revision: 1,
   submitterId: 'user-1',
   createdAt: now,
   updatedAt: now,

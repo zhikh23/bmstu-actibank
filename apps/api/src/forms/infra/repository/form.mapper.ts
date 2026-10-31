@@ -1,4 +1,4 @@
-import { Form } from '../../domain/form.entity';
+import { FormEntity } from '../../domain/form.entity';
 import {
   FormGuest,
   FormLink,
@@ -21,10 +21,9 @@ import { Participants } from '../../domain/participants.entity';
 import { Member } from '../../domain/member.entity';
 
 export class FormMapper {
-  static toModel(f: Form): FormModel {
+  static toModel(f: FormEntity): FormModel {
     const model = new FormModel();
     model.id = f.id;
-    model.revision = f.revision;
     model.name = f.name;
     model.description = f.description;
     model.start = plainDateTimeToDate(f.start);
@@ -97,8 +96,8 @@ export class FormMapper {
     return model;
   }
 
-  static toDomain(m: FormModel): Result<Form, FormsError> {
-    return Form.restore({
+  static toDomain(m: FormModel): Result<FormEntity, FormsError> {
+    return FormEntity.restore({
       canceledAt: m.canceled_at ? dateToInstant(m.canceled_at) : null,
       createdAt: dateToInstant(m.created_at),
       deletedAt: m.deleted_at ? dateToInstant(m.deleted_at) : null,
@@ -119,7 +118,6 @@ export class FormMapper {
       reason: m.reason,
       reviewedAt: m.reviewed_at ? dateToInstant(m.reviewed_at) : null,
       reviewerId: m.reviewer_id,
-      revision: m.revision,
       start: dateToPlainDateTime(m.start),
       status: m.status,
       submitterId: m.submitter_id,

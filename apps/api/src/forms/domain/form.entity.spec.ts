@@ -1,4 +1,4 @@
-import { Form } from './form.entity';
+import { FormEntity } from './form.entity';
 import { FormStatus } from './status.enum';
 import {
   expectInvalidTransitionError,
@@ -21,7 +21,7 @@ const MSG = {
 describe('Form.restore', () => {
   describe('successfully restored', () => {
     it('returns ok for valid draft form', () => {
-      const res = Form.restore(baseInit());
+      const res = FormEntity.restore(baseInit());
       const form = expectOk(res);
       expect(form.id).toBe('form-1');
       expect(form.status).toBe(FormStatus.Draft);
@@ -32,7 +32,7 @@ describe('Form.restore', () => {
     });
 
     it('returns ok for approved form with non-null reviewerId and reviewedAt', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           status: FormStatus.Approved,
           reviewerId: 'user-2',
@@ -46,7 +46,7 @@ describe('Form.restore', () => {
     });
 
     it('returns ok for rejected form with non-null reviewerId, reviewedAt, and reason', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           status: FormStatus.Rejected,
           reviewerId: 'user-2',
@@ -62,7 +62,7 @@ describe('Form.restore', () => {
     });
 
     it('returns ok for drafted form with non-null reason', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           status: FormStatus.Draft,
           reason: 'Some reason',
@@ -74,7 +74,7 @@ describe('Form.restore', () => {
     });
 
     it('returns deleted form with non-null deletedAt', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           deletedAt: now,
         }),
@@ -84,7 +84,7 @@ describe('Form.restore', () => {
     });
 
     it('returns ok when canceled form has non-null canceledAt', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           status: FormStatus.Canceled,
           canceledAt: later,
@@ -98,7 +98,7 @@ describe('Form.restore', () => {
 
   describe('start date must be before end date', () => {
     it('returns error for start date after end date', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           start: Temporal.PlainDateTime.from('2026-06-01T13:00:00'),
           end: Temporal.PlainDateTime.from('2026-06-01T12:00:00'),
@@ -108,7 +108,7 @@ describe('Form.restore', () => {
     });
 
     it('returns error if start date is equal end date', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           end: start,
         }),
@@ -121,7 +121,7 @@ describe('Form.restore', () => {
     it.each([FormStatus.Reviewing, FormStatus.Approved, FormStatus.Pending])(
       'returns error when form status is %s',
       (status) => {
-        const res = Form.restore(
+        const res = FormEntity.restore(
           baseInit({
             status: status,
             reason: 'sth',
@@ -136,7 +136,7 @@ describe('Form.restore', () => {
     it.each([FormStatus.Draft, FormStatus.Pending, FormStatus.Canceled])(
       'returns error when form status is %s',
       (status) => {
-        const res = Form.restore(
+        const res = FormEntity.restore(
           baseInit({
             status: status,
             reviewerId: 'mod-1',
@@ -151,7 +151,7 @@ describe('Form.restore', () => {
     it.each([FormStatus.Draft, FormStatus.Pending, FormStatus.Canceled])(
       'returns error when form status is %s',
       (status) => {
-        const res = Form.restore(
+        const res = FormEntity.restore(
           baseInit({
             status: status,
             reviewedAt: later,
@@ -162,7 +162,7 @@ describe('Form.restore', () => {
     );
 
     it('returns error when form status is reviewing', () => {
-      const res = Form.restore(
+      const res = FormEntity.restore(
         baseInit({
           status: FormStatus.Reviewing,
           reviewerId: 'mod-1',
@@ -174,7 +174,7 @@ describe('Form.restore', () => {
   });
 
   describe('canceled form must have null canceledAt', () => {
-    const res = Form.restore(
+    const res = FormEntity.restore(
       baseInit({
         status: FormStatus.Canceled,
       }),
@@ -188,7 +188,7 @@ describe('Form.convertToDraft', () => {
     it.each([FormStatus.Pending, FormStatus.Reviewing])(
       'return ok when form status is %s',
       (status) => {
-        const form = expectOk(Form.restore(validInit(status)));
+        const form = expectOk(FormEntity.restore(validInit(status)));
         expectOk(form.convertToDraft());
         expect(form.status).toBe(FormStatus.Draft);
       },
@@ -202,7 +202,7 @@ describe('Form.convertToDraft', () => {
       FormStatus.Approved,
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
-      const form = expectOk(Form.restore(validInit(status)));
+      const form = expectOk(FormEntity.restore(validInit(status)));
       expectInvalidTransitionError(form.convertToDraft());
     });
   });
@@ -211,7 +211,7 @@ describe('Form.convertToDraft', () => {
 describe('Form.ready', () => {
   describe('successfully marked as pending', () => {
     it('return ok when form is draft', () => {
-      const form = expectOk(Form.restore(validInit(FormStatus.Draft)));
+      const form = expectOk(FormEntity.restore(validInit(FormStatus.Draft)));
       expectOk(form.markReady());
       expect(form.status).toBe(FormStatus.Pending);
     });
@@ -225,7 +225,7 @@ describe('Form.ready', () => {
       FormStatus.Rejected,
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
-      const form = expectOk(Form.restore(validInit(status)));
+      const form = expectOk(FormEntity.restore(validInit(status)));
       expectInvalidTransitionError(form.markReady());
     });
   });
@@ -234,7 +234,7 @@ describe('Form.ready', () => {
 describe('Form.review', () => {
   describe('successfully started form review', () => {
     it('return ok when form is pending', () => {
-      const form = expectOk(Form.restore(validInit(FormStatus.Pending)));
+      const form = expectOk(FormEntity.restore(validInit(FormStatus.Pending)));
       expectOk(form.startReview('mod-1'));
       expect(form.status).toBe(FormStatus.Reviewing);
       expect(form.reviewerId).toBe('mod-1');
@@ -249,7 +249,7 @@ describe('Form.review', () => {
       FormStatus.Rejected,
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
-      const form = expectOk(Form.restore(validInit(status)));
+      const form = expectOk(FormEntity.restore(validInit(status)));
       expectInvalidTransitionError(form.startReview('mod-1'));
     });
   });
@@ -258,7 +258,9 @@ describe('Form.review', () => {
 describe('Form.approve', () => {
   describe('successfully approved form', () => {
     it('return ok when form is reviewing', () => {
-      const form = expectOk(Form.restore(validInit(FormStatus.Reviewing)));
+      const form = expectOk(
+        FormEntity.restore(validInit(FormStatus.Reviewing)),
+      );
       expectOk(form.approve(later));
       expect(form.status).toBe(FormStatus.Approved);
       expect(form.reviewedAt).toBe(later);
@@ -273,7 +275,7 @@ describe('Form.approve', () => {
       FormStatus.Rejected,
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
-      const form = expectOk(Form.restore(validInit(status)));
+      const form = expectOk(FormEntity.restore(validInit(status)));
       expectInvalidTransitionError(form.approve());
     });
   });
@@ -282,7 +284,9 @@ describe('Form.approve', () => {
 describe('Form.reject', () => {
   describe('successfully rejected form', () => {
     it('return ok when form is reviewing', () => {
-      const form = expectOk(Form.restore(validInit(FormStatus.Reviewing)));
+      const form = expectOk(
+        FormEntity.restore(validInit(FormStatus.Reviewing)),
+      );
       expectOk(form.reject('some reason', later));
       expect(form.status).toBe(FormStatus.Rejected);
       expect(form.reviewedAt).toBe(later);
@@ -298,7 +302,7 @@ describe('Form.reject', () => {
       FormStatus.Rejected,
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
-      const form = expectOk(Form.restore(validInit(status)));
+      const form = expectOk(FormEntity.restore(validInit(status)));
       expectInvalidTransitionError(form.reject('some reason'));
     });
   });
@@ -309,7 +313,7 @@ describe('Form.cancel', () => {
     it.each([FormStatus.Draft, FormStatus.Pending])(
       'return ok when status is %s',
       (status) => {
-        const form = expectOk(Form.restore(validInit(status)));
+        const form = expectOk(FormEntity.restore(validInit(status)));
         expectOk(form.cancel(later));
         expect(form.status).toBe(FormStatus.Canceled);
       },
@@ -324,7 +328,7 @@ describe('Form.cancel', () => {
       FormStatus.Rejected,
       FormStatus.Canceled,
     ])('return error when form status is %s', (status) => {
-      const form = expectOk(Form.restore(validInit(status)));
+      const form = expectOk(FormEntity.restore(validInit(status)));
       expectInvalidTransitionError(form.reject('some reason'));
     });
   });
@@ -333,7 +337,7 @@ describe('Form.cancel', () => {
 describe('Form.delete', () => {
   describe('successfully deleted form', () => {
     it('deletedAt is set', () => {
-      const form = expectOk(Form.restore(baseInit()));
+      const form = expectOk(FormEntity.restore(baseInit()));
       form.delete(later);
       expect(form.deletedAt).toBe(later);
     });

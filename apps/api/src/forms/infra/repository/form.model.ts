@@ -120,9 +120,6 @@ export class FormModel {
   @PrimaryColumn('uuid')
   declare id: string;
 
-  @Column('integer')
-  declare revision: number;
-
   @Column('varchar')
   declare name: string;
 

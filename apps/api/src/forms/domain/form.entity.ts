@@ -25,9 +25,8 @@ const FORM_STATUS_TRANSITIONS: Record<FormStatus, FormStatus[]> = {
   [FormStatus.Rejected]: [],
 };
 
-export interface FormInit {
+export type FormCreate = {
   id: string;
-  revision: number;
   name: string;
   description: string;
   organizers: string[];
@@ -42,6 +41,11 @@ export interface FormInit {
   participants: Participants;
   guests: Guest[];
   team: Member[];
+  submitterId: string;
+};
+
+export type FormInit = FormCreate & {
+  id: string;
   status: FormStatus;
   reason: string | null;
   submitterId: string;
@@ -51,30 +55,10 @@ export interface FormInit {
   reviewerId: string | null;
   canceledAt: Instant | null;
   deletedAt: Instant | null;
-}
+};
 
-export interface FormCreate {
-  id: string;
-  name: string;
-  description: string;
-  organizers: string[];
-  links: string[];
-  venues: string[];
-  themes: string[];
-  start: PlainDateTime;
-  end: PlainDateTime;
-  formatId: string;
-  typeId: string;
-  levelId: string;
-  participants: Participants;
-  guests: Guest[];
-  team: Member[];
-  submitterId: string;
-}
-
-export class Form {
+export class FormEntity {
   declare id: string;
-  declare revision: number;
   declare name: string;
   declare description: string;
   declare organizers: string[];
@@ -106,15 +90,14 @@ export class Form {
   static create(
     init: FormCreate,
     now: Instant = Now.instant(),
-  ): Result<Form, FormsError> {
+  ): Result<FormEntity, FormsError> {
     if (PlainDateTime.compare(init.start, init.end) >= 0) {
       return err(FormsError.invariant('start must be before end'));
     }
 
     return ok(
-      new Form({
+      new FormEntity({
         ...init,
-        revision: 1,
         status: FormStatus.Draft,
         reason: null,
         createdAt: now,
@@ -127,12 +110,12 @@ export class Form {
     );
   }
 
-  static restore(init: FormInit): Result<Form, FormsError> {
-    const v = Form.validate(init);
+  static restore(init: FormInit): Result<FormEntity, FormsError> {
+    const v = FormEntity.validate(init);
     if (v.isErr()) {
       return err(v.error);
     }
-    return ok(new Form(init));
+    return ok(new FormEntity(init));
   }
 
   private static validate(init: FormInit): Result<void, FormsError> {
@@ -279,9 +262,5 @@ export class Form {
   // Идемпотентная операция удаления сущности.
   public delete(now: Instant = Now.instant()) {
     this.deletedAt = now;
-  }
-
-  public isActive(): boolean {
-    return this.deletedAt != null;
   }
 }

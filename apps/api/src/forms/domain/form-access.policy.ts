@@ -1,5 +1,5 @@
 import { err, ok, Result } from 'neverthrow';
-import { Form } from './form.entity';
+import { FormEntity } from './form.entity';
 import { FormStatus } from './status.enum';
 import { FormsError } from './errors';
 import {
@@ -27,7 +27,7 @@ const enum Role {
   Submitter = 1 << 1,
 }
 
-function userToRole(user: AuthenticatedUser, form: Form): Role {
+function userToRole(user: AuthenticatedUser, form: FormEntity): Role {
   let role = Role.Public;
   if (user.id === form.submitterId) role = role & Role.Submitter;
   if (user.roles.includes(UserRole.Moderator)) role = role & Role.Moderator;
@@ -44,7 +44,7 @@ const VIEW_POLICY: Record<FormStatus, Role> = {
 };
 
 function checkAccess(
-  form: Form,
+  form: FormEntity,
   user: AuthenticatedUser,
   maskRequired: Role,
   denyReason: string = 'forbidden',
@@ -56,7 +56,7 @@ function checkAccess(
 }
 
 export const FormAccess = {
-  canView(form: Form, user: AuthenticatedUser): AccessDecision {
+  canView(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
@@ -65,7 +65,7 @@ export const FormAccess = {
     );
   },
 
-  canConvertToDraft(form: Form, user: AuthenticatedUser): AccessDecision {
+  canConvertToDraft(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
@@ -74,7 +74,7 @@ export const FormAccess = {
     );
   },
 
-  canMarkReady(form: Form, user: AuthenticatedUser): AccessDecision {
+  canMarkReady(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
@@ -83,7 +83,7 @@ export const FormAccess = {
     );
   },
 
-  canStartReview(form: Form, user: AuthenticatedUser): AccessDecision {
+  canStartReview(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
@@ -92,7 +92,7 @@ export const FormAccess = {
     );
   },
 
-  canApprove(form: Form, user: AuthenticatedUser): AccessDecision {
+  canApprove(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
@@ -101,7 +101,7 @@ export const FormAccess = {
     );
   },
 
-  canReject(form: Form, user: AuthenticatedUser): AccessDecision {
+  canReject(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
@@ -110,7 +110,7 @@ export const FormAccess = {
     );
   },
 
-  canCancel(form: Form, user: AuthenticatedUser): AccessDecision {
+  canCancel(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
       user,
