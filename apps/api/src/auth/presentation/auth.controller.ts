@@ -44,7 +44,10 @@ export class AuthController {
   @ApiCookieAuth('actibank_session')
   @ApiOperation({ summary: 'Завершить текущую сессию' })
   @ApiNoContentResponse({ description: 'Сессия завершена.' })
-  logout(@Req() request: AuthRequest, @Res() response: AuthResponse): void {
-    this.auth.logout(request, response);
+  logout(
+    @Req() request: AuthRequest,
+    @Res() response: AuthResponse,
+  ): Promise<void> {
+    return this.auth.logout(request, response);
   }
 }

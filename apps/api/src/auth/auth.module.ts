@@ -4,10 +4,18 @@ import { AuthenticationGuard, RolesGuard } from './presentation/auth.guards';
 import { AuthController } from './presentation/auth.controller';
 import { AuthService } from './presentation/auth.service';
 import { OidcAdapter } from './infrastructure/oidc/oidc.adapter';
-import { GetUserBySubjectModule } from './use-case/get-user-by-subject/get-user-by-subject.module';
+import { AuthCallbackModule } from './use-case/auth-callback/auth-callback.module';
+import { GetSessionUserModule } from './use-case/get-session-user/get-session-user.module';
+import { UserLoginModule } from './use-case/user-login/user-login.module';
+import { UserLogoutModule } from './use-case/user-logout/user-logout.module';
 
 @Module({
-  imports: [GetUserBySubjectModule],
+  imports: [
+    AuthCallbackModule,
+    GetSessionUserModule,
+    UserLoginModule,
+    UserLogoutModule,
+  ],
   controllers: [AuthController],
   providers: [
     OidcAdapter,

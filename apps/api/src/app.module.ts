@@ -6,6 +6,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CatalogModule } from './catalog/catalog.module';
 import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { createKeyv } from '@keyv/redis';
 
 @Module({
   imports: [
@@ -31,6 +33,14 @@ import { FilesModule } from './files/files.module';
         username: cfg.get('DB_USERNAME'),
         password: cfg.get('DB_PASSWORD'),
         database: cfg.get('DB_DATABASE'),
+      }),
+      inject: [ConfigService],
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      useFactory: async (cfg: ConfigService) => ({
+        stores: [createKeyv(cfg.getOrThrow('REDIS_URI'))],
       }),
       inject: [ConfigService],
     }),

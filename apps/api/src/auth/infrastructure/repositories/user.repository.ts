@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserModel } from './user.model';
 import { Repository } from 'typeorm';
-import { AuthenticatedUser } from '../../domain/user.entity';
 import { okAsync, ResultAsync } from 'neverthrow';
 import { AuthError } from '../../domain/errors';
 import { UserMapper } from './user.mapper';
+import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 
 @Injectable()
 export class UserRepository {

@@ -1,0 +1,51 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { OidcAdapter } from '../../infrastructure/oidc/oidc.adapter';
+import { UserRepository } from '../../infrastructure/repositories/user.repository';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { AuthCallbackCommand, AuthCallbackResult } from './auth-callback.data';
+import { errAsync, okAsync, ResultAsync } from 'neverthrow';
+import { AuthError } from '../../domain/errors';
+import { UUID_PORT, UuidPort } from '../../../shared/infra/uuid/uuid.port';
+import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+
+const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
+
+@Injectable()
+export class AuthCallbackHandler {
+  constructor(
+    private readonly oidc: OidcAdapter,
+    private readonly users: UserRepository,
+    @Inject(UUID_PORT) private readonly uuid: UuidPort,
+    @Inject(CACHE_MANAGER) private readonly sessions: Cache,
+  ) {}
+
+  execute(
+    cmd: AuthCallbackCommand,
+  ): ResultAsync<AuthCallbackResult, AuthError> {
+    return this.oidc
+      .callback(cmd.code, cmd.state)
+      .map((claims) => claims.sub)
+      .andThen((sub) => this.users.getOrNull(sub))
+      .andThen((user) => {
+        return user
+          ? okAsync(new AuthenticatedUser(user.id, user.subject, user.roles))
+          : errAsync(AuthError.unauthorized('forbidden'));
+      })
+      .andThen((user) => {
+        const sessionId = this.uuid.generate();
+        return ResultAsync.fromPromise(
+          this.sessions.set('session:' + sessionId, {
+            user,
+            expiresAt: Date.now() + SESSION_TTL_MS,
+          }),
+          (error): AuthError =>
+            AuthError.repository(
+              error instanceof Error ? error.message : String(error),
+            ),
+        ).map(() => ({
+          sessionId,
+          maxAge: SESSION_TTL_MS,
+        }));
+      });
+  }
+}

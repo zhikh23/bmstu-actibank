@@ -3,7 +3,10 @@ import {
   createParamDecorator,
   ExecutionContext,
 } from '@nestjs/common';
-import { Role, AuthenticatedUser } from '../domain/user.entity';
+import {
+  AuthenticatedUser,
+  Role,
+} from '../../shared/domain/authenticated-user.entity';
 
 export const IS_PUBLIC = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC, true);

@@ -8,7 +8,7 @@ import {
   Unique,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
-import { Role } from '../../domain/role.enum';
+import { Role } from '../../../shared/domain/authenticated-user.entity';
 
 @Entity('users')
 @Unique(['subject'])

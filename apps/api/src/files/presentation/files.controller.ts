@@ -20,13 +20,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FilesService } from './files.service';
-import { Role } from '../../auth/domain/role.enum';
 import { RolesGuard } from '../../auth/presentation/auth.guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FormDataFileDto } from './dto/form-data-file.dto';
 import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
-import { AuthenticatedUser } from '../../auth/domain/user.entity';
 import { UploadFileResponse } from './dto/upload-file.response';
+import {
+  AuthenticatedUser,
+  Role,
+} from '../../shared/domain/authenticated-user.entity';
 
 @Controller('files')
 @ApiTags('Files')

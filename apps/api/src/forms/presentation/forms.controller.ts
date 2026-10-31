@@ -26,9 +26,12 @@ import {
 } from '@nestjs/swagger';
 import { GetFormResponse } from './dto/get-form.response';
 import { RejectFormRequest } from './dto/reject-form.request';
-import { Role, AuthenticatedUser } from '../../auth/domain/user.entity';
 import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
 import { RolesGuard } from '../../auth/presentation/auth.guards';
+import {
+  AuthenticatedUser,
+  Role,
+} from '../../shared/domain/authenticated-user.entity';
 
 @Controller('forms')
 @ApiTags('Forms')

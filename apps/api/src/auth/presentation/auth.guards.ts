@@ -7,9 +7,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC } from './auth.decorators';
-import { Role, AuthenticatedUser } from '../domain/user.entity';
 import { AuthService } from './auth.service';
 import { AuthRequest } from './http.types';
+import {
+  AuthenticatedUser,
+  Role,
+} from '../../shared/domain/authenticated-user.entity';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
