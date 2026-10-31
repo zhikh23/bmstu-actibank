@@ -10,8 +10,6 @@ import {
   FormTheme,
   FormVenue,
 } from './form.model';
-import { FormDocumentModel } from './form.model';
-import { FormDocumentRepository } from './form-document.repository';
 
 @Module({
   imports: [
@@ -23,10 +21,9 @@ import { FormDocumentRepository } from './form-document.repository';
       FormTheme,
       FormGuest,
       FormMember,
-      FormDocumentModel,
     ]),
   ],
-  providers: [FormRepository, FormDocumentRepository],
-  exports: [FormRepository, FormDocumentRepository],
+  providers: [FormRepository],
+  exports: [FormRepository],
 })
 export class FormRepositoryModule {}

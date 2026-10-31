@@ -5,12 +5,10 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { FormStatus } from '../../domain/status.enum';
-import { FormDocumentType } from '../../domain/form-document.entity';
 
 @Entity('forms_organizers')
 export class FormOrganizer {
@@ -114,37 +112,6 @@ export class FormMember {
   declare form: Relation<FormModel>;
 }
 
-@Entity('forms_documents')
-export class FormDocumentModel {
-  @PrimaryColumn('uuid')
-  declare id: string;
-
-  @Column('uuid')
-  declare form_id: string;
-
-  @Column('integer')
-  declare form_revision: number;
-
-  @Column()
-  declare type: FormDocumentType;
-
-  @Column('varchar')
-  declare storage_key: string;
-
-  @Column('varchar')
-  declare content_type: string;
-
-  @Column('timestamptz')
-  declare created_at: Date;
-
-  @Column('uuid')
-  declare created_by: string;
-
-  @ManyToOne(() => FormModel, (form) => form.documents)
-  @JoinColumn({ name: 'form_id' })
-  declare form: Relation<FormModel>;
-}
-
 @Entity('forms')
 @Index(['deleted_at'])
 @Index(['submitter_id'])
@@ -196,9 +163,6 @@ export class FormModel {
   declare submitter_id: string;
 
   @Column({ type: 'uuid', nullable: true })
-  declare signed_scan_id: string | null;
-
-  @Column({ type: 'uuid', nullable: true })
   declare reviewer_id: string | null;
 
   @Column('timestamptz')
@@ -235,13 +199,4 @@ export class FormModel {
 
   @OneToMany(() => FormMember, (member) => member.form, { cascade: true })
   declare team: FormMember[];
-
-  @OneToMany(() => FormDocumentModel, (document) => document.form, {
-    cascade: true,
-  })
-  declare documents: FormDocumentModel[];
-
-  @OneToOne(() => FormDocumentModel, { nullable: true })
-  @JoinColumn({ name: 'signed_scan_id' })
-  declare signed_scan: FormDocumentModel | null;
 }

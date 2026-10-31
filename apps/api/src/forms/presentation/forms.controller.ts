@@ -6,19 +6,14 @@ import {
   HttpStatus,
   Param,
   Post,
-  StreamableFile,
-  UploadedFile,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { FormsService } from './forms.service';
 import { CreateFormRequest } from './dto/create-form.request';
 import { CreateFormResponse } from './dto/create-form.response';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiConsumes,
   ApiCookieAuth,
   ApiForbiddenResponse,
   ApiNoContentResponse,
@@ -34,8 +29,6 @@ import { RejectFormRequest } from './dto/reject-form.request';
 import { Role, AuthenticatedUser } from '../../auth/domain/user.entity';
 import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
 import { RolesGuard } from '../../auth/presentation/auth.guards';
-import { UploadFileResponse } from './dto/upload-file.response';
-import { IncomingFile } from './dto/upload-file.request';
 
 @Controller('forms')
 @ApiTags('Forms')
@@ -170,96 +163,6 @@ export class FormsController {
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<CreateFormResponse> {
     return this.formService.create(dto, user.id);
-  }
-
-  @Post(':id/files')
-  @Roles(Role.Applicant)
-  @UseGuards(RolesGuard)
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({
-    summary: 'Загрузить скан формы',
-    description: 'Загружает файл документа, связанного с формой.',
-  })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'Идентификатор формы.',
-  })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    type: 'multipart/form-data',
-    required: true,
-    schema: {
-      type: 'object',
-      required: ['file'],
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  @ApiOkResponse({
-    description: 'Файл успешно загружен.',
-    type: UploadFileResponse,
-  })
-  async uploadFile(
-    @Param('id') id: string,
-    @UploadedFile() file: IncomingFile,
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<UploadFileResponse> {
-    return this.formService.uploadFile(id, user.id, file);
-  }
-
-  @Get(':id/files/:documentId')
-  @ApiOperation({
-    summary: 'Получить файл формы',
-    description: 'Возвращает содержимое документа, связанного с формой.',
-  })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'Идентификатор формы.',
-  })
-  @ApiParam({
-    name: 'documentId',
-    type: String,
-    description: 'Идентификатор документа.',
-  })
-  @ApiOkResponse({
-    description: 'Файл успешно получен.',
-    content: {
-      'application/octet-stream': {
-        schema: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'У пользователя нет прав на просмотр файла.',
-  })
-  @ApiNotFoundResponse({
-    description: 'Форма или файл не найдены.',
-  })
-  async readFile(
-    @Param('id') id: string,
-    @Param('documentId') documentId: string,
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<StreamableFile> {
-    const file = await this.formService.readFile(
-      id,
-      documentId,
-      user.id,
-      user.roles.includes(Role.Moderator),
-    );
-
-    return new StreamableFile(file.body, {
-      type: file.contentType,
-      length: file.contentLength,
-    });
   }
 
   @Get(':id')

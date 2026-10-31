@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FormRepositoryModule } from '../../infra/repository/repository.module';
 import { StartFormReviewHandler } from './start-form-review.handler';
+import { FormRepositoryModule } from '../../infra/repository/form.module';
 
 @Module({
   imports: [FormRepositoryModule],

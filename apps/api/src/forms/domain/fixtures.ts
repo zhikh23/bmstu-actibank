@@ -31,7 +31,6 @@ export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
   reason: null,
   revision: 1,
   submitterId: 'user-1',
-  signedScanId: null,
   createdAt: now,
   updatedAt: now,
   reviewedAt: null,

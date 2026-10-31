@@ -38,7 +38,6 @@ export class FormMapper {
     model.status = f.status;
     model.reason = f.reason;
     model.submitter_id = f.submitterId;
-    model.signed_scan_id = f.signedScanId;
     model.reviewer_id = f.reviewerId;
     model.created_at = instantToDate(f.createdAt);
     model.updated_at = instantToDate(f.updatedAt);
@@ -121,7 +120,6 @@ export class FormMapper {
       reviewedAt: m.reviewed_at ? dateToInstant(m.reviewed_at) : null,
       reviewerId: m.reviewer_id,
       revision: m.revision,
-      signedScanId: m.signed_scan_id,
       start: dateToPlainDateTime(m.start),
       status: m.status,
       submitterId: m.submitter_id,

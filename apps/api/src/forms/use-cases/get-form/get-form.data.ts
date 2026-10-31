@@ -64,7 +64,6 @@ export type FormType = {
   status: string;
   reason: string | null;
   submitterId: string;
-  signedScanId: string | null;
   reviewerId: string | null;
   createdAt: Date;
   updatedAt: Date;

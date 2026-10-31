@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FormRepositoryModule } from '../../infra/repository/repository.module';
+import { FormRepositoryModule } from '../../infra/repository/form.module';
 import { ApproveFormHandler } from './approve-form.handler';
 
 @Module({

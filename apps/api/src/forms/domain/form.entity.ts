@@ -45,7 +45,6 @@ export interface FormInit {
   status: FormStatus;
   reason: string | null;
   submitterId: string;
-  signedScanId: string | null;
   createdAt: Instant;
   updatedAt: Instant;
   reviewedAt: Instant | null;
@@ -93,7 +92,6 @@ export class Form {
   declare status: FormStatus;
   declare reason: string | null;
   declare submitterId: string;
-  declare signedScanId: string | null;
   declare createdAt: Instant;
   declare updatedAt: Instant;
   declare reviewedAt: Instant | null;
@@ -119,7 +117,6 @@ export class Form {
         revision: 1,
         status: FormStatus.Draft,
         reason: null,
-        signedScanId: null,
         createdAt: now,
         updatedAt: now,
         reviewedAt: null,
@@ -195,11 +192,6 @@ export class Form {
     const allowed = FORM_STATUS_TRANSITIONS[this.status];
     if (!allowed.includes(status)) {
       return err(FormsError.invalidTransition(this.status, status));
-    }
-    if (status == FormStatus.Pending && !this.signedScanId) {
-      return err(
-        FormsError.invalidOp('signed scan is required if status is pending'),
-      );
     }
     this.status = status;
     this.updatedAt = now;
@@ -287,18 +279,6 @@ export class Form {
   // Идемпотентная операция удаления сущности.
   public delete(now: Instant = Now.instant()) {
     this.deletedAt = now;
-  }
-
-  public attachSignedScan(scanId: string): Result<void, FormsError> {
-    if (this.status != FormStatus.Draft) {
-      return err(
-        FormsError.invalidOp(
-          `scanned document can be attached to form only if status is draft (status="${this.status}")`,
-        ),
-      );
-    }
-    this.signedScanId = scanId;
-    return ok();
   }
 
   public isActive(): boolean {
