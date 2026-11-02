@@ -6,6 +6,7 @@ import {
   expectOk,
 } from './asserts';
 import { baseInit, later, now, start, validInit } from './fixtures';
+import { describe } from 'node:test';
 
 const MSG = {
   startBeforeEnd: 'start must be before end',
@@ -16,7 +17,9 @@ const MSG = {
   reviewedAtOnlyForCompletedStates:
     'reviewedAt may be non-null only if form is approved or rejected',
   canceledAtMustBeNotNull: 'canceled form must have non-null canceledAt',
-} as const;
+  documentWithScanOnlyForNonDraft:
+    'form must have attached document with scan if status is not draft',
+};
 
 describe('Form.restore', () => {
   describe('successfully restored', () => {
@@ -93,6 +96,18 @@ describe('Form.restore', () => {
       const form = expectOk(res);
       expect(form.status).toBe(FormStatus.Canceled);
       expect(form.canceledAt).toBe(later);
+    });
+
+    it('returns ok when form has not document in draft state', () => {
+      const res = FormEntity.restore(
+        baseInit({
+          status: FormStatus.Draft,
+          document: null,
+        }),
+      );
+      const form = expectOk(res);
+      expect(form.status).toBe(FormStatus.Draft);
+      expect(form.document).toBeNull();
     });
   });
 
@@ -180,6 +195,24 @@ describe('Form.restore', () => {
       }),
     );
     expectInvariantError(res, MSG.canceledAtMustBeNotNull);
+  });
+
+  describe('null document is allowed only for draft form', () => {
+    it.each([
+      FormStatus.Pending,
+      FormStatus.Reviewing,
+      FormStatus.Approved,
+      FormStatus.Rejected,
+      FormStatus.Canceled,
+    ])('returns error when form status is %s', (status) => {
+      const res = FormEntity.restore(
+        baseInit({
+          status: status,
+          document: null,
+        }),
+      );
+      expectInvariantError(res, MSG.documentWithScanOnlyForNonDraft);
+    });
   });
 });
 

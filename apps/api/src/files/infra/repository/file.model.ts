@@ -12,6 +12,9 @@ export class FileModel {
   declare storage_key: string;
 
   @Column('varchar')
+  declare filename: string;
+
+  @Column('varchar')
   declare content_type: string;
 
   @Column('integer')

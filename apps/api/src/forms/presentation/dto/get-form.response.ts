@@ -37,6 +37,38 @@ export class GetFormMemberDto {
   declare role: RoleDto;
 }
 
+export class GetFormDocumentDto {
+  @ApiProperty({
+    description: 'Идентификатор документа',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  declare id: string;
+
+  @ApiProperty({
+    description: 'Идентификатор сгенерированного файла документа',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  declare generatedId: string;
+
+  @ApiProperty({
+    description: 'Идентификатор файла скана документа',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  declare scanId: string | null;
+
+  @ApiProperty({
+    description: 'Дата и время генерации документа',
+    example: '2026-01-01T10:00:00',
+  })
+  declare createdAt: Date;
+
+  @ApiProperty({
+    description: 'Дата и время загрузки скана документа',
+    example: '2026-01-01T10:00:00',
+  })
+  declare uploadedAt: Date | null;
+}
+
 export class GetFormResponse {
   @ApiProperty({
     description: 'Идентификатор формы',
@@ -151,6 +183,12 @@ export class GetFormResponse {
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare reviewerId: string | null;
+
+  @ApiProperty({
+    description: 'Документ, связанный с формой',
+    type: GetFormDocumentDto,
+  })
+  declare document: GetFormDocumentDto | null;
 
   @ApiProperty({
     description: 'Дата и время создания формы',

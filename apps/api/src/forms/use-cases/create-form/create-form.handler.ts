@@ -15,6 +15,7 @@ import {
   AuthenticatedUser,
   UserRole,
 } from '../../../shared/domain/authenticated-user.entity';
+import { Participants } from '../../domain/participants.entity';
 
 export type CreateFormCommand = {
   actor: AuthenticatedUser;
@@ -63,7 +64,11 @@ export class CreateFormHandler {
       formatId: cmd.formatId,
       typeId: cmd.typeId,
       levelId: cmd.levelId,
-      participants: cmd.participants,
+      participants: new Participants(
+        cmd.participants.students,
+        cmd.participants.employees,
+        cmd.participants.others,
+      ),
       guests: cmd.guests.map((g) => new Guest(g.userId, g.rankId)),
       team: cmd.team.map((m) => new Member(m.userId, m.roleId)),
       submitterId: cmd.actor.id,

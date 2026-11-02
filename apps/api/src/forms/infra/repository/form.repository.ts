@@ -55,6 +55,7 @@ export class FormRepository {
           themes: true,
           guests: true,
           team: true,
+          document: true,
         },
         order: {
           organizers: {

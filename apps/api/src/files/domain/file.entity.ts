@@ -2,6 +2,7 @@ export type FileCreate = {
   id: string;
   ownerId: string;
   storageKey: string;
+  filename: string;
   contentType: string;
   size: number;
 };
@@ -14,6 +15,7 @@ export class File {
   declare id: string;
   declare ownerId: string;
   declare storageKey: string;
+  declare filename: string;
   declare contentType: string;
   declare size: number;
   declare createdAt: Temporal.Instant;

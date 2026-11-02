@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Result } from 'neverthrow';
+import { ResultAsync } from 'neverthrow';
 import { Level } from './get-level.data';
 import { CatalogError } from '../../domain/errors';
 import { LevelRepository } from '../../infra/repository/level/level.repository';
@@ -12,7 +12,7 @@ export type GetLevelQuery = {
 export class GetLevelHandler {
   constructor(private readonly repository: LevelRepository) {}
 
-  async execute(q: GetLevelQuery): Promise<Result<Level, CatalogError>> {
+  execute(q: GetLevelQuery): ResultAsync<Level, CatalogError> {
     return this.repository.get(q.id);
   }
 }

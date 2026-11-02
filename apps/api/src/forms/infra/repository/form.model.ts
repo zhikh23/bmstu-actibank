@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
@@ -112,6 +113,32 @@ export class FormMember {
   declare form: Relation<FormModel>;
 }
 
+@Entity('forms_documents')
+@Index(['form_id'])
+export class FormDocumentModel {
+  @PrimaryColumn('uuid')
+  declare id: string;
+
+  @Column('uuid')
+  declare form_id: string;
+
+  @Column('uuid')
+  declare generated_id: string;
+
+  @Column('uuid', { nullable: true })
+  declare scan_id: string | null;
+
+  @Column('timestamptz')
+  declare created_at: Date;
+
+  @Column('timestamptz', { nullable: true })
+  declare uploaded_at: Date | null;
+
+  @ManyToOne(() => FormModel, (form) => form.documents)
+  @JoinColumn({ name: 'form_id' })
+  declare form: Relation<FormModel>;
+}
+
 @Entity('forms')
 @Index(['deleted_at'])
 @Index(['submitter_id'])
@@ -159,6 +186,9 @@ export class FormModel {
   @Column({ type: 'uuid' })
   declare submitter_id: string;
 
+  @Column('uuid', { nullable: true })
+  declare document_id: string | null;
+
   @Column({ type: 'uuid', nullable: true })
   declare reviewer_id: string | null;
 
@@ -196,4 +226,14 @@ export class FormModel {
 
   @OneToMany(() => FormMember, (member) => member.form, { cascade: true })
   declare team: FormMember[];
+
+  // Последний приложенный и актуальный документ.
+  @OneToOne(() => FormDocumentModel, { nullable: true, cascade: true })
+  @JoinColumn({ name: 'document_id' })
+  declare document: FormDocumentModel | null;
+
+  @OneToMany(() => FormDocumentModel, (document) => document.form, {
+    cascade: true,
+  })
+  declare documents: FormDocumentModel[];
 }

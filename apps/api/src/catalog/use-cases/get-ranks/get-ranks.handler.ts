@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Result } from 'neverthrow';
+import { ResultAsync } from 'neverthrow';
 import { RankType } from './get-ranks.data';
 import { CatalogError } from '../../domain/errors';
 import { RankRepository } from '../../infra/repository/rank/rank.repository';
@@ -12,7 +12,7 @@ export type GetRanksQuery = {
 export class GetRanksHandler {
   constructor(private readonly rankRepository: RankRepository) {}
 
-  async execute(q: GetRanksQuery): Promise<Result<RankType[], CatalogError>> {
+  execute(q: GetRanksQuery): ResultAsync<RankType[], CatalogError> {
     return this.rankRepository.getAll(q.ids);
   }
 }

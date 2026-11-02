@@ -14,94 +14,106 @@ import {
   instantToDate,
   plainDateTimeToDate,
 } from '../../../shared/utils/dates';
-import { Result } from 'neverthrow';
+import { err, Result } from 'neverthrow';
 import { FormsError } from '../../domain/errors';
 import { Guest } from '../../domain/guest.entity';
 import { Participants } from '../../domain/participants.entity';
 import { Member } from '../../domain/member.entity';
+import { FormDocumentMapper } from './form-document.mapper';
+import { FormDocumentEntity } from '../../domain/form-document.entity';
 
 export class FormMapper {
   static toModel(f: FormEntity): FormModel {
-    const model = new FormModel();
-    model.id = f.id;
-    model.name = f.name;
-    model.description = f.description;
-    model.start = plainDateTimeToDate(f.start);
-    model.end = plainDateTimeToDate(f.end);
-    model.format_id = f.formatId;
-    model.type_id = f.typeId;
-    model.level_id = f.levelId;
-    model.participants_students = f.participants.students;
-    model.participants_employees = f.participants.employees;
-    model.participants_others = f.participants.others;
-    model.status = f.status;
-    model.reason = f.reason;
-    model.submitter_id = f.submitterId;
-    model.reviewer_id = f.reviewerId;
-    model.created_at = instantToDate(f.createdAt);
-    model.updated_at = instantToDate(f.updatedAt);
-    model.reviewed_at = f.reviewedAt ? instantToDate(f.reviewedAt) : null;
-    model.canceled_at = f.canceledAt ? instantToDate(f.canceledAt) : null;
-    model.deleted_at = f.deletedAt ? instantToDate(f.deletedAt) : null;
-    model.organizers = f.organizers.map((organizer_id, number) =>
+    const m = new FormModel();
+    m.id = f.id;
+    m.name = f.name;
+    m.description = f.description;
+    m.start = plainDateTimeToDate(f.start);
+    m.end = plainDateTimeToDate(f.end);
+    m.format_id = f.formatId;
+    m.type_id = f.typeId;
+    m.level_id = f.levelId;
+    m.participants_students = f.participants.students;
+    m.participants_employees = f.participants.employees;
+    m.participants_others = f.participants.others;
+    m.status = f.status;
+    m.reason = f.reason;
+    m.submitter_id = f.submitterId;
+    m.reviewer_id = f.reviewerId;
+    m.document = f.document
+      ? FormDocumentMapper.toModel(f.document, f.id)
+      : null;
+    m.created_at = instantToDate(f.createdAt);
+    m.updated_at = instantToDate(f.updatedAt);
+    m.reviewed_at = f.reviewedAt ? instantToDate(f.reviewedAt) : null;
+    m.canceled_at = f.canceledAt ? instantToDate(f.canceledAt) : null;
+    m.deleted_at = f.deletedAt ? instantToDate(f.deletedAt) : null;
+    m.organizers = f.organizers.map((organizer_id, number) =>
       Object.assign(new FormOrganizer(), {
         form_id: f.id,
         number,
         organizer_id,
-        form: model,
+        form: m,
       }),
     );
-    model.links = f.links.map((link, number) =>
+    m.links = f.links.map((link, number) =>
       Object.assign(new FormLink(), {
         form_id: f.id,
         number,
         link,
-        form: model,
+        form: m,
       }),
     );
-    model.venues = f.venues.map((venue_id, number) =>
+    m.venues = f.venues.map((venue_id, number) =>
       Object.assign(new FormVenue(), {
         form_id: f.id,
         number,
         venue_id,
-        form: model,
+        form: m,
       }),
     );
-    model.themes = f.themes.map((theme_id, number) =>
+    m.themes = f.themes.map((theme_id, number) =>
       Object.assign(new FormTheme(), {
         form_id: f.id,
         number,
         theme_id,
-        form: model,
+        form: m,
       }),
     );
-    model.guests = f.guests.map((guest, number) =>
+    m.guests = f.guests.map((guest, number) =>
       Object.assign(new FormGuest(), {
         form_id: f.id,
         number,
         user_id: guest.userId,
         rank_id: guest.rankId,
-        form: model,
+        form: m,
       }),
     );
-    model.team = f.team.map((member, number) =>
+    m.team = f.team.map((member, number) =>
       Object.assign(new FormMember(), {
         form_id: f.id,
         number,
         user_id: member.userId,
         role_id: member.roleId,
-        form: model,
+        form: m,
       }),
     );
-    return model;
+    return m;
   }
 
   static toDomain(m: FormModel): Result<FormEntity, FormsError> {
+    let document: FormDocumentEntity | null = null;
+    if (m.document) {
+      const res = FormDocumentMapper.toDomain(m.document);
+      if (res.isErr()) return err(res.error);
+      document = res.value;
+    }
     return FormEntity.restore({
       canceledAt: m.canceled_at ? dateToInstant(m.canceled_at) : null,
       createdAt: dateToInstant(m.created_at),
       deletedAt: m.deleted_at ? dateToInstant(m.deleted_at) : null,
       description: m.description,
+      document,
       end: dateToPlainDateTime(m.end),
       formatId: m.format_id,
       guests: m.guests.map((g) => new Guest(g.user_id, g.rank_id)),

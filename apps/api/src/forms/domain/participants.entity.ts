@@ -4,4 +4,8 @@ export class Participants {
     public employees: number,
     public others: number,
   ) {}
+
+  total(): number {
+    return this.students + this.employees + this.others;
+  }
 }

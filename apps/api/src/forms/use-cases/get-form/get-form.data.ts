@@ -65,6 +65,13 @@ export type FormType = {
   reason: string | null;
   submitterId: string;
   reviewerId: string | null;
+  document: {
+    id: string;
+    generatedId: string;
+    scanId: string | null;
+    createdAt: Date;
+    uploadedAt: Date | null;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
   reviewedAt: Date | null;

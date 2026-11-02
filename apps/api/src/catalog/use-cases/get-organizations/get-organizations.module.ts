@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { OrganizationRepositoryModule } from '../../infra/repository/organization/organization.module';
-import { GetOrganizationHandler } from './get-organization.handler';
+import { GetOrganizationsHandler } from './get-organizations.handler';
 
 @Module({
   imports: [OrganizationRepositoryModule],
-  providers: [GetOrganizationHandler],
-  exports: [GetOrganizationHandler],
+  providers: [GetOrganizationsHandler],
+  exports: [GetOrganizationsHandler],
 })
-export class GetOrganizationModule {}
+export class GetOrganizationsModule {}

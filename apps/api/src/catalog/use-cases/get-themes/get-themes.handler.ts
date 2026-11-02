@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ThemeRepository } from '../../infra/repository/theme/theme.repository';
-import { Result } from 'neverthrow';
+import { ResultAsync } from 'neverthrow';
 import { ThemeType } from './get-themes.data';
 import { CatalogError } from '../../domain/errors';
 
@@ -12,7 +12,7 @@ export type GetThemesQuery = {
 export class GetThemesHandler {
   constructor(private readonly themeRepository: ThemeRepository) {}
 
-  async execute(q: GetThemesQuery): Promise<Result<ThemeType[], CatalogError>> {
+  execute(q: GetThemesQuery): ResultAsync<ThemeType[], CatalogError> {
     return this.themeRepository.getAll(q.ids);
   }
 }

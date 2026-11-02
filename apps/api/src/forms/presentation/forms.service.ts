@@ -20,6 +20,8 @@ import { RejectFormHandler } from '../use-cases/reject-form/reject-form.handler'
 import { StartFormReviewHandler } from '../use-cases/start-form-review/start-form-review.handler';
 import { RejectFormRequest } from './dto/reject-form.request';
 import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
+import { GenerateDocumentResponse } from './dto/generate-document.response';
+import { GenerateDocumentHandler } from '../use-cases/generate-document/generate-document.handler';
 
 @Injectable()
 export class FormsService {
@@ -30,6 +32,7 @@ export class FormsService {
     private readonly cancelForm: CancelFormHandler,
     private readonly convertToDraftForm: ConvertToDraftFormHandler,
     private readonly createForm: CreateFormHandler,
+    private readonly generateDocument: GenerateDocumentHandler,
     private readonly getForm: GetFormHandler,
     private readonly markFormReady: MarkFormReadyHandler,
     private readonly rejectForm: RejectFormHandler,
@@ -141,6 +144,26 @@ export class FormsService {
     }
   }
 
+  async generate(
+    actor: AuthenticatedUser,
+    formId: string,
+  ): Promise<GenerateDocumentResponse> {
+    return await this.generateDocument.execute({ actor, formId }).match(
+      (res) => res,
+      (error) => {
+        switch (error.kind) {
+          case 'Forbidden':
+            throw new ForbiddenException(error.reason);
+          case 'NotFound':
+            throw new NotFoundException(error.message);
+          default:
+            this.logger.error(error);
+            throw new InternalServerErrorException();
+        }
+      },
+    );
+  }
+
   async get(
     actor: AuthenticatedUser,
     formId: string,
@@ -191,6 +214,7 @@ export class FormsService {
       reason: form.reason,
       submitterId: form.submitterId,
       reviewerId: form.reviewerId,
+      document: form.document,
       createdAt: form.createdAt.toISOString(),
       updatedAt: form.updatedAt.toISOString(),
       reviewedAt: form.reviewedAt ? form.reviewedAt.toISOString() : null,

@@ -8,6 +8,7 @@ export class FileMapper {
     m.id = f.id;
     m.owner_id = f.ownerId;
     m.storage_key = f.storageKey;
+    m.filename = f.filename;
     m.content_type = f.contentType;
     m.size = f.size;
     m.created_at = instantToDate(f.createdAt);
@@ -19,6 +20,7 @@ export class FileMapper {
       id: m.id,
       ownerId: m.owner_id,
       storageKey: m.storage_key,
+      filename: m.filename,
       contentType: m.content_type,
       size: m.size,
       createdAt: dateToInstant(m.created_at),

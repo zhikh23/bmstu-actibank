@@ -14,14 +14,14 @@ export class FileRepository {
     private readonly repository: Repository<FileModel>,
   ) {}
 
-  save(file: File): ResultAsync<void, FilesError> {
+  save(file: File): ResultAsync<File, FilesError> {
     return ResultAsync.fromPromise(
       this.repository.save(FileMapper.toModel(file)),
       (error): FilesError =>
         FilesError.repository(
           error instanceof Error ? error.message : String(error),
         ),
-    ).map(() => undefined);
+    ).map(() => file);
   }
 
   get(id: string): ResultAsync<File, FilesError> {

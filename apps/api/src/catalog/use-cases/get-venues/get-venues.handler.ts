@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Result } from 'neverthrow';
+import { ResultAsync } from 'neverthrow';
 import { CatalogError } from '../../domain/errors';
 import { VenueRepository } from '../../infra/repository/venue/venue.repository';
 import { VenueType } from './get-venues.data';
@@ -12,7 +12,7 @@ export type GetVenuesQuery = {
 export class GetVenuesHandler {
   constructor(private readonly venueRepository: VenueRepository) {}
 
-  async execute(q: GetVenuesQuery): Promise<Result<VenueType[], CatalogError>> {
+  execute(q: GetVenuesQuery): ResultAsync<VenueType[], CatalogError> {
     return this.venueRepository.getAllWithBuildings(q.ids);
   }
 }

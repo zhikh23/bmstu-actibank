@@ -29,8 +29,8 @@ const enum Role {
 
 function userToRole(user: AuthenticatedUser, form: FormEntity): Role {
   let role = Role.Public;
-  if (user.id === form.submitterId) role = role & Role.Submitter;
-  if (user.roles.includes(UserRole.Moderator)) role = role & Role.Moderator;
+  if (user.id == form.submitterId) role |= Role.Submitter;
+  if (user.roles.includes(UserRole.Moderator)) role |= Role.Moderator;
   return role;
 }
 
@@ -61,7 +61,7 @@ export const FormAccess = {
       form,
       user,
       VIEW_POLICY[form.status],
-      'can not see form',
+      `user ${user.id} (${user.roles.join()}) can not see the form ${form.id} (${form.status})`,
     );
   },
 

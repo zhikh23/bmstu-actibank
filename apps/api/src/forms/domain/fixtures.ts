@@ -1,5 +1,7 @@
 import { FormInit } from './form.entity';
 import { FormStatus } from './status.enum';
+import { FormDocumentEntity } from './form-document.entity';
+import { Participants } from './participants.entity';
 
 export const now = Temporal.Instant.from('2026-01-01T00:00:00Z');
 export const later = Temporal.Instant.from('2026-01-02T00:00:00Z');
@@ -20,16 +22,19 @@ export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
   formatId: 'format-1',
   typeId: 'type-1',
   levelId: 'level-1',
-  participants: {
-    students: 7,
-    employees: 2,
-    others: 0,
-  },
+  participants: new Participants(7, 2, 0),
   guests: [],
   team: [],
   status: FormStatus.Draft,
   reason: null,
   submitterId: 'user-1',
+  document: FormDocumentEntity.restore({
+    id: 'form-doc-1',
+    generatedId: 'gen-1',
+    scanId: 'scan-1',
+    createdAt: now,
+    uploadedAt: null,
+  })._unsafeUnwrap(),
   createdAt: now,
   updatedAt: now,
   reviewedAt: null,

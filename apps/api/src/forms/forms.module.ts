@@ -9,6 +9,7 @@ import { ApproveFormModule } from './use-cases/approve-form/approve-form.module'
 import { CancelFormModule } from './use-cases/cancel-form/cancel-form.module';
 import { RejectFormModule } from './use-cases/reject-form/reject-form.module';
 import { StartFormReviewModule } from './use-cases/start-form-review/start-form-review.module';
+import { GenerateDocumentModule } from './use-cases/generate-document/generate-document.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { StartFormReviewModule } from './use-cases/start-form-review/start-form-
     CancelFormModule,
     ConvertToDraftModule,
     CreateFormModule,
+    GenerateDocumentModule,
     GetFormModule,
     MarkFormReadyModule,
     RejectFormModule,

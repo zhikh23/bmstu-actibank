@@ -32,6 +32,7 @@ import {
   AuthenticatedUser,
   UserRole,
 } from '../../shared/domain/authenticated-user.entity';
+import { GenerateDocumentResponse } from './dto/generate-document.response';
 
 @Controller('forms')
 @ApiTags('Forms')
@@ -165,6 +166,36 @@ export class FormsController {
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<CreateFormResponse> {
     return this.formService.create(user, dto);
+  }
+
+  @Post(':id/generate')
+  @ApiOperation({
+    summary: 'Сгенерировать документ',
+    description:
+      'Генерирует документ для печати для указанной формы. Данный документ следует распечатать, поставить ' +
+      'подпись заявителя и загрузить его скан в соответствующий метод с указанием той же формы.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiOkResponse({
+    description: 'Документ успешно сгенерирован и прикреплен к форме.',
+    type: GenerateDocumentResponse,
+  })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на чтение формы.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
+  async generateDocument(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<GenerateDocumentResponse> {
+    return this.formService.generate(user, id);
   }
 
   @Get(':id')

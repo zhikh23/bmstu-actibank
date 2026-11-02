@@ -59,7 +59,7 @@ export class FilesService {
       (file) =>
         new StreamableFile(file.body, {
           type: file.contentType,
-          disposition: file.filename,
+          disposition: `attachment; filename="${file.filename}"`,
           length: file.contentLength,
         }),
       (err) => {

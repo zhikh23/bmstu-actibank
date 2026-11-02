@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FormRepository } from './form.repository';
 import {
+  FormDocumentModel,
   FormGuest,
   FormLink,
   FormMember,
@@ -21,6 +22,7 @@ import {
       FormTheme,
       FormGuest,
       FormMember,
+      FormDocumentModel,
     ]),
   ],
   providers: [FormRepository],

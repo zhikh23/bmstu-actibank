@@ -4,6 +4,7 @@ import { FormsError } from './errors';
 import { Participants } from './participants.entity';
 import { Guest } from './guest.entity';
 import { Member } from './member.entity';
+import { FormDocumentEntity } from './form-document.entity';
 import Instant = Temporal.Instant;
 import Now = Temporal.Now;
 import PlainDateTime = Temporal.PlainDateTime;
@@ -48,6 +49,7 @@ export type FormInit = FormCreate & {
   status: FormStatus;
   reason: string | null;
   submitterId: string;
+  document: FormDocumentEntity | null;
   createdAt: Instant;
   updatedAt: Instant;
   reviewedAt: Instant | null;
@@ -75,6 +77,7 @@ export class FormEntity {
   declare status: FormStatus;
   declare reason: string | null;
   declare submitterId: string;
+  declare document: FormDocumentEntity | null;
   declare createdAt: Instant;
   declare updatedAt: Instant;
   declare reviewedAt: Instant | null;
@@ -99,6 +102,7 @@ export class FormEntity {
         ...init,
         status: FormStatus.Draft,
         reason: null,
+        document: null,
         createdAt: now,
         updatedAt: now,
         reviewedAt: null,
@@ -164,6 +168,14 @@ export class FormEntity {
       );
     }
 
+    if (init.status != FormStatus.Draft && init.document?.hasScan() !== true) {
+      return err(
+        FormsError.invariant(
+          'form must have attached document with scan if status is not draft',
+        ),
+      );
+    }
+
     return ok();
   }
 
@@ -201,6 +213,13 @@ export class FormEntity {
 
   // Преобразовывает заявку в состояние, готовое к модерации.
   public markReady(now: Instant = Now.instant()): Result<void, FormsError> {
+    if (this.document?.hasScan() !== true) {
+      return err(
+        FormsError.invariant(
+          'form must have attached document with scan to be marked ready',
+        ),
+      );
+    }
     const t = this.transition(FormStatus.Pending, now);
     if (t.isErr()) {
       return t;
@@ -261,5 +280,33 @@ export class FormEntity {
   // Идемпотентная операция удаления сущности.
   public delete(now: Instant = Now.instant()) {
     this.deletedAt = now;
+  }
+
+  public attachDocument(
+    document: FormDocumentEntity,
+  ): Result<void, FormsError> {
+    if (this.document) {
+      return err(FormsError.invariant('document is already attached'));
+    }
+    if (this.status != FormStatus.Draft) {
+      return err(
+        FormsError.invariant(
+          'document can be attached only if form is in draft status',
+        ),
+      );
+    }
+    this.document = document;
+    return ok();
+  }
+
+  public ensureSubmitter(userId: string): Result<void, FormsError> {
+    if (userId != this.submitterId) {
+      return err(FormsError.forbidden('user is not submitter'));
+    }
+    return ok();
+  }
+
+  public duration(): Temporal.Duration {
+    return this.start.until(this.end);
   }
 }
