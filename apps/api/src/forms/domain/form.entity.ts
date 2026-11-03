@@ -334,6 +334,13 @@ export class FormEntity {
     return ok();
   }
 
+  public ensureHasDocument(): Result<FormDocumentEntity, FormsError> {
+    if (!this.document) {
+      return err(FormsError.invariant('form has no generated document'));
+    }
+    return ok(this.document);
+  }
+
   public duration(): Temporal.Duration {
     return this.start.until(this.end);
   }

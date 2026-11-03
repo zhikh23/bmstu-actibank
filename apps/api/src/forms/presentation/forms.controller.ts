@@ -35,6 +35,7 @@ import {
 } from '../../shared/domain/authenticated-user.entity';
 import { GenerateDocumentResponse } from './dto/generate-document.response';
 import { UpdateFormRequest } from './dto/update-form.request';
+import { AttachDocumentRequest } from './dto/attach-document.request';
 
 @Controller('forms')
 @ApiTags('Forms')
@@ -73,6 +74,48 @@ export class FormsController {
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
     return this.formService.approve(user, id);
+  }
+
+  @Post(':id/attach-document')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Прикрепить скан документа к форме',
+    description:
+      'Прикрепляет к форме ранее загруженный файл со сканом подписанного документа.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiBody({
+    description: 'Идентификатор файла со сканом документа.',
+    type: AttachDocumentRequest,
+  })
+  @ApiNoContentResponse({
+    description: 'Скан документа успешно прикреплён к форме.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Переданы некорректные данные запроса.',
+  })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на прикрепление документа.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'Документ нельзя прикрепить к форме.',
+  })
+  @Roles(UserRole.Applicant)
+  @UseGuards(RolesGuard)
+  async attachDocument(
+    @Param('id') id: string,
+    @Body() dto: AttachDocumentRequest,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.attach(user, id, dto);
   }
 
   @Post(':id/cancel')

@@ -26,6 +26,8 @@ import { FormsError } from '../domain/errors';
 import { FormType } from '../use-cases/get-form/get-form.data';
 import { UpdateFormHandler } from '../use-cases/update-form/update-form.handler';
 import { UpdateFormRequest } from './dto/update-form.request';
+import { AttachDocumentHandler } from '../use-cases/attach-document/attach-document.handler';
+import { AttachDocumentRequest } from './dto/attach-document.request';
 
 @Injectable()
 export class FormsService {
@@ -33,6 +35,7 @@ export class FormsService {
 
   constructor(
     private readonly approveForm: ApproveFormHandler,
+    private readonly attachDocument: AttachDocumentHandler,
     private readonly cancelForm: CancelFormHandler,
     private readonly convertToDraftForm: ConvertToDraftFormHandler,
     private readonly createForm: CreateFormHandler,
@@ -49,6 +52,23 @@ export class FormsService {
       () => {},
       (error) => this.handlerError(error),
     );
+  }
+
+  async attach(
+    actor: AuthenticatedUser,
+    formId: string,
+    dto: AttachDocumentRequest,
+  ): Promise<void> {
+    return this.attachDocument
+      .execute({
+        actorId: actor.id,
+        formId,
+        fileId: dto.fileId,
+      })
+      .match(
+        () => {},
+        (error) => this.handlerError(error),
+      );
   }
 
   async cancel(actor: AuthenticatedUser, formId: string): Promise<void> {
