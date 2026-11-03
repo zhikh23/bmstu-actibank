@@ -54,7 +54,7 @@ export class FormDocumentEntity {
   ): Result<void, FormsError> {
     if (this.scanId !== null) {
       return err(
-        FormsError.invalidOp(`document scan has already been attached`),
+        FormsError.invariant(`document scan has already been attached`),
       );
     }
     this.scanId = scanId;

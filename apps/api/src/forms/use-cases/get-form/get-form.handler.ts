@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Result, ResultAsync, okAsync } from 'neverthrow';
+import { ResultAsync, okAsync } from 'neverthrow';
 import { FormRepository } from '../../infra/repository/form.repository';
 import { FormsError } from '../../domain/errors';
 import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
@@ -23,7 +23,7 @@ export class GetFormHandler {
     private readonly catalog: CatalogService,
   ) {}
 
-  async execute(cmd: GetFormCommand): Promise<Result<FormType, FormsError>> {
+  execute(cmd: GetFormCommand): ResultAsync<FormType, FormsError> {
     return this.repository
       .get(cmd.formId)
       .andThen((form) =>

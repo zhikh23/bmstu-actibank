@@ -14,14 +14,14 @@ export class FormRepository {
     private readonly repository: Repository<FormModel>,
   ) {}
 
-  save(f: FormEntity): ResultAsync<void, FormsError> {
+  save(f: FormEntity): ResultAsync<FormEntity, FormsError> {
     return ResultAsync.fromPromise(
       this.repository.save(FormMapper.toModel(f)),
       (error): FormsError =>
         FormsError.repository(
           error instanceof Error ? error.message : String(error),
         ),
-    ).map(() => undefined);
+    ).map(() => f);
   }
 
   update(f: FormEntity): ResultAsync<void, FormsError> {

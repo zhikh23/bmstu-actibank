@@ -22,6 +22,8 @@ import { RejectFormRequest } from './dto/reject-form.request';
 import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
 import { GenerateDocumentResponse } from './dto/generate-document.response';
 import { GenerateDocumentHandler } from '../use-cases/generate-document/generate-document.handler';
+import { FormsError } from '../domain/errors';
+import { FormType } from '../use-cases/get-form/get-form.data';
 
 @Injectable()
 export class FormsService {
@@ -40,108 +42,44 @@ export class FormsService {
   ) {}
 
   async approve(actor: AuthenticatedUser, formId: string): Promise<void> {
-    const result = await this.approveForm.execute({ actor, formId });
-
-    if (result.isErr()) {
-      const err = result.error;
-      switch (err.kind) {
-        case 'InvalidStateTransition':
-          throw new BadRequestException(
-            'Form is not in a state that allows approving',
-          );
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
+    return this.approveForm.execute({ actor, formId }).match(
+      () => {},
+      (error) => this.handlerError(error),
+    );
   }
 
   async cancel(actor: AuthenticatedUser, formId: string): Promise<void> {
-    const result = await this.cancelForm.execute({ actor, formId });
-
-    if (result.isErr()) {
-      const err = result.error;
-      switch (err.kind) {
-        case 'InvalidStateTransition':
-          throw new BadRequestException(
-            'Form is not in a state that allows canceling',
-          );
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
+    return this.cancelForm.execute({ actor, formId }).match(
+      () => {},
+      (error) => this.handlerError(error),
+    );
   }
 
   async create(
     actor: AuthenticatedUser,
     dto: CreateFormRequest,
   ): Promise<CreateFormResponse> {
-    const createRes = await this.createForm.execute({
-      actor,
-      name: dto.name,
-      description: dto.description,
-      organizers: dto.organizers,
-      links: dto.links,
-      venues: dto.venues,
-      themes: dto.themes,
-      start: dto.start,
-      end: dto.end,
-      formatId: dto.formatId,
-      typeId: dto.typeId,
-      levelId: dto.levelId,
-      participants: dto.participants,
-      guests: dto.guests,
-      team: dto.team,
-    });
-
-    if (createRes.isErr()) {
-      const err = createRes.error;
-      switch (err.kind) {
-        case 'InvariantViolation':
-          throw new UnprocessableEntityException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
-
-    const form = createRes.value;
-    return {
-      formId: form.id,
-    };
+    return this.createForm
+      .execute({
+        actor,
+        ...dto,
+      })
+      .match(
+        (form) => ({
+          formId: form.id,
+        }),
+        (error) => this.handlerError(error),
+      );
   }
 
   async convertToDraft(
     actor: AuthenticatedUser,
     formId: string,
   ): Promise<void> {
-    const result = await this.convertToDraftForm.execute({ actor, formId });
-
-    if (result.isErr()) {
-      const err = result.error;
-      switch (err.kind) {
-        case 'InvalidStateTransition':
-          throw new BadRequestException(
-            'Form is not in a state that allows converting to draft',
-          );
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
+    return this.convertToDraftForm.execute({ actor, formId }).match(
+      () => {},
+      (error) => this.handlerError(error),
+    );
   }
 
   async generate(
@@ -150,17 +88,7 @@ export class FormsService {
   ): Promise<GenerateDocumentResponse> {
     return await this.generateDocument.execute({ actor, formId }).match(
       (res) => res,
-      (error) => {
-        switch (error.kind) {
-          case 'Forbidden':
-            throw new ForbiddenException(error.reason);
-          case 'NotFound':
-            throw new NotFoundException(error.message);
-          default:
-            this.logger.error(error);
-            throw new InternalServerErrorException();
-        }
-      },
+      (error) => this.handlerError(error),
     );
   }
 
@@ -168,35 +96,46 @@ export class FormsService {
     actor: AuthenticatedUser,
     formId: string,
   ): Promise<GetFormResponse> {
-    const getRes = await this.getForm.execute({ actor, formId });
+    return this.getForm.execute({ actor, formId }).match(
+      (form) => this.mapFormToResponse(form),
+      (error) => this.handlerError(error),
+    );
+  }
 
-    if (getRes.isErr()) {
-      const err = getRes.error;
-      switch (err.kind) {
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
+  async markReady(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.markFormReady.execute({ actor, formId }).match(
+      () => {},
+      (error) => this.handlerError(error),
+    );
+  }
 
-    const form = getRes.value;
+  async reject(
+    actor: AuthenticatedUser,
+    formId: string,
+    dto: RejectFormRequest,
+  ): Promise<void> {
+    return this.rejectForm
+      .execute({
+        actor,
+        formId,
+        reason: dto.reason ?? null,
+      })
+      .match(
+        () => {},
+        (error) => this.handlerError(error),
+      );
+  }
+
+  async startReview(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.startFormReview.execute({ actor, formId }).match(
+      () => {},
+      (error) => this.handlerError(error),
+    );
+  }
+
+  private mapFormToResponse(form: FormType): GetFormResponse {
     return {
-      id: form.id,
-      name: form.name,
-      description: form.description,
-      organizers: form.organizers,
-      links: form.links,
-      venues: form.venues,
-      themes: form.themes,
-      start: form.start,
-      end: form.end,
-      format: form.format,
-      type: form.type,
-      level: form.level,
+      ...form,
       participants: {
         students: form.participants.students,
         employees: form.participants.employees,
@@ -210,11 +149,6 @@ export class FormsService {
         userId: m.userId,
         role: m.role,
       })),
-      status: form.status,
-      reason: form.reason,
-      submitterId: form.submitterId,
-      reviewerId: form.reviewerId,
-      document: form.document,
       createdAt: form.createdAt.toISOString(),
       updatedAt: form.updatedAt.toISOString(),
       reviewedAt: form.reviewedAt ? form.reviewedAt.toISOString() : null,
@@ -222,76 +156,21 @@ export class FormsService {
     };
   }
 
-  async markReady(actor: AuthenticatedUser, formId: string): Promise<void> {
-    const result = await this.markFormReady.execute({ actor, formId });
-
-    if (result.isErr()) {
-      const err = result.error;
-      switch (err.kind) {
-        case 'InvalidStateTransition':
-          throw new BadRequestException(
-            'Form is not in a state that allows marking as ready',
-          );
-        case 'InvalidOperationError':
-          throw new BadRequestException(err.message);
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
-  }
-
-  async reject(
-    actor: AuthenticatedUser,
-    formId: string,
-    dto: RejectFormRequest,
-  ): Promise<void> {
-    const result = await this.rejectForm.execute({
-      actor,
-      formId,
-      reason: dto.reason ?? null,
-    });
-
-    if (result.isErr()) {
-      const err = result.error;
-      switch (err.kind) {
-        case 'InvalidStateTransition':
-          throw new BadRequestException(
-            'Form is not in a state that allows rejecting',
-          );
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
-    }
-  }
-
-  async startReview(actor: AuthenticatedUser, formId: string): Promise<void> {
-    const result = await this.startFormReview.execute({ actor, formId });
-
-    if (result.isErr()) {
-      const err = result.error;
-      switch (err.kind) {
-        case 'InvalidStateTransition':
-          throw new BadRequestException(
-            'Form is not in a state that allows starting review',
-          );
-        case 'Forbidden':
-          throw new ForbiddenException(err.reason);
-        case 'NotFound':
-          throw new NotFoundException(err.message);
-        default:
-          this.logger.error(err);
-          throw new InternalServerErrorException();
-      }
+  private handlerError(error: FormsError): never {
+    switch (error.kind) {
+      case 'InvalidStateTransition':
+        throw new BadRequestException(
+          `Invalid transition: ${error.from} -> ${error.to}`,
+        );
+      case 'Forbidden':
+        throw new ForbiddenException(error.reason);
+      case 'NotFound':
+        throw new NotFoundException(error.message);
+      case 'InvariantViolation':
+        throw new UnprocessableEntityException(error.message);
+      default:
+        this.logger.error(error);
+        throw new InternalServerErrorException();
     }
   }
 }

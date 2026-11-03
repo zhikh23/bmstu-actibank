@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FormRepository } from '../../infra/repository/form.repository';
-import { err, ok, Result } from 'neverthrow';
+import { err, ok, Result, ResultAsync } from 'neverthrow';
 import { FormEntity } from '../../domain/form.entity';
 import { FormsError } from '../../domain/errors';
 import { UUID_PORT, type UuidPort } from '../../../shared/infra/uuid/uuid.port';
@@ -8,7 +8,6 @@ import { ParticipantsType } from '../../../shared/types/participants.type';
 import { GuestType } from '../../../shared/types/guest.type';
 import { MemberType } from '../../../shared/types/member.type';
 
-import PlainDateTime = Temporal.PlainDateTime;
 import { Member } from '../../domain/member.entity';
 import { Guest } from '../../domain/guest.entity';
 import {
@@ -38,50 +37,39 @@ export type CreateFormCommand = {
 @Injectable()
 export class CreateFormHandler {
   constructor(
-    private readonly formRepository: FormRepository,
+    private readonly repository: FormRepository,
     @Inject(UUID_PORT) private readonly uuid: UuidPort,
   ) {}
 
-  async execute(
-    cmd: CreateFormCommand,
-  ): Promise<Result<FormEntity, FormsError>> {
-    if (cmd.actor.roles.includes(UserRole.Applicant))
+  execute(cmd: CreateFormCommand): ResultAsync<FormEntity, FormsError> {
+    return this.ensureCanCreateForm(cmd.actor)
+      .andThen(() =>
+        FormEntity.create({
+          id: this.uuid.generate(),
+          ...cmd,
+          start: Temporal.PlainDateTime.from(cmd.start),
+          end: Temporal.PlainDateTime.from(cmd.end),
+          participants: new Participants(
+            cmd.participants.students,
+            cmd.participants.employees,
+            cmd.participants.others,
+          ),
+          guests: cmd.guests.map((g) => new Guest(g.userId, g.rankId)),
+          team: cmd.team.map((m) => new Member(m.userId, m.roleId)),
+          submitterId: cmd.actor.id,
+        }),
+      )
+      .asyncAndThen((form) => this.repository.save(form));
+  }
+
+  private ensureCanCreateForm(
+    actor: AuthenticatedUser,
+  ): Result<void, FormsError> {
+    if (!actor.roles.includes(UserRole.Applicant)) {
       return err(
         FormsError.forbidden(`form can be created only by applicants`),
       );
-
-    const id = this.uuid.generate();
-    const formResult = FormEntity.create({
-      id: id,
-      name: cmd.name,
-      description: cmd.description,
-      organizers: cmd.organizers,
-      links: cmd.links,
-      venues: cmd.venues,
-      themes: cmd.themes,
-      start: PlainDateTime.from(cmd.start),
-      end: PlainDateTime.from(cmd.end),
-      formatId: cmd.formatId,
-      typeId: cmd.typeId,
-      levelId: cmd.levelId,
-      participants: new Participants(
-        cmd.participants.students,
-        cmd.participants.employees,
-        cmd.participants.others,
-      ),
-      guests: cmd.guests.map((g) => new Guest(g.userId, g.rankId)),
-      team: cmd.team.map((m) => new Member(m.userId, m.roleId)),
-      submitterId: cmd.actor.id,
-    });
-    if (formResult.isErr()) {
-      return err(formResult.error);
     }
-    const form = formResult.value;
-
-    const saveResult = await this.formRepository.save(form);
-    if (saveResult.isErr()) {
-      return err(saveResult.error);
-    }
-    return ok(form);
+    return ok();
   }
 }
