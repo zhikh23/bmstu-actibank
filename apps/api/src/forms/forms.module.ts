@@ -12,11 +12,13 @@ import { StartFormReviewModule } from './use-cases/start-form-review/start-form-
 import { GenerateDocumentModule } from './use-cases/generate-document/generate-document.module';
 import { UpdateFormModule } from './use-cases/update-form/update-form.module';
 import { AttachDocumentModule } from './use-cases/attach-document/attach-document.module';
+import { ListFormsModule } from './use-cases/list-forms/list-forms.module';
 
 @Module({
   imports: [
     ApproveFormModule,
     AttachDocumentModule,
+    ListFormsModule,
     CancelFormModule,
     ConvertToDraftModule,
     CreateFormModule,

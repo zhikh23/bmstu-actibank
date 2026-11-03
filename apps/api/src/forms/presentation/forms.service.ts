@@ -28,6 +28,9 @@ import { UpdateFormHandler } from '../use-cases/update-form/update-form.handler'
 import { UpdateFormRequest } from './dto/update-form.request';
 import { AttachDocumentHandler } from '../use-cases/attach-document/attach-document.handler';
 import { AttachDocumentRequest } from './dto/attach-document.request';
+import { ListFormsHandler } from '../use-cases/list-forms/list-forms.handler';
+import { ListFormsRequest } from './dto/list-forms.request';
+import { ListFormResponse } from './dto/list-forms.response';
 
 @Injectable()
 export class FormsService {
@@ -45,6 +48,7 @@ export class FormsService {
     private readonly rejectForm: RejectFormHandler,
     private readonly startFormReview: StartFormReviewHandler,
     private readonly updateForm: UpdateFormHandler,
+    private readonly listForms: ListFormsHandler,
   ) {}
 
   async approve(actor: AuthenticatedUser, formId: string): Promise<void> {
@@ -121,6 +125,21 @@ export class FormsService {
   ): Promise<GetFormResponse> {
     return this.getForm.execute({ actor, formId }).match(
       (form) => this.mapFormToResponse(form),
+      (error) => this.handlerError(error),
+    );
+  }
+
+  async list(
+    actor: AuthenticatedUser,
+    query: ListFormsRequest,
+  ): Promise<ListFormResponse[]> {
+    return this.listForms.execute({ actor, ...query }).match(
+      (forms) =>
+        forms.map((form) => ({
+          ...form,
+          start: form.start.toISOString(),
+          end: form.end.toISOString(),
+        })),
       (error) => this.handlerError(error),
     );
   }

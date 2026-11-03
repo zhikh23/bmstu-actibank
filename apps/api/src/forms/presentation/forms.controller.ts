@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { FormsService } from './forms.service';
@@ -22,6 +23,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
@@ -36,12 +38,53 @@ import {
 import { GenerateDocumentResponse } from './dto/generate-document.response';
 import { UpdateFormRequest } from './dto/update-form.request';
 import { AttachDocumentRequest } from './dto/attach-document.request';
+import { ListFormsRequest } from './dto/list-forms.request';
+import { ListFormResponse } from './dto/list-forms.response';
 
 @Controller('forms')
 @ApiTags('Forms')
 @ApiCookieAuth('actibank_session')
 export class FormsController {
   constructor(private readonly formService: FormsService) {}
+
+  @Get()
+  @Roles(UserRole.Applicant, UserRole.Moderator)
+  @UseGuards(RolesGuard)
+  @ApiOperation({
+    summary: 'Получить доступные формы',
+    description:
+      'Возвращает краткую информацию о формах, доступных текущему пользователю.',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['draft', 'pending', 'approved', 'reviewing', 'canceled', 'rejected'],
+    description: 'Фильтр по статусу формы.',
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['createdAt', 'start'],
+    description: 'Поле сортировки: дата создания или время начала формы.',
+    example: 'createdAt',
+  })
+  @ApiQuery({
+    name: 'sortOrder',
+    required: false,
+    enum: ['asc', 'desc'],
+    description: 'Порядок сортировки.',
+    example: 'desc',
+  })
+  @ApiOkResponse({
+    description: 'Формы успешно найдены.',
+    type: [ListFormResponse],
+  })
+  async listForms(
+    @Query() req: ListFormsRequest,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<ListFormResponse[]> {
+    return this.formService.list(user, req);
+  }
 
   @Post(':id/approve')
   @HttpCode(HttpStatus.NO_CONTENT)
