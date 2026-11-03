@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -33,6 +34,7 @@ import {
   UserRole,
 } from '../../shared/domain/authenticated-user.entity';
 import { GenerateDocumentResponse } from './dto/generate-document.response';
+import { UpdateFormRequest } from './dto/update-form.request';
 
 @Controller('forms')
 @ApiTags('Forms')
@@ -258,6 +260,44 @@ export class FormsController {
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<void> {
     return this.formService.markReady(user, id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({
+    summary: 'Обновить форму',
+    description:
+      'Изменяет поля формы. Редактировать форму может только заявитель, и только пока она находится в состоянии черновика.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiOkResponse({
+    description: 'Форма успешно обновлена.',
+    type: GetFormResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Переданы некорректные данные запроса.',
+  })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на редактирование формы.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'Данные формы нарушают бизнес-правила.',
+  })
+  @Roles(UserRole.Applicant)
+  @UseGuards(RolesGuard)
+  async updateForm(
+    @Param('id') id: string,
+    @Body() dto: UpdateFormRequest,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<GetFormResponse> {
+    return this.formService.update(user, id, dto);
   }
 
   @Post(':id/reject')

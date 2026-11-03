@@ -10,6 +10,7 @@ import { CancelFormModule } from './use-cases/cancel-form/cancel-form.module';
 import { RejectFormModule } from './use-cases/reject-form/reject-form.module';
 import { StartFormReviewModule } from './use-cases/start-form-review/start-form-review.module';
 import { GenerateDocumentModule } from './use-cases/generate-document/generate-document.module';
+import { UpdateFormModule } from './use-cases/update-form/update-form.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { GenerateDocumentModule } from './use-cases/generate-document/generate-d
     MarkFormReadyModule,
     RejectFormModule,
     StartFormReviewModule,
+    UpdateFormModule,
   ],
   controllers: [FormsController],
   providers: [FormsService],

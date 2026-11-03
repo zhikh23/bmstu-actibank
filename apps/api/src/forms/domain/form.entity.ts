@@ -58,6 +58,10 @@ export type FormInit = FormCreate & {
   deletedAt: Instant | null;
 };
 
+export type FormEditableFields = Omit<FormCreate, 'id' | 'submitterId'>;
+
+export type FormUpdate = Partial<FormEditableFields>;
+
 export class FormEntity {
   declare id: string;
   declare name: string;
@@ -177,6 +181,30 @@ export class FormEntity {
     }
 
     return ok();
+  }
+
+  public update(
+    changes: FormUpdate,
+    now: Instant = Temporal.Now.instant(),
+  ): Result<FormEntity, FormsError> {
+    if (this.status !== FormStatus.Draft) {
+      return err(
+        FormsError.invariant('form can be updated only in draft status'),
+      );
+    }
+
+    const updated = { ...this, ...changes };
+    const v = FormEntity.validate(updated);
+    if (v.isErr()) {
+      return err(v.error);
+    }
+
+    Object.assign(this, updated);
+    this.updatedAt = now;
+    // Инвалидация документа при изменении полей формы, чтобы не было несоответствия между документом и формой
+    this.document = null;
+
+    return ok(this);
   }
 
   private transition(

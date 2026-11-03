@@ -24,6 +24,8 @@ import { GenerateDocumentResponse } from './dto/generate-document.response';
 import { GenerateDocumentHandler } from '../use-cases/generate-document/generate-document.handler';
 import { FormsError } from '../domain/errors';
 import { FormType } from '../use-cases/get-form/get-form.data';
+import { UpdateFormHandler } from '../use-cases/update-form/update-form.handler';
+import { UpdateFormRequest } from './dto/update-form.request';
 
 @Injectable()
 export class FormsService {
@@ -39,6 +41,7 @@ export class FormsService {
     private readonly markFormReady: MarkFormReadyHandler,
     private readonly rejectForm: RejectFormHandler,
     private readonly startFormReview: StartFormReviewHandler,
+    private readonly updateForm: UpdateFormHandler,
   ) {}
 
   async approve(actor: AuthenticatedUser, formId: string): Promise<void> {
@@ -131,6 +134,23 @@ export class FormsService {
       () => {},
       (error) => this.handlerError(error),
     );
+  }
+
+  async update(
+    actor: AuthenticatedUser,
+    formId: string,
+    dto: UpdateFormRequest,
+  ): Promise<GetFormResponse> {
+    return this.updateForm
+      .execute({
+        actor,
+        id: formId,
+        ...dto,
+      })
+      .match(
+        (form) => this.mapFormToResponse(form),
+        (error) => this.handlerError(error),
+      );
   }
 
   private mapFormToResponse(form: FormType): GetFormResponse {

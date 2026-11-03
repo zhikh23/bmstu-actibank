@@ -65,6 +65,15 @@ export const FormAccess = {
     );
   },
 
+  canUpdate(form: FormEntity, user: AuthenticatedUser): AccessDecision {
+    return checkAccess(
+      form,
+      user,
+      Role.Submitter,
+      'form can be updated only by submitter',
+    );
+  },
+
   canConvertToDraft(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
