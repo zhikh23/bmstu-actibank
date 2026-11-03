@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
-import { UserLoginResult } from './user-login.data';
 import { AuthError } from '../../domain/errors';
 import { OidcAdapter } from '../../infrastructure/oidc/oidc.adapter';
+
+export type UserLoginResult = {
+  url: string;
+};
 
 @Injectable()
 export class UserLoginHandler {

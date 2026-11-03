@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { UserLogoutCommand } from './user-logout.data';
 import { ResultAsync } from 'neverthrow';
 import { AuthError } from '../../domain/errors';
+
+export type UserLogoutCommand = {
+  sessionId: string;
+};
 
 @Injectable()
 export class UserLogoutHandler {

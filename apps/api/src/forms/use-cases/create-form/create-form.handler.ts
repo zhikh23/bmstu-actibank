@@ -4,9 +4,6 @@ import { err, ok, Result, ResultAsync } from 'neverthrow';
 import { FormEntity } from '../../domain/form.entity';
 import { FormsError } from '../../domain/errors';
 import { UUID_PORT, type UuidPort } from '../../../shared/infra/uuid/uuid.port';
-import { ParticipantsType } from '../../../shared/types/participants.type';
-import { GuestType } from '../../../shared/types/guest.type';
-import { MemberType } from '../../../shared/types/member.type';
 
 import { Member } from '../../domain/member.entity';
 import { Guest } from '../../domain/guest.entity';
@@ -29,9 +26,19 @@ export type CreateFormCommand = {
   formatId: string;
   typeId: string;
   levelId: string;
-  participants: ParticipantsType;
-  guests: GuestType[];
-  team: MemberType[];
+  participants: {
+    students: number;
+    employees: number;
+    others: number;
+  };
+  guests: {
+    userId: string;
+    rankId: string;
+  }[];
+  team: {
+    userId: string;
+    roleId: string;
+  }[];
 };
 
 @Injectable()

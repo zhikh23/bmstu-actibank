@@ -2,13 +2,22 @@ import { Inject, Injectable } from '@nestjs/common';
 import { OidcAdapter } from '../../infrastructure/oidc/oidc.adapter';
 import { UserRepository } from '../../infrastructure/repositories/user.repository';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { AuthCallbackCommand, AuthCallbackResult } from './auth-callback.data';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
 import { AuthError } from '../../domain/errors';
 import { UUID_PORT, UuidPort } from '../../../shared/infra/uuid/uuid.port';
 import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
+
+export type AuthCallbackCommand = {
+  code: string;
+  state: string;
+};
+
+export type AuthCallbackResult = {
+  sessionId: string;
+  maxAge: number;
+};
 
 @Injectable()
 export class AuthCallbackHandler {
