@@ -33,4 +33,14 @@ export class ThemeRepository {
       );
     });
   }
+
+  getAllThemes(): ResultAsync<Theme[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(ThemeMapper.toDomain));
+  }
 }

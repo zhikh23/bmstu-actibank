@@ -6,6 +6,13 @@ import {
   OrganizationCategoryModel,
   OrganizationModel,
 } from './organization.model';
+import { Organization } from '../../../domain/organization.entity';
+
+export class OrganizationMapper {
+  static toDomain(m: OrganizationModel): Organization {
+    return new Organization(m.id, m.name);
+  }
+}
 
 export class CategoryMapper {
   static toReadModel(m: OrganizationCategoryModel): Category {

@@ -6,3 +6,8 @@ export type OrganizationWithCategory = {
   name: string;
   category: Category;
 };
+
+export type OrganizationCategory = {
+  id: string;
+  name: string;
+};

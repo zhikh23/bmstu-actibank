@@ -4,11 +4,18 @@ import {
   OrganizationCategoryModel,
   OrganizationModel,
 } from './organization.model';
-import { Repository } from 'typeorm';
-import { ResultAsync, err, errAsync, okAsync } from 'neverthrow';
-import { OrganizationWithCategory } from './organization-with-category.read-model';
+import { IsNull, Repository } from 'typeorm';
+import { ResultAsync, errAsync, okAsync } from 'neverthrow';
+import {
+  OrganizationCategory,
+  OrganizationWithCategory,
+} from './organization-with-category.read-model';
 import { CatalogError } from '../../../domain/errors';
-import { OrganizationWithCategoryMapper } from './organization.mapper';
+import {
+  OrganizationMapper,
+  OrganizationWithCategoryMapper,
+} from './organization.mapper';
+import { Organization } from '../../../domain/organization.entity';
 
 @Injectable()
 export class OrganizationRepository {
@@ -16,6 +23,47 @@ export class OrganizationRepository {
     @InjectRepository(OrganizationModel)
     private readonly repository: Repository<OrganizationModel>,
   ) {}
+
+  getRootCategories(): ResultAsync<OrganizationCategory[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.manager.getRepository(OrganizationCategoryModel).find({
+        where: { parent_id: IsNull() },
+      }),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(({ id, name }) => ({ id, name })));
+  }
+
+  getChildCategories(
+    parentId: string,
+  ): ResultAsync<OrganizationCategory[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.manager.getRepository(OrganizationCategoryModel).find({
+        where: { parent_id: parentId },
+      }),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(({ id, name }) => ({ id, name })));
+  }
+
+  getByCategory(categoryId: string): ResultAsync<Organization[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find({
+        where: { category_id: categoryId },
+        relations: { category: true },
+      }),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) =>
+      models.map((model) => OrganizationMapper.toDomain(model)),
+    );
+  }
 
   getWithCategories(
     id: string,

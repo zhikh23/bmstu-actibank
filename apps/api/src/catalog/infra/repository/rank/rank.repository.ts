@@ -33,4 +33,14 @@ export class RankRepository {
       );
     });
   }
+
+  getAllRanks(): ResultAsync<Rank[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(RankMapper.toDomain));
+  }
 }

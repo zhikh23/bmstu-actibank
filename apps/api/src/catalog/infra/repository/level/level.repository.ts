@@ -29,4 +29,14 @@ export class LevelRepository {
         : errAsync(CatalogError.notFound(`level with "${id}" not found`));
     });
   }
+
+  getAll(): ResultAsync<Level[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(LevelMapper.toDomain));
+  }
 }

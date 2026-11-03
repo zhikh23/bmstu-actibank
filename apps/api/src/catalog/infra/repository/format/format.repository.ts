@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FormatModel } from './format.model';
 import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { Level } from '../../../domain/level.entity';
+import { Format } from '../../../domain/format.entity';
 import { CatalogError } from '../../../domain/errors';
 import { FormatMapper } from './format.mapper';
 
@@ -14,7 +14,7 @@ export class FormatRepository {
     private readonly repository: Repository<FormatModel>,
   ) {}
 
-  get(id: string): ResultAsync<Level, CatalogError> {
+  get(id: string): ResultAsync<Format, CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.findOne({
         where: { id },
@@ -28,5 +28,15 @@ export class FormatRepository {
         ? okAsync(FormatMapper.toDomain(model))
         : errAsync(CatalogError.notFound(`format with "${id}" not found`));
     });
+  }
+
+  getAll(): ResultAsync<Format[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(FormatMapper.toDomain));
   }
 }

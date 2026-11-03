@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EventTypeModel } from './event-type.model';
 import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { Level } from '../../../domain/level.entity';
+import { EventType } from '../../../domain/event-type.entity';
 import { CatalogError } from '../../../domain/errors';
 import { EventTypeMapper } from './event-type.mapper';
 
@@ -14,7 +14,7 @@ export class EventTypeRepository {
     private readonly repository: Repository<EventTypeModel>,
   ) {}
 
-  get(id: string): ResultAsync<Level, CatalogError> {
+  get(id: string): ResultAsync<EventType, CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.findOne({
         where: { id },
@@ -28,5 +28,15 @@ export class EventTypeRepository {
         ? okAsync(EventTypeMapper.toDomain(model))
         : errAsync(CatalogError.notFound(`event type with "${id}" not found`));
     });
+  }
+
+  getAll(): ResultAsync<EventType[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(EventTypeMapper.toDomain));
   }
 }

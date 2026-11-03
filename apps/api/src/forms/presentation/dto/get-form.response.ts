@@ -5,9 +5,9 @@ import { ThemeDto } from '../../../shared/presentation/dto/theme.dto';
 import { EventTypeDto } from '../../../shared/presentation/dto/event-type.dto';
 import { FormatDto } from '../../../shared/presentation/dto/format.dto';
 import { LevelDto } from '../../../shared/presentation/dto/level.dto';
-import { RoleDto } from '../../../shared/presentation/dto/role.dto';
-import { OrganizationDto } from '../../../shared/presentation/dto/organization.dto';
+import { RoleWithCategoryDto } from '../../../shared/presentation/dto/role-with-category.dto';
 import { RankDto } from '../../../shared/presentation/dto/rank.dto';
+import { OrganizationWithCategoryDto } from '../../../shared/presentation/dto/organization-with-category.dto';
 
 export class GetFormGuestDto {
   @ApiProperty({
@@ -32,9 +32,9 @@ export class GetFormMemberDto {
 
   @ApiProperty({
     description: 'Роль члена оргкомитета',
-    type: RoleDto,
+    type: RoleWithCategoryDto,
   })
-  declare role: RoleDto;
+  declare role: RoleWithCategoryDto;
 }
 
 export class GetFormDocumentDto {
@@ -90,9 +90,9 @@ export class GetFormResponse {
 
   @ApiProperty({
     description: 'Организации-организаторы мероприятия',
-    type: [OrganizationDto],
+    type: [OrganizationWithCategoryDto],
   })
-  declare organizers: OrganizationDto[];
+  declare organizers: OrganizationWithCategoryDto[];
 
   @ApiProperty({
     description: 'Ссылки на упоминания мероприятия',

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { ResultAsync, okAsync, errAsync } from 'neverthrow';
+import { Building } from '../../../domain/building.entity';
+import { BuildingModel } from './venue.model';
 import { VenueModel } from './venue.model';
 import { VenueWithBuilding } from './venue-with-building.read-model';
 import { CatalogError } from '../../../domain/errors';
@@ -12,7 +14,21 @@ export class VenueRepository {
   constructor(
     @InjectRepository(VenueModel)
     private readonly repository: Repository<VenueModel>,
+    @InjectRepository(BuildingModel)
+    private readonly buildingRepository: Repository<BuildingModel>,
   ) {}
+
+  getAllBuildings(): ResultAsync<Building[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.buildingRepository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) =>
+      models.map((model) => new Building(model.id, model.name)),
+    );
+  }
 
   getWithBuilding(id: string): ResultAsync<VenueWithBuilding, CatalogError> {
     return ResultAsync.fromPromise(
@@ -59,5 +75,20 @@ export class VenueRepository {
         }),
       );
     });
+  }
+
+  getAllWithBuilding(
+    buildingId: string,
+  ): ResultAsync<VenueWithBuilding[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find({
+        where: { building_id: buildingId },
+        relations: { building: true },
+      }),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(VenueWithBuildingMapper.toReadModel));
   }
 }

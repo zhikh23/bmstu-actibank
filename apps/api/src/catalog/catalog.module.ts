@@ -6,6 +6,10 @@ import { GetThemesModule } from './use-cases/get-themes/get-themes.module';
 import { GetVenuesModule } from './use-cases/get-venues/get-venues.module';
 import { GetOrganizationsModule } from './use-cases/get-organizations/get-organizations.module';
 import { GetRanksModule } from './use-cases/get-ranks/get-ranks.module';
+import { CatalogServiceModule } from './external/catalog-service.module';
+import { CatalogController } from './presentation/catalog.controller';
+import { GetCatalogModule } from './use-cases/get-catalog/get-catalog.module';
+import { CatalogService } from './presentation/catalog.service';
 
 @Module({
   imports: [
@@ -16,6 +20,10 @@ import { GetRanksModule } from './use-cases/get-ranks/get-ranks.module';
     GetVenuesModule,
     GetOrganizationsModule,
     GetRanksModule,
+    CatalogServiceModule,
+    GetCatalogModule,
   ],
+  controllers: [CatalogController],
+  providers: [CatalogService],
 })
 export class CatalogModule {}

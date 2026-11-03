@@ -10,12 +10,12 @@ import {
   EventTypeDto,
   FormatDto,
   LevelDto,
+  OrganizationWithCategoryDto,
   RankDto,
   RoleDto,
   ThemeDto,
   VenueDto,
 } from './dto';
-import { OrganizationDto } from '../../shared/presentation/dto/organization.dto';
 import { GetThemesHandler } from '../use-cases/get-themes/get-themes.handler';
 import { GetVenuesHandler } from '../use-cases/get-venues/get-venues.handler';
 
@@ -50,7 +50,7 @@ export class CatalogService {
 
   getOrganizations(
     ids: string[],
-  ): ResultAsync<OrganizationDto[], CatalogServiceError> {
+  ): ResultAsync<OrganizationWithCategoryDto[], CatalogServiceError> {
     return this.getOrganizationsHandler.execute({ ids });
   }
 

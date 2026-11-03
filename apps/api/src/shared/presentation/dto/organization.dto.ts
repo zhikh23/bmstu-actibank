@@ -1,6 +1,5 @@
 import { IsString, IsUUID, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { OrganizationCategoryDto } from './organization-category.dto';
 
 export class OrganizationDto {
   @ApiProperty({
@@ -17,10 +16,4 @@ export class OrganizationDto {
   @IsString()
   @Length(1, 128)
   declare name: string;
-
-  @ApiProperty({
-    description: 'Категория, к которой относится организация',
-    type: OrganizationCategoryDto,
-  })
-  declare category: OrganizationCategoryDto;
 }

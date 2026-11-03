@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoleModel } from './role.model';
+import { RoleCategoryModel, RoleModel } from './role.model';
 import { In, Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
 import { RoleWithCategory } from './role-with-category.read-model';
 import { CatalogError } from '../../../domain/errors';
-import { RoleWithCategoryMapper } from './role.mapper';
+import { RoleMapper, RoleWithCategoryMapper } from './role.mapper';
+import { Role } from '../../../domain/role.entity';
 
 @Injectable()
 export class RoleRepository {
@@ -13,6 +14,28 @@ export class RoleRepository {
     @InjectRepository(RoleModel)
     private readonly repository: Repository<RoleModel>,
   ) {}
+
+  getCategories(): ResultAsync<{ id: string; name: string }[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.manager.getRepository(RoleCategoryModel).find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(({ id, name }) => ({ id, name })));
+  }
+
+  getAllByCategory(categoryId: string): ResultAsync<Role[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find({
+        where: { category_id: categoryId },
+      }),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) => models.map(RoleMapper.toDomain));
+  }
 
   getWithCategory(id: string): ResultAsync<RoleWithCategory, CatalogError> {
     return ResultAsync.fromPromise(
