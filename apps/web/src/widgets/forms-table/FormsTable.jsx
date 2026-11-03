@@ -43,8 +43,8 @@ function formatDate(value) {
 function formatDateRange(startValue, endValue) {
   const start = new Date(startValue);
   const end = new Date(endValue);
-  const date = new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
-  const time = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  const date = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const time = new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: '2-digit' });
   if (start.toDateString() === end.toDateString()) {
     return <>{date.format(start)}<small>{time.format(start)}–{time.format(end)}</small></>;
   }

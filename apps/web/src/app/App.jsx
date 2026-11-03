@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FormsListPage } from '../pages/forms-list/ui/FormsListPage.jsx';
 import { Topbar } from '../widgets/topbar/Topbar.jsx';
+import { FormCreatePage } from '../pages/form-create/ui/FormCreatePage.jsx';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState(true);
@@ -22,7 +23,7 @@ export function App() {
           setAuthenticated(false);
         }}
       />
-      <FormsListPage authenticated={authenticated} />
+      {window.location.pathname === '/forms/new' ? <FormCreatePage /> : <FormsListPage authenticated={authenticated} />}
     </div>
   );
 }

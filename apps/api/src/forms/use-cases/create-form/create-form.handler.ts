@@ -58,8 +58,8 @@ export class CreateFormHandler {
           id: this.uuid.generate(),
           slug: this.slug.generate(),
           ...cmd,
-          start: Temporal.PlainDateTime.from(cmd.start),
-          end: Temporal.PlainDateTime.from(cmd.end),
+          start: Temporal.PlainDateTime.from(cmd.start.replace(/Z$/, '')),
+          end: Temporal.PlainDateTime.from(cmd.end.replace(/Z$/, '')),
           participants: new Participants(
             cmd.participants.students,
             cmd.participants.employees,
