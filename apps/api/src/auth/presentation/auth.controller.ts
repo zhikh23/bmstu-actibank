@@ -2,12 +2,14 @@ import { Controller, Get, Query, Req, Res } from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Public } from './auth.decorators';
 import { AuthRequest, AuthResponse } from './http.types';
+import { AuthenticatedUserDto } from './dto/authenticated-user.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -49,5 +51,17 @@ export class AuthController {
     @Res() response: AuthResponse,
   ): Promise<void> {
     return this.auth.logout(request, response);
+  }
+
+  @Get('me')
+  @ApiCookieAuth('actibank_session')
+  @ApiOperation({ summary: 'Получить информацию о текущем пользователе' })
+  @ApiOkResponse({
+    description: 'Информация о пользователе',
+    type: AuthenticatedUserDto,
+  })
+  @ApiOkResponse({ description: 'Пользователь не авторизован' })
+  me(@Req() request: AuthRequest): Promise<AuthenticatedUserDto> {
+    return this.auth.getMe(request);
   }
 }

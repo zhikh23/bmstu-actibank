@@ -6,12 +6,13 @@ import {
 } from '@nestjs/common';
 import { AuthRequest, AuthResponse } from './http.types';
 import { AuthCallbackHandler } from '../use-case/auth-callback/auth-callback.handler';
-import { err } from 'neverthrow';
+import { err, errAsync, okAsync } from 'neverthrow';
 import { AuthError } from '../domain/errors';
 import { UserLoginHandler } from '../use-case/user-login/user-login.handler';
 import { UserLogoutHandler } from '../use-case/user-logout/user-logout.handler';
 import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
 import { GetSessionUserHandler } from '../use-case/get-session-user/get-session-user.handler';
+import { AuthenticatedUserDto } from './dto/authenticated-user.dto';
 
 const SESSION_COOKIE = 'actibank_session';
 
@@ -70,6 +71,21 @@ export class AuthService {
     if (!sessionId) return null;
     return this.sessionUser
       .execute({ sessionId })
+      .match((user) => user, this.handleError);
+  }
+
+  async getMe(request: AuthRequest): Promise<AuthenticatedUserDto> {
+    const sessionId = this.getCookie(request, SESSION_COOKIE);
+    if (!sessionId) {
+      throw new UnauthorizedException('User is not authenticated');
+    }
+    return this.sessionUser
+      .execute({ sessionId })
+      .andThen((user) => {
+        return user
+          ? okAsync(user)
+          : errAsync(AuthError.unauthorized('User is not authenticated'));
+      })
       .match((user) => user, this.handleError);
   }
 
