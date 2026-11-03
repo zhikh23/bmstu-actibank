@@ -55,6 +55,7 @@ export class GetFormHandler {
           roles,
         ]) => ({
           id: form.id,
+          slug: form.slug,
           name: form.name,
           description: form.description,
           organizers,

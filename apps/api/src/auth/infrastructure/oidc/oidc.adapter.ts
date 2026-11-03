@@ -39,11 +39,17 @@ export type LoginState = {
   state: string;
   nonce: string;
   verifier: string;
+  returnTo: string;
 };
 
 export type LoginResult = {
   url: string;
   state: LoginState;
+};
+
+export type CallbackResult = {
+  claims: OidcClaims;
+  returnTo: string;
 };
 
 const DISCOVERY_ERROR = 'OIDC discovery failed';
@@ -71,13 +77,14 @@ export class OidcAdapter {
     );
   }
 
-  login(): ResultAsync<LoginResult, AuthError> {
+  login(returnTo?: string): ResultAsync<LoginResult, AuthError> {
     return this.getMetadata().map((metadata) => {
       const state = this.randomValue();
       const loginState: LoginState = {
         state,
         nonce: this.randomValue(),
         verifier: this.randomValue(),
+        returnTo: this.normalizeReturnTo(returnTo),
       };
 
       this.pending.set(state, loginState);
@@ -100,7 +107,10 @@ export class OidcAdapter {
     });
   }
 
-  callback(code: string, state: string): ResultAsync<OidcClaims, AuthError> {
+  callback(
+    code: string,
+    state: string,
+  ): ResultAsync<CallbackResult, AuthError> {
     const loginState = this.pending.get(state);
     this.pending.delete(state);
 
@@ -109,9 +119,14 @@ export class OidcAdapter {
     }
 
     return this.getMetadata().andThen((metadata) =>
-      this.exchangeCode(code, loginState, metadata).andThen((idToken) =>
-        this.verifyIdToken(idToken, metadata, loginState.nonce),
-      ),
+      this.exchangeCode(code, loginState, metadata)
+        .andThen((idToken) =>
+          this.verifyIdToken(idToken, metadata, loginState.nonce),
+        )
+        .map((claims) => ({
+          claims,
+          returnTo: loginState.returnTo,
+        })),
     );
   }
 
@@ -278,5 +293,17 @@ export class OidcAdapter {
 
   private normalizeIssuer(issuer: string): string {
     return issuer.replace(/\/$/, '');
+  }
+
+  private normalizeReturnTo(value?: string): string {
+    if (
+      !value ||
+      !value.startsWith('/') ||
+      value.startsWith('//') ||
+      value.includes('\\')
+    ) {
+      return '/';
+    }
+    return value;
   }
 }

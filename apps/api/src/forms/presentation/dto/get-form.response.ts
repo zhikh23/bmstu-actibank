@@ -77,6 +77,12 @@ export class GetFormResponse {
   declare id: string;
 
   @ApiProperty({
+    description: 'Уникальный человеко-читаемый идентификатор мероприятия',
+    example: '123ABC',
+  })
+  declare slug: string;
+
+  @ApiProperty({
     description: 'Название мероприятия',
     example: 'IX Псевдонаучная конференция',
   })

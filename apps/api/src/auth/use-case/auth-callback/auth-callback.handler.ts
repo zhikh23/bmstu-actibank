@@ -17,6 +17,7 @@ export type AuthCallbackCommand = {
 export type AuthCallbackResult = {
   sessionId: string;
   maxAge: number;
+  returnTo: string;
 };
 
 @Injectable()
@@ -33,14 +34,18 @@ export class AuthCallbackHandler {
   ): ResultAsync<AuthCallbackResult, AuthError> {
     return this.oidc
       .callback(cmd.code, cmd.state)
-      .map((claims) => claims.sub)
-      .andThen((sub) => this.users.getOrNull(sub))
-      .andThen((user) => {
+      .andThen(({ claims, returnTo }) =>
+        this.users.getOrNull(claims.sub).map((user) => ({ user, returnTo })),
+      )
+      .andThen(({ user, returnTo }) => {
         return user
-          ? okAsync(new AuthenticatedUser(user.id, user.subject, user.roles))
+          ? okAsync({
+              user: new AuthenticatedUser(user.id, user.subject, user.roles),
+              returnTo,
+            })
           : errAsync(AuthError.unauthorized('forbidden'));
       })
-      .andThen((user) => {
+      .andThen(({ user, returnTo }) => {
         const sessionId = this.uuid.generate();
         return ResultAsync.fromPromise(
           this.sessions.set('session:' + sessionId, {
@@ -54,6 +59,7 @@ export class AuthCallbackHandler {
         ).map(() => ({
           sessionId,
           maxAge: SESSION_TTL_MS,
+          returnTo,
         }));
       });
   }

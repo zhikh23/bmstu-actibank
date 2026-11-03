@@ -12,6 +12,8 @@ import {
   UserRole,
 } from '../../../shared/domain/authenticated-user.entity';
 import { Participants } from '../../domain/participants.entity';
+import { SLUG_PORT } from '../../../shared/infra/slug/slug.tokens';
+import { SlugPort } from '../../../shared/infra/slug/slug.port';
 
 export type CreateFormCommand = {
   actor: AuthenticatedUser;
@@ -46,6 +48,7 @@ export class CreateFormHandler {
   constructor(
     private readonly repository: FormRepository,
     @Inject(UUID_PORT) private readonly uuid: UuidPort,
+    @Inject(SLUG_PORT) private readonly slug: SlugPort,
   ) {}
 
   execute(cmd: CreateFormCommand): ResultAsync<FormEntity, FormsError> {
@@ -53,6 +56,7 @@ export class CreateFormHandler {
       .andThen(() =>
         FormEntity.create({
           id: this.uuid.generate(),
+          slug: this.slug.generate(),
           ...cmd,
           start: Temporal.PlainDateTime.from(cmd.start),
           end: Temporal.PlainDateTime.from(cmd.end),

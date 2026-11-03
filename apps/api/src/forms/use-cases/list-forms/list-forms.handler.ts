@@ -6,7 +6,10 @@ import {
   GetAllFormsQuery,
 } from '../../infra/repository/form.repository';
 import { FormsError } from '../../domain/errors';
-import { plainDateTimeToDate } from '../../../shared/utils/dates';
+import {
+  instantToDate,
+  plainDateTimeToDate,
+} from '../../../shared/utils/dates';
 import { FormSummary, ListFormsQuery } from './list-forms.data';
 
 @Injectable()
@@ -25,12 +28,14 @@ export class ListFormsHandler {
     return this.repository.getAll(query).map((forms) =>
       forms.map((form) => ({
         id: form.id,
+        slug: form.slug,
         name: form.name,
         description: form.description,
         start: plainDateTimeToDate(form.start),
         end: plainDateTimeToDate(form.end),
         status: form.status,
         submitterId: form.submitterId,
+        createdAt: instantToDate(form.createdAt),
       })),
     );
   }

@@ -26,6 +26,7 @@ export class FormMapper {
   static toModel(f: FormEntity): FormModel {
     const m = new FormModel();
     m.id = f.id;
+    m.slug = f.slug;
     m.name = f.name;
     m.description = f.description;
     m.start = plainDateTimeToDate(f.start);
@@ -130,6 +131,7 @@ export class FormMapper {
       reason: m.reason,
       reviewedAt: m.reviewed_at ? dateToInstant(m.reviewed_at) : null,
       reviewerId: m.reviewer_id,
+      slug: m.slug,
       start: dateToPlainDateTime(m.start),
       status: m.status,
       submitterId: m.submitter_id,

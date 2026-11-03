@@ -6,6 +6,7 @@ type FormOrganizationCategoryType = {
 
 export type FormType = {
   id: string;
+  slug: string;
   name: string;
   description: string;
   organizers: {

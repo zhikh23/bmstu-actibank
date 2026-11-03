@@ -148,6 +148,9 @@ export class FormModel {
   declare id: string;
 
   @Column('varchar')
+  declare slug: string;
+
+  @Column('varchar')
   declare name: string;
 
   @Column('text')

@@ -11,6 +11,7 @@ export const end = Temporal.PlainDateTime.from('2026-06-01T12:00:00');
 
 export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
   id: 'form-1',
+  slug: '123ABC',
   name: 'Test form',
   description: 'desc',
   organizers: ['org-1'],

@@ -13,10 +13,12 @@ export type ListFormsQuery = {
 
 export type FormSummary = {
   id: string;
+  slug: string;
   name: string;
   description: string;
   start: Date;
   end: Date;
   status: FormStatus;
   submitterId: string;
+  createdAt: Date;
 };

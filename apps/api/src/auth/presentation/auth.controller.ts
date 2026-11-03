@@ -23,8 +23,11 @@ export class AuthController {
     description:
       'Перенаправляет пользователя в OIDC-провайдер. После callback сервер устанавливает session cookie.',
   })
-  login(@Res() response: AuthResponse): Promise<void> {
-    return this.auth.login(response);
+  login(
+    @Query('returnTo') returnTo: string | undefined,
+    @Res() response: AuthResponse,
+  ): Promise<void> {
+    return this.auth.login(response, returnTo);
   }
 
   @Get('callback')

@@ -9,6 +9,12 @@ export class ListFormResponse {
   declare id: string;
 
   @ApiProperty({
+    description: 'Уникальный человеко-читаемый идентификатор мероприятия',
+    example: '123ABC',
+  })
+  declare slug: string;
+
+  @ApiProperty({
     description: 'Название мероприятия',
     example: 'IX Псевдонаучная конференция',
   })
@@ -43,4 +49,11 @@ export class ListFormResponse {
     example: '00000000-0000-0000-0000-000000000000',
   })
   declare submitterId: string;
+
+  @ApiProperty({
+    description: 'Дата и время создания формы',
+    example: '2026-01-01T17:00:00',
+    format: 'date-time',
+  })
+  declare createdAt: string;
 }

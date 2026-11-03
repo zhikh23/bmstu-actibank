@@ -27,9 +27,9 @@ export class AuthService {
     private readonly sessionUser: GetSessionUserHandler,
   ) {}
 
-  async login(response: AuthResponse): Promise<void> {
+  async login(response: AuthResponse, returnTo?: string): Promise<void> {
     await this.userLogin
-      .execute()
+      .execute({ returnTo })
       .match((res) => response.redirect(res.url), this.handleError);
   }
 
@@ -46,7 +46,7 @@ export class AuthService {
         maxAge: res.maxAge,
         path: '/',
       });
-      response.redirect('/');
+      response.redirect(res.returnTo);
     }, this.handleError);
   }
 

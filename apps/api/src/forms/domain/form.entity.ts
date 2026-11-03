@@ -28,6 +28,7 @@ const FORM_STATUS_TRANSITIONS: Record<FormStatus, FormStatus[]> = {
 
 export type FormCreate = {
   id: string;
+  slug: string;
   name: string;
   description: string;
   organizers: string[];
@@ -64,6 +65,7 @@ export type FormUpdate = Partial<FormEditableFields>;
 
 export class FormEntity {
   declare id: string;
+  declare slug: string;
   declare name: string;
   declare description: string;
   declare organizers: string[];

@@ -139,6 +139,7 @@ export class FormsService {
           ...form,
           start: form.start.toISOString(),
           end: form.end.toISOString(),
+          createdAt: form.createdAt.toISOString(),
         })),
       (error) => this.handlerError(error),
     );
