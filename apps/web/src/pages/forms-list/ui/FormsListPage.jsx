@@ -2,30 +2,20 @@ import { useEffect, useState } from 'react';
 import { FormsTable } from '../../../widgets/forms-table/FormsTable.jsx';
 import { FormFilters } from '../../../features/form-filters/FormFilters.jsx';
 import { FormSearch } from '../../../features/form-search/FormSearch.jsx';
+import { listForms } from '../../../entities/form/api.js';
+import { getApiError } from '../../../shared/api/client.js';
 
-export function FormsListPage({ authenticated }) {
+export function FormsListPage({ user }) {
   const [forms, setForms] = useState([]);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({ status: 'all', sortBy: 'start', sortOrder: 'asc' });
   const [state, setState] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    const params = new URLSearchParams({
-      sortBy: filters.sortBy,
-      sortOrder: filters.sortOrder,
-    });
     setState({ loading: true, error: '' });
-    fetch(`/api/v1/forms?${params}`, { credentials: 'include' })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(response.status === 401
-            ? 'Сессия истекла. Войдите в систему.'
-            : 'Не удалось загрузить формы.');
-        }
-        return response.json();
-      })
-      .then(setForms)
-      .catch((error) => setState({ loading: false, error: error.message }))
+    listForms(filters)
+      .then((result) => { setForms(result); setState({ loading: false, error: '' }); })
+      .catch((error) => setState({ loading: false, error: getApiError(error).message }))
       .finally(() => setState((current) => ({ ...current, loading: false })));
   }, [filters]);
 
@@ -40,7 +30,7 @@ export function FormsListPage({ authenticated }) {
       <div className="breadcrumbs"><a href="/">Главная</a><span>›</span><a href="/forms">Формы мероприятий</a></div>
       <div className="page-heading">
         <div><h1>Формы мероприятий</h1><p>Заявки на регистрацию мероприятий</p></div>
-        {authenticated && <a className="primary-button" href="/forms/new">+ Создать форму</a>}
+        {user?.roles?.includes('applicant') && <a className="primary-button" href="/forms/new">+ Создать форму</a>}
       </div>
       <section className="content-card">
         <div className="forms-toolbar">

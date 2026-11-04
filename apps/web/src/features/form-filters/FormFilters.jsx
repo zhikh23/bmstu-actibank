@@ -1,7 +1,7 @@
 import { statusLabels } from '../../entities/form/model.js';
 
 export function FormFilters({ forms, filters, onChange }) {
-  const statuses = ['all', 'draft', 'pending', 'reviewing'];
+  const statuses = ['all', 'draft', 'pending', 'reviewing', 'approved', 'rejected', 'canceled'];
   const count = (value) => value === 'all'
     ? forms.length
     : forms.filter((form) => form.status === value).length;

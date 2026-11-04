@@ -13,6 +13,17 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, appOptions);
 
   app.useLogger(app.get(Logger));
+  app.enableCors({
+    origin: process.env.FRONTEND_ORIGIN
+      ? process.env.FRONTEND_ORIGIN.split(',').map((origin) => origin.trim())
+      : [
+          'http://localhost:5173',
+          'http://127.0.0.1:5173',
+          'http://localhost:5174',
+          'http://127.0.0.1:5174',
+        ],
+    credentials: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

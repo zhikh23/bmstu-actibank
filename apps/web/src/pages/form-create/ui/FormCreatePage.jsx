@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { api } from '../../../shared/api/client.js';
+import { getForm } from '../../../entities/form/api.js';
 
-const steps = ['Основное', 'Подробная информация', 'Участники и освещение', 'Организаторы'];
+const steps = ['Основное', 'Место и время', 'Участники', 'Оргкомитет'];
 
 const initialForm = {
   name: '', description: '', organizers: [], links: [''], venues: [], themes: [], start: '', end: '',
@@ -8,12 +10,32 @@ const initialForm = {
   guests: [], team: [], catalogLabels: { themes: {}, organizers: {}, venues: {} },
 };
 
-export function FormCreatePage() {
+export function FormCreatePage({ formId }) {
   const [step, setStep] = useState(0);
   const [maxStep, setMaxStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [form, setForm] = useState(initialForm);
   const [state, setState] = useState({ loading: false, error: '' });
+  useEffect(() => {
+    if (!formId) return;
+    getForm(formId).then((value) => setForm({
+      ...initialForm,
+      ...value,
+      formatId: value.format?.id || '',
+      typeId: value.type?.id || '',
+      levelId: value.level?.id || '',
+      start: value.start ? new Date(value.start).toISOString().slice(0, 16) : '',
+      end: value.end ? new Date(value.end).toISOString().slice(0, 16) : '',
+      organizers: value.organizers?.map((item) => item.id) || [],
+      venues: value.venues?.map((item) => item.id) || [],
+      themes: value.themes?.map((item) => item.id) || [],
+      catalogLabels: {
+        themes: Object.fromEntries((value.themes || []).map((item) => [item.id, item.name])),
+        organizers: Object.fromEntries((value.organizers || []).map((item) => [item.id, item.name])),
+        venues: Object.fromEntries((value.venues || []).map((item) => [item.id, item.name])),
+      },
+    })).catch((error) => setState({ loading: false, error: error.message }));
+  }, [formId]);
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
   const goToStep = (nextStep) => {
     setStep(nextStep);
@@ -29,18 +51,18 @@ export function FormCreatePage() {
     if (!form.start || !form.end || new Date(form.start) >= new Date(form.end)) return fail('Дата начала должна быть раньше даты окончания.', 0);
     setState({ loading: true, error: '' });
     try {
-      const response = await fetch('/api/v1/forms', {
-        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const result = await (formId ? api.patch(`/forms/${formId}`, {
           ...form, catalogLabels: undefined, start: new Date(form.start).toISOString(), end: new Date(form.end).toISOString(),
           links: form.links.filter(Boolean), guests: form.guests.filter((item) => item.userId && item.rankId).map(({ userId, rankId }) => ({ userId, rankId })),
           team: form.team.filter((item) => item.userId && item.roleId).map(({ userId, roleId }) => ({ userId, roleId })),
           participants: Object.fromEntries(Object.entries(form.participants).map(([key, value]) => [key, Number(value || 0)])),
-        }),
-      });
-      if (!response.ok) throw new Error('Не удалось создать форму. Проверьте заполненные поля.');
-      const result = await response.json();
-      window.location.href = `/forms/${result.formId}`;
+        }) : api.post('/forms', {
+          ...form, catalogLabels: undefined, start: new Date(form.start).toISOString(), end: new Date(form.end).toISOString(),
+          links: form.links.filter(Boolean), guests: form.guests.filter((item) => item.userId && item.rankId).map(({ userId, rankId }) => ({ userId, rankId })),
+          team: form.team.filter((item) => item.userId && item.roleId).map(({ userId, roleId }) => ({ userId, roleId })),
+          participants: Object.fromEntries(Object.entries(form.participants).map(([key, value]) => [key, Number(value || 0)])),
+        }));
+      window.location.href = `/forms/${formId || result.formId}`;
     } catch (error) {
       setState({ loading: false, error: error.message });
     }
@@ -85,11 +107,11 @@ function DetailsStep({ form, update }) {
   return <Section title="Подробная информация">
     <VenuePicker value={form.venues} labels={form.catalogLabels.venues} onChange={(value) => update('venues', value)} onLabelsChange={(labels) => update('catalogLabels', { ...form.catalogLabels, venues: { ...form.catalogLabels.venues, ...labels } })} />
     <div className="form-grid">
-      <CatalogSelect label="Уровень мероприятия" endpoint="/api/v1/catalog/levels" value={form.levelId} onChange={(value) => update('levelId', value)} required capitalize />
-      <CatalogSelect label="Формат мероприятия" endpoint="/api/v1/catalog/formats" value={form.formatId} onChange={(value) => update('formatId', value)} required capitalize />
-      <CatalogSelect label="Форма проведения мероприятия" endpoint="/api/v1/catalog/event-types" value={form.typeId} onChange={(value) => update('typeId', value)} required capitalize />
+      <CatalogSelect label="Уровень мероприятия" endpoint="/catalog/levels" value={form.levelId} onChange={(value) => update('levelId', value)} required capitalize />
+      <CatalogSelect label="Формат мероприятия" endpoint="/catalog/formats" value={form.formatId} onChange={(value) => update('formatId', value)} required capitalize />
+      <CatalogSelect label="Форма проведения мероприятия" endpoint="/catalog/event-types" value={form.typeId} onChange={(value) => update('typeId', value)} required capitalize />
     </div>
-    <CatalogMulti label="Направленность мероприятия" endpoint="/api/v1/catalog/themes" value={form.themes} labels={form.catalogLabels.themes} onChange={(value) => update('themes', value)} onLabelsChange={(labels) => update('catalogLabels', { ...form.catalogLabels, themes: { ...form.catalogLabels.themes, ...labels } })} />
+    <CatalogMulti label="Направленность мероприятия" endpoint="/catalog/themes" value={form.themes} labels={form.catalogLabels.themes} onChange={(value) => update('themes', value)} onLabelsChange={(labels) => update('catalogLabels', { ...form.catalogLabels, themes: { ...form.catalogLabels.themes, ...labels } })} />
     <GuestList value={form.guests} onChange={(value) => update('guests', value)} />
   </Section>;
 }
@@ -121,11 +143,11 @@ function CatalogMulti({ label, endpoint, value, labels, onChange, onLabelsChange
 }
 
 function OrganizationPicker({ value, labels, onChange, onLabelsChange }) {
-  return <div className="catalog-multi"><span className="repeat-label">Организаторы<em>*</em></span><HierarchicalPicker root="/api/v1/catalog/organization-categories" leafLabel="организацию" selected={value} labels={labels} onChange={onChange} onLabelsChange={onLabelsChange} /></div>;
+  return <div className="catalog-multi"><span className="repeat-label">Организаторы<em>*</em></span>  <HierarchicalPicker root="/catalog/organization-categories" leafLabel="организацию" selected={value} labels={labels} onChange={onChange} onLabelsChange={onLabelsChange} /></div>;
 }
 
 function VenuePicker({ value, labels, onChange, onLabelsChange }) {
-  return <div className="catalog-multi"><span className="repeat-label">Площадки проведения<em>*</em></span><HierarchicalPicker root="/api/v1/catalog/buildings" leafLabel="площадку" selected={value} labels={labels} onChange={onChange} onLabelsChange={onLabelsChange} /></div>;
+  return <div className="catalog-multi"><span className="repeat-label">Площадки проведения<em>*</em></span>  <HierarchicalPicker root="/catalog/buildings" leafLabel="площадку" selected={value} labels={labels} onChange={onChange} onLabelsChange={onLabelsChange} /></div>;
 }
 
 function HierarchicalPicker({ root, leafLabel, selected, labels, onChange, onLabelsChange }) {
@@ -136,17 +158,17 @@ function HierarchicalPicker({ root, leafLabel, selected, labels, onChange, onLab
   const [branchChoice, setBranchChoice] = useState('');
   const [pendingLeaf, setPendingLeaf] = useState('');
   const [open, setOpen] = useState(false);
-  useEffect(() => { fetch(root, { credentials: 'include' }).then((response) => response.ok ? response.json() : []).then(setRootItems); }, [root]);
+  useEffect(() => { api.get(root).then(setRootItems); }, [root]);
   const selectRoot = async (id) => {
     setRootChoice(id);
     setBranchChoice('');
     if (root.includes('organization')) {
       const [childrenResponse, organizationsResponse] = await Promise.all([
-        fetch(`/api/v1/catalog/organization-categories/${id}/children`, { credentials: 'include' }),
-        fetch(`/api/v1/catalog/organization-categories/${id}/organizations`, { credentials: 'include' }),
+        api.get(`/catalog/organization-categories/${id}/children`),
+        api.get(`/catalog/organization-categories/${id}/organizations`),
       ]);
-      const branches = childrenResponse.ok ? await childrenResponse.json() : [];
-      const organizations = organizationsResponse.ok ? await organizationsResponse.json() : [];
+      const branches = childrenResponse;
+      const organizations = organizationsResponse;
       setBranchItems(branches);
       setChildren(organizations);
       onLabelsChange(Object.fromEntries(organizations.map((item) => [item.id, optionLabel(organizations, item.id)])));
@@ -156,8 +178,7 @@ function HierarchicalPicker({ root, leafLabel, selected, labels, onChange, onLab
   };
   const loadLeaves = async (id) => {
     const suffix = root.includes('organization') ? `/organization-categories/${id}/organizations` : `/buildings/${id}/venues`;
-    const response = await fetch(`/api/v1/catalog${suffix}`, { credentials: 'include' });
-    const items = response.ok ? await response.json() : [];
+    const items = await api.get(`/catalog${suffix}`);
     setChildren(items);
     onLabelsChange(Object.fromEntries(items.map((item) => [item.id, optionLabel(items, item.id)])));
   };
@@ -177,7 +198,7 @@ function HierarchicalPicker({ root, leafLabel, selected, labels, onChange, onLab
 }
 
 function GuestList({ value, onChange }) {
-  return <div className="repeatable"><span className="repeat-label">Присутствие администрации</span>{value.map((item, index) => <div className="repeat-row repeat-row-inline guest-row" key={index}><TextInput value={item.userId} onChange={(next) => onChange(value.map((current, i) => i === index ? { ...current, userId: next } : current))} placeholder="UUID пользователя (временно)" /><CatalogSelectInline endpoint="/api/v1/catalog/ranks" value={item.rankId} onChange={(next) => onChange(value.map((current, i) => i === index ? { ...current, rankId: next } : current))} /><button className="icon-button" onClick={() => onChange(value.filter((_, i) => i !== index))} aria-label="Удалить гостя"><i className="pi pi-trash" /></button></div>)}<button className="add-link" onClick={() => onChange([...value, { userId: '', rankId: '' }])}><i className="pi pi-plus" /> Добавить гостя</button></div>;
+  return <div className="repeatable"><span className="repeat-label">Присутствие администрации</span>{value.map((item, index) => <div className="repeat-row repeat-row-inline guest-row" key={index}><TextInput value={item.userId} onChange={(next) => onChange(value.map((current, i) => i === index ? { ...current, userId: next } : current))} placeholder="UUID пользователя (временно)" /><CatalogSelectInline endpoint="/catalog/ranks" value={item.rankId} onChange={(next) => onChange(value.map((current, i) => i === index ? { ...current, rankId: next } : current))} /><button className="icon-button" onClick={() => onChange(value.filter((_, i) => i !== index))} aria-label="Удалить гостя"><i className="pi pi-trash" /></button></div>)}<button className="add-link" onClick={() => onChange([...value, { userId: '', rankId: '' }])}><i className="pi pi-plus" /> Добавить гостя</button></div>;
 }
 
 function TeamList({ value, onChange }) {
@@ -185,9 +206,9 @@ function TeamList({ value, onChange }) {
 }
 
 function RolePicker({ category, value, onCategoryChange, onChange }) {
-  const categories = useCatalog('/api/v1/catalog/role-categories');
+  const categories = useCatalog('/catalog/role-categories');
   const [roles, setRoles] = useState([]);
-  useEffect(() => { if (!category) { setRoles([]); return; } fetch(`/api/v1/catalog/role-categories/${category}/roles`, { credentials: 'include' }).then((response) => response.ok ? response.json() : []).then(setRoles); }, [category]);
+  useEffect(() => { if (!category) { setRoles([]); return; } api.get(`/catalog/role-categories/${category}/roles`).then(setRoles); }, [category]);
   return <div className="role-picker"><select value={category} onChange={(event) => onCategoryChange(event.target.value)}><option value="">Категория роли</option>{categories.map((item) => <option value={item.id} key={item.id}>{capitalizeText(optionLabel(categories, item.id), true)}</option>)}</select><select value={value} onChange={(event) => onChange(event.target.value)}><option value="">Роль</option>{roles.map((item) => <option value={item.id} key={item.id}>{capitalizeText(optionLabel(roles, item.id), true)}</option>)}</select></div>;
 }
 
@@ -196,7 +217,7 @@ function Repeatable({ label, values, onChange, onAdd, onRemove, placeholder }) {
 
 function useCatalog(endpoint) {
   const [items, setItems] = useState([]);
-  useEffect(() => { fetch(endpoint, { credentials: 'include' }).then((response) => response.ok ? response.json() : []).then(setItems); }, [endpoint]);
+  useEffect(() => { api.get(endpoint).then(setItems); }, [endpoint]);
   return items;
 }
 
