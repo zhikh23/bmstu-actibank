@@ -1,0 +1,39 @@
+.page {
+  width: min(100% - 48px, 1200px);
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.heading {
+  margin-bottom: 28px;
+}
+
+.heading h1 {
+  color: var(--color-dark);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+}
+
+.heading p {
+  margin-top: 8px;
+  color: var(--color-text-muted);
+}
+
+.state {
+  padding: 64px 24px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .page {
+    width: min(100% - 32px, 1200px);
+    padding: 32px 0 48px;
+  }
+
+  .heading h1 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+}

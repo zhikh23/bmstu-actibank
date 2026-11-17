@@ -1,0 +1,16 @@
+:root {
+  --color-primary: #006cdc;
+  --color-primary-hover: #0059b8;
+  --color-dark: #242424;
+  --color-white: #ffffff;
+  --color-bg: #f8f9fa;
+  --color-gray-light: #eef0f3;
+  --color-placeholder: #9aa0b6;
+  --color-text-secondary: #353e5c;
+  --color-text-muted: rgba(0, 0, 0, 0.7);
+  --color-scrollbar-bg: #f5f6f9;
+  --color-scrollbar-thumb: #c5cbde;
+  --color-faq-question: #1b263b;
+  --color-success: #00786f;
+  --color-overlay: rgba(0, 0, 0, 0.2);
+}
