@@ -5,10 +5,9 @@ import { stores } from '@/stores';
 
 export function Navbar() {
   const { auth } = stores;
-
   const me = auth.me;
 
-  async function handleLogout(): Promise < void> {
+  function handleLogout(): void {
     auth.logout();
   }
 
@@ -31,7 +30,7 @@ export function Navbar() {
               outlined
               rounded
               className={styles.headerLogoutButton}
-              onClick={() => handleLogout()}
+              onClick={handleLogout}
             />
           </>
         )}
