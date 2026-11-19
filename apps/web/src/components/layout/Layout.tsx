@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom'
+import { observer } from "mobx-react-lite";
+
 import { getLoginUrl } from '@/shared/auth';
+import { stores } from '@/stores';
 
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import styles from './layout.module.css';
-import { stores } from '@/stores';
 
-export function Layout() {
+export const Layout = observer(function Layout() {
   const { auth } = stores;
   const [menuOpen, setMenuOpen] = useState(true);
 
   useEffect(() => {
     void auth.load();
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
-    if (auth.error !== null) {
+    if (auth.status === 'unauthenticated') {
       window.location.assign(getLoginUrl());
     }
-  }, [auth.error]);
+  }, [auth.status]);
 
   return (
     <div className={styles.page}>
@@ -32,4 +34,4 @@ export function Layout() {
       </div>
     </div>
   )
-}
+});

@@ -1,15 +1,14 @@
 import { Button } from 'primereact/button';
-import { BMSTUIcon, EUIcon } from '../icons';
-import styles from './navbar.module.css';
-import { stores } from '@/stores';
+import { observer } from "mobx-react-lite";
 
-export function Navbar() {
+import { stores } from '@/stores';
+import {BMSTUIcon, EUIcon} from "@/components/icons";
+
+import styles from './navbar.module.css';
+
+export const Navbar = observer(function Navbar() {
   const { auth } = stores;
   const me = auth.me;
-
-  function handleLogout(): void {
-    auth.logout();
-  }
 
   return (
     <header className={styles.header}>
@@ -30,11 +29,11 @@ export function Navbar() {
               outlined
               rounded
               className={styles.headerLogoutButton}
-              onClick={handleLogout}
+              onClick={() => void auth.logout()}
             />
           </>
         )}
       </div>
     </header>
   );
-}
+});

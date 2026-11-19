@@ -296,14 +296,15 @@ export class OidcAdapter {
   }
 
   private normalizeReturnTo(value?: string): string {
-    if (
+    /*if (
       !value ||
       !value.startsWith('/') ||
       value.startsWith('//') ||
       value.includes('\\')
     ) {
       return '/';
-    }
-    return value;
+      }*/
+    // TODO: return check
+    return value ?? '/';
   }
 }
