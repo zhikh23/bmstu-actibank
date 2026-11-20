@@ -1,0 +1,76 @@
+.steps {
+  padding: 28px 32px 8px;
+}
+
+.list {
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+}
+
+.marker {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--color-white);
+  background: #cfd5df;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.marker.active,
+.marker.completed {
+  background: var(--color-primary);
+}
+
+.marker:disabled {
+  cursor: not-allowed;
+}
+
+.label {
+  max-width: 150px;
+  margin-left: 8px;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label.disabled {
+  color: var(--color-placeholder);
+}
+
+.connector {
+  flex: 1;
+  height: 1px;
+  min-width: 16px;
+  margin: 0 12px;
+  background: var(--color-gray-light);
+}
+
+@media (max-width: 768px) {
+  .steps {
+    overflow-x: auto;
+    padding: 20px 16px 4px;
+  }
+
+  .list {
+    min-width: 640px;
+  }
+}

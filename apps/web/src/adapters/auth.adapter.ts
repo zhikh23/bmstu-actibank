@@ -1,5 +1,5 @@
-import { Me } from '@/types/domain';
 import z from 'zod';
+import {Me} from "@/types/user";
 
 export const userRoleSchema = z.enum(['applicant', 'moderator']);
 

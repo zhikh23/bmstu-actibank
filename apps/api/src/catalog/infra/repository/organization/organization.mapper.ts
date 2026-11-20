@@ -10,7 +10,7 @@ import { Organization } from '../../../domain/organization.entity';
 
 export class OrganizationMapper {
   static toDomain(m: OrganizationModel): Organization {
-    return new Organization(m.id, m.name);
+    return new Organization(m.id, m.name, m.category_id);
   }
 }
 

@@ -1,5 +1,6 @@
 import z from 'zod';
-import { FormsListItem, FormStatus } from "@/types/domain";
+import {FormStatus} from "@/types/form-status";
+import {FormsListItem} from "@/types/forms-list";
 
 const zIsoDateString = (error?: string | undefined) => z.string().min(1, error);
 

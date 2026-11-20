@@ -1,0 +1,82 @@
+.venuesField {
+  width: min(100%, 800px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.venuesField legend {
+  margin-bottom: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.venuesField legend em {
+  margin-left: 3px;
+  color: #d32f2f;
+  font-style: normal;
+}
+
+.invalid legend {
+  color: #d32f2f;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.controls label {
+  display: grid;
+  gap: 7px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.controls :global(.p-dropdown) {
+  width: 100%;
+}
+
+.entries {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entries li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 520px;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--color-gray-light);
+  border-radius: 8px;
+  background: var(--color-white);
+}
+
+.entries li span {
+  display: grid;
+  gap: 2px;
+}
+
+.entries li small {
+  color: var(--color-text-muted);
+}
+
+.empty {
+  margin-top: 10px;
+  color: var(--color-placeholder);
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}

@@ -24,6 +24,18 @@ export class OrganizationRepository {
     private readonly repository: Repository<OrganizationModel>,
   ) {}
 
+  getAll(): ResultAsync<Organization[], CatalogError> {
+    return ResultAsync.fromPromise(
+      this.repository.find(),
+      (error): CatalogError =>
+        CatalogError.repository(
+          error instanceof Error ? error.message : String(error),
+        ),
+    ).map((models) =>
+      models.map((model) => OrganizationMapper.toDomain(model)),
+    );
+  }
+
   getRootCategories(): ResultAsync<OrganizationCategory[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.manager.getRepository(OrganizationCategoryModel).find({

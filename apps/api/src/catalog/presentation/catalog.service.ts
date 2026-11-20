@@ -58,7 +58,11 @@ export class CatalogService {
   getOrganizationsByCategory(
     id: string,
   ): ResultAsync<OrganizationDto[], CatalogError> {
-    return this.getCatalog.getOrganizations(id);
+    return this.getCatalog.getCategoryOrganizations(id);
+  }
+
+  getOrganizations(): ResultAsync<OrganizationDto[], CatalogError> {
+    return this.getCatalog.getOrganizations();
   }
 
   getRoleCategories(): ResultAsync<RoleCategoryDto[], CatalogError> {

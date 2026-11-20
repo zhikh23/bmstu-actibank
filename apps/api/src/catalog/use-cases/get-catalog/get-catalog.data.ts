@@ -11,4 +11,5 @@ export type RoleType = {
 export type OrganizationType = {
   id: string;
   name: string;
+  categoryId: string;
 };

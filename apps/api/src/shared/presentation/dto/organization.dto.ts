@@ -16,4 +16,11 @@ export class OrganizationDto {
   @IsString()
   @Length(1, 128)
   declare name: string;
+
+  @ApiProperty({
+    description: 'Идентификатор категории организации',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @IsUUID('loose')
+  declare categoryId: string;
 }

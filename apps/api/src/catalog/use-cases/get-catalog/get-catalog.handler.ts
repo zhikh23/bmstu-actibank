@@ -73,10 +73,14 @@ export class GetCatalogHandler {
     return this.organizations.getChildCategories(parentId);
   }
 
-  getOrganizations(
+  getCategoryOrganizations(
     categoryId: string,
   ): ResultAsync<OrganizationType[], CatalogError> {
     return this.organizations.getByCategory(categoryId);
+  }
+
+  getOrganizations(): ResultAsync<OrganizationType[], CatalogError> {
+    return this.organizations.getAll();
   }
 
   getRoleCategories(): ResultAsync<RoleCategoryType[], CatalogError> {

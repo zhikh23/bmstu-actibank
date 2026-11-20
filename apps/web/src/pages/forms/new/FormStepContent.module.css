@@ -1,0 +1,35 @@
+.fields {
+  display: grid;
+  gap: 18px;
+}
+
+.dateGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 360px));
+  gap: 16px;
+}
+
+.placeholder {
+  display: grid;
+  min-height: 220px;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.placeholder i {
+  color: var(--color-primary);
+  font-size: 32px;
+}
+
+.placeholder small {
+  color: var(--color-placeholder);
+}
+
+@media (max-width: 768px) {
+  .dateGrid {
+    grid-template-columns: 1fr;
+  }
+}

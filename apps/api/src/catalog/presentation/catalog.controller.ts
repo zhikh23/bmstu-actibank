@@ -83,6 +83,16 @@ export class CatalogController {
     return this.resolve(this.catalogService.getLevels());
   }
 
+  @Get('organizations')
+  @ApiOperation({
+    summary: 'Получить все организации',
+    description: 'Возвращает все доступные уровни организации.',
+  })
+  @ApiOkResponse({ description: 'Организации успешно получены.', type: [OrganizationDto] })
+  getOrganizations(): Promise<OrganizationDto[]> {
+    return this.resolve(this.catalogService.getOrganizations());
+  }
+
   @Get('organization-categories')
   @ApiOperation({
     summary: 'Получить корневые категории организаций',

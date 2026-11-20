@@ -1,0 +1,80 @@
+.field {
+  display: grid;
+  width: min(100%, 800px);
+  gap: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.labelText {
+  display: inline-flex;
+  gap: 3px;
+  align-items: baseline;
+}
+
+.labelText em {
+  color: #d32f2f;
+  font-style: normal;
+}
+
+.field :global(.p-inputtext),
+.field :global(.p-inputtextarea),
+.field :global(.p-calendar) {
+  width: 100%;
+}
+
+.field :global(.p-calendar) {
+  max-width: 360px;
+}
+
+.field :global(.p-dropdown),
+.field :global(.p-inputnumber),
+.linksInput {
+  width: min(100%, 560px);
+}
+
+.linksInput :global(.p-chips-multiple-container) {
+  min-height: 42px;
+  flex-wrap: wrap;
+}
+
+.linksInput :global(.p-chips-token) {
+  max-width: 100%;
+}
+
+.linksInput :global(.p-chips-token-label) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multiSelect {
+  min-width: 0;
+  max-width: 800px;
+}
+
+.multiSelect :global(.p-multiselect-label) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+  max-height: 88px;
+  overflow-y: auto;
+}
+
+.multiSelect :global(.p-multiselect-token) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.multiSelect :global(.p-multiselect-token-label) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .field {
+    width: 100%;
+  }
+}
