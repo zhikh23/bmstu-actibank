@@ -3,7 +3,7 @@ import {observer} from 'mobx-react-lite';
 import {Button} from 'primereact/button';
 import {Dropdown} from 'primereact/dropdown';
 
-import type {Student} from '@/types/student';
+import type {StudentSummary} from '@/types/student';
 import type {RoleCategory} from '@/types/role';
 import type {Role} from '@/types/role-category';
 import type {FormDraft} from '@/types/form-draft';
@@ -15,7 +15,7 @@ interface TeamBlockFieldProps {
   draft: FormDraft;
   categories: RoleCategory[];
   roles: Record<string, Role>;
-  students: Student[];
+  students: StudentSummary[];
   loadingCategories: boolean;
   loadingRoles: boolean;
   loadingStudents: boolean;

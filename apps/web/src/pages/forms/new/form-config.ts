@@ -104,6 +104,7 @@ export const formSteps: FormStep[] = [
         field: 'name',
         label: 'Название мероприятия',
         placeholder: 'Например, конференция «Технологии будущего»',
+        required: true,
       },
       {
         type: 'textarea',
@@ -111,6 +112,7 @@ export const formSteps: FormStep[] = [
         label: 'Описание мероприятия',
         placeholder: 'Кратко расскажите о мероприятии',
         rows: 4,
+        required: true,
       },
       {
         type: 'multiSelect',
@@ -120,6 +122,7 @@ export const formSteps: FormStep[] = [
         optionLabel: 'name',
         optionValue: 'id',
         optionsKey: 'organizations',
+        required: true,
       },
       {
         type: 'links',
@@ -135,12 +138,14 @@ export const formSteps: FormStep[] = [
             field: 'start',
             label: 'Начало',
             placeholder: 'Выберите дату и время',
+            required: true,
           },
           {
             type: 'date',
             field: 'end',
             label: 'Окончание',
             placeholder: 'Выберите дату и время',
+            required: true,
           },
         ],
       },
@@ -162,6 +167,7 @@ export const formSteps: FormStep[] = [
         optionLabel: 'name',
         optionValue: 'id',
         optionsKey: 'levels',
+        required: true,
       },
       {
         type: 'select',
@@ -171,6 +177,7 @@ export const formSteps: FormStep[] = [
         optionLabel: 'name',
         optionValue: 'id',
         optionsKey: 'formats',
+        required: true,
       },
       {
         type: 'select',
@@ -180,6 +187,7 @@ export const formSteps: FormStep[] = [
         optionLabel: 'name',
         optionValue: 'id',
         optionsKey: 'types',
+        required: true,
       },
       {
         type: 'multiSelect',
@@ -189,6 +197,7 @@ export const formSteps: FormStep[] = [
         optionLabel: 'name',
         optionValue: 'id',
         optionsKey: 'themes',
+        required: true,
       },
     ],
   },
@@ -204,6 +213,7 @@ export const formSteps: FormStep[] = [
             label: 'Количество студентов-участников',
             placeholder: 'Введите число',
             min: 0,
+            required: true,
           },
           {
             type: 'number',
@@ -211,6 +221,7 @@ export const formSteps: FormStep[] = [
             label: 'Количество сотрудников-участников',
             placeholder: 'Введите число',
             min: 0,
+            required: true,
           },
           {
             type: 'number',
@@ -218,6 +229,7 @@ export const formSteps: FormStep[] = [
             label: 'Количество других участников',
             placeholder: 'Введите число',
             min: 0,
+            required: true,
           },
         ]
       },

@@ -1,8 +1,10 @@
 import {makeAutoObservable, runInAction} from 'mobx'
 import {FormsListItem} from "@/types/forms-list";
+import {FormDraft} from "@/types/form-draft";
 
 export interface FormsApi {
   getFormsList(): Promise<FormsListItem[]>
+  createForm(draft: FormDraft): Promise<string>
 }
 
 export class FormsStore {
@@ -10,6 +12,8 @@ export class FormsStore {
   loading = false
   error: string | null = null
   searchQuery = ''
+  submitting = false
+  submitError: string | null = null
 
   private loaded = false
 
@@ -25,6 +29,26 @@ export class FormsStore {
 
   setSearchQuery(q: string): void {
     this.searchQuery = q
+  }
+
+  async create(draft: FormDraft): Promise<string | null> {
+    this.submitting = true
+    this.submitError = null
+    try {
+      const formId = await this.api.createForm(draft)
+      this.loaded = false
+      return formId
+    } catch (cause) {
+      runInAction(() => {
+        this.submitError = 'Не удалось создать форму. Проверьте данные и попробуйте ещё раз.'
+      })
+      console.error('FormsStore: create failed', cause)
+      return null
+    } finally {
+      runInAction(() => {
+        this.submitting = false
+      })
+    }
   }
 
   async load(force: boolean = false): Promise<void> {

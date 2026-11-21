@@ -1,7 +1,6 @@
 import {meToDomain} from "@/adapters/auth.adapter";
-import {formsToDomain as formToDomain} from "@/adapters/forms.adapter";
+import {formDraftToContract, formToDomain} from "@/adapters/forms.adapter";
 import {AuthApi} from "@/api/AuthApi";
-import {FormsApi} from "@/api/FormsApi";
 import {CatalogApi} from "@/api/CatalogApi";
 import {
   buildingToDomain,
@@ -21,6 +20,8 @@ import {Role} from "@/types/role-category";
 import {StudentsApi} from "@/api/StudentsApi";
 import {Student, StudentSummary} from "@/types/student";
 import {studentsListItemToDomain, studentToDomain} from "@/adapters/students.adapter";
+import {FormDraft} from "@/types/form-draft";
+import {FormsApi} from "@/api/FormsApi";
 
 const authApi = new AuthApi();
 const formsApi = new FormsApi();
@@ -40,6 +41,11 @@ export const httpApi = {
   async getFormsList(): Promise<FormsListItem[]> {
     const forms = await formsApi.getFormsList();
     return forms.map(formToDomain);
+  },
+
+  async createForm(draft: FormDraft): Promise<string> {
+    const response = await formsApi.createForm(formDraftToContract(draft));
+    return response.formId;
   },
 
   async getThemes(): Promise<Theme[]> {

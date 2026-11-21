@@ -12,7 +12,7 @@ import type {Building} from "@/types/building";
 import type {Venue} from "@/types/venue";
 import type {RoleCategory} from "@/types/role";
 import type {Role} from "@/types/role-category";
-import type {Student} from "@/types/student";
+import type {StudentSummary} from "@/types/student";
 
 interface FormFieldProps {
   field: FieldBlock;
@@ -27,7 +27,7 @@ interface FormFieldProps {
   venuesError?: string | null;
   roleCategories?: RoleCategory[];
   roles?: Record<string, Role>;
-  students?: Student[];
+  students?: StudentSummary[];
   loadingRoleCategories?: boolean;
   loadingRoles?: boolean;
   loadingStudents?: boolean;

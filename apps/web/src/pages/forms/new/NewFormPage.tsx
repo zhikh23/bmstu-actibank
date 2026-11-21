@@ -1,5 +1,7 @@
 import {useEffect, useState} from 'react';
 import {observer} from 'mobx-react-lite';
+import {useNavigate} from 'react-router-dom';
+import {Message} from 'primereact/message';
 
 import {stores} from '@/stores';
 import {defaultFormDraft, FormDraft} from "@/types/form-draft";
@@ -12,11 +14,13 @@ import type {SelectOption} from './SelectBlockField';
 import styles from './NewFormPage.module.css';
 
 export const NewFormPage = observer(function NewFormPage() {
-  const { themes, organizations, venues, eventCatalog, roles, students } = stores;
+  const navigate = useNavigate();
+  const { themes, organizations, venues, eventCatalog, roles, students, forms } = stores;
   const [draft, setDraft] = useState<FormDraft>(defaultFormDraft);
   const [activeStep, setActiveStep] = useState(0);
   const [unlockedStep, setUnlockedStep] = useState(0);
   const [attemptedStep, setAttemptedStep] = useState<number | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     void themes.load();
@@ -29,6 +33,7 @@ export const NewFormPage = observer(function NewFormPage() {
 
   const updateDraft = <K extends keyof FormDraft>(field: K, value: FormDraft[K]) => {
     setDraft((current) => ({ ...current, [field]: value }));
+    setSubmitError(null);
   };
 
   const isFilled = (field: keyof FormDraft) => {
@@ -51,6 +56,21 @@ export const NewFormPage = observer(function NewFormPage() {
       .filter((block) => block.required)
       .every((block) => isFilled(block.field));
 
+  const validateStep = (stepIndex: number): string | null => {
+    if (!isStepComplete(stepIndex)) {
+      return 'Заполните все обязательные поля этого шага.';
+    }
+    if (draft.start && draft.end && draft.end <= draft.start) {
+      return 'Дата окончания не может быть раньше даты начала.';
+    }
+    if (stepIndex === formSteps.length - 1) {
+      if (!formSteps.every((_, index) => isStepComplete(index))) {
+        return 'Заполните обязательные поля на всех шагах формы.';
+      }
+    }
+    return null;
+  };
+
   const selectStep = (step: number) => {
     if (step <= unlockedStep) {
       setActiveStep(step);
@@ -58,9 +78,20 @@ export const NewFormPage = observer(function NewFormPage() {
     }
   };
 
-  const goNext = () => {
+  const goNext = async () => {
     setAttemptedStep(activeStep);
-    if (!isStepComplete(activeStep) || activeStep === formSteps.length - 1) {
+    const validationError = validateStep(activeStep);
+    if (validationError) {
+      setSubmitError(validationError);
+      return;
+    }
+
+    setSubmitError(null);
+    if (activeStep === formSteps.length - 1) {
+      const formId = await forms.create(draft);
+      if (formId) {
+        navigate('/forms');
+      }
       return;
     }
 
@@ -106,6 +137,13 @@ export const NewFormPage = observer(function NewFormPage() {
             <span>{activeStep + 1}</span>
             <h2>{activeFormStep.label}</h2>
           </div>
+          {(submitError || forms.submitError) && (
+            <Message
+              severity="error"
+              text={submitError ?? forms.submitError ?? undefined}
+              className={styles.submitError}
+            />
+          )}
           <FormStepContent
             blocks={activeFormStep.blocks}
             placeholder={activeFormStep.placeholder}
@@ -146,6 +184,7 @@ export const NewFormPage = observer(function NewFormPage() {
         <FormActions
           isFirstStep={activeStep === 0}
           isLastStep={activeStep === formSteps.length - 1}
+          submitting={forms.submitting}
           onBack={goBack}
           onNext={goNext}
         />

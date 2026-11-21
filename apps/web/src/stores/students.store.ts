@@ -1,9 +1,9 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 
-import {Student} from '@/types/student';
+import {Student, StudentSummary} from '@/types/student';
 
 export interface StudentsApi {
-  getStudents(): Promise<Student[]>;
+  getStudents(): Promise<StudentSummary[]>;
 }
 
 export interface StudentApi {
@@ -11,7 +11,7 @@ export interface StudentApi {
 }
 
 export class StudentsStore {
-  items: Student[] = [];
+  items: StudentSummary[] = [];
   loading = false;
   error: string | null = null;
   searchQuery = '';
@@ -22,7 +22,7 @@ export class StudentsStore {
     makeAutoObservable(this);
   }
 
-  get filtered(): Student[] {
+  get filtered(): StudentSummary[] {
     const query = this.searchQuery.trim().toLocaleLowerCase();
     if (!query) return this.items;
 
@@ -35,7 +35,7 @@ export class StudentsStore {
     this.searchQuery = query;
   }
 
-  getById(studentId: string): Student | undefined {
+  getById(studentId: string): StudentSummary | undefined {
     return this.items.find((student) => student.id === studentId);
   }
 
