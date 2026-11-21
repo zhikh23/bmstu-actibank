@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { observer } from 'mobx-react-lite';
-import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
+import {useState} from 'react';
+import {observer} from 'mobx-react-lite';
+import {Button} from 'primereact/button';
+import {Dropdown} from 'primereact/dropdown';
 
-import type { Student } from '@/types/student';
-import type { RoleCategory } from '@/types/role';
-import type { Role } from '@/types/role-category';
-import type { FormDraft } from '@/types/form-draft';
-import type { TeamBlock } from './form-config';
+import type {Student} from '@/types/student';
+import type {RoleCategory} from '@/types/role';
+import type {Role} from '@/types/role-category';
+import type {FormDraft} from '@/types/form-draft';
+import type {TeamBlock} from './form-config';
 import styles from './TeamBlockField.module.css';
 
 interface TeamBlockFieldProps {
@@ -104,53 +104,55 @@ export const TeamBlockField = observer(function TeamBlockField({
       </legend>
 
       <div className={styles.controls}>
-        <label>
-          <span>Категория роли</span>
-          <Dropdown
-            value={categoryId}
-            options={categories}
-            optionLabel="name"
-            optionValue="id"
-            onChange={(event) => selectCategory(event.value ?? null)}
-            placeholder={loadingCategories ? 'Загрузка категорий...' : 'Выберите категорию'}
-            filter
-            disabled={loadingCategories}
-            emptyMessage={categoriesError ?? 'Категории не найдены'}
-          />
-        </label>
+        <div className={styles.fields}>
+          <label>
+            <span>Категория роли</span>
+            <Dropdown
+              value={categoryId}
+              options={categories}
+              optionLabel="name"
+              optionValue="id"
+              onChange={(event) => selectCategory(event.value ?? null)}
+              placeholder={loadingCategories ? 'Загрузка категорий...' : 'Выберите категорию'}
+              filter
+              disabled={loadingCategories}
+              emptyMessage={categoriesError ?? 'Категории не найдены'}
+            />
+          </label>
 
-        <label>
-          <span>Роль</span>
-          <Dropdown
-            value={roleId}
-            options={categoryRoles}
-            optionLabel="name"
-            optionValue="id"
-            onChange={(event) => {
-              setRoleId(event.value ?? null);
-              setStudentId(null);
-            }}
-            placeholder={!categoryId ? 'Сначала выберите категорию' : loadingRoles ? 'Загрузка ролей...' : 'Выберите роль'}
-            filter
-            disabled={!categoryId || loadingRoles}
-            emptyMessage={rolesError ?? 'Роли не найдены'}
-          />
-        </label>
+          <label>
+            <span>Роль</span>
+            <Dropdown
+              value={roleId}
+              options={categoryRoles}
+              optionLabel="name"
+              optionValue="id"
+              onChange={(event) => {
+                setRoleId(event.value ?? null);
+                setStudentId(null);
+              }}
+              placeholder={!categoryId ? 'Сначала выберите категорию' : loadingRoles ? 'Загрузка ролей...' : 'Выберите роль'}
+              filter
+              disabled={!categoryId || loadingRoles}
+              emptyMessage={rolesError ?? 'Роли не найдены'}
+            />
+          </label>
 
-        <label>
-          <span>Студент</span>
-          <Dropdown
-            value={studentId}
-            options={students}
-            optionLabel="fullName"
-            optionValue="id"
-            onChange={(event) => setStudentId(event.value ?? null)}
-            placeholder={loadingStudents ? 'Загрузка студентов...' : 'Выберите студента'}
-            filter
-            disabled={loadingStudents || !roleId}
-            emptyMessage={studentsError ?? 'Студенты не найдены'}
-          />
-        </label>
+          <label>
+            <span>Организатор</span>
+            <Dropdown
+              value={studentId}
+              options={students}
+              optionLabel="fullName"
+              optionValue="id"
+              onChange={(event) => setStudentId(event.value ?? null)}
+              placeholder={loadingStudents ? 'Загрузка студентов...' : 'Выберите организатора'}
+              filter
+              disabled={loadingStudents || !roleId}
+              emptyMessage={studentsError ?? 'Студенты не найдены'}
+            />
+          </label>
+        </div>
 
         <Button
           type="button"

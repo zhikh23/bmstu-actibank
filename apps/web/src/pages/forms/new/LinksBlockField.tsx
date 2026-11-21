@@ -1,7 +1,7 @@
-import { Chips } from 'primereact/chips';
+import {Chips} from 'primereact/chips';
 
-import type { LinksBlock } from './form-config';
-import type { FormDraft } from '@/types/form-draft';
+import type {LinksBlock} from './form-config';
+import type {FormDraft} from '@/types/form-draft';
 import styles from './FormField.module.css';
 
 interface LinksBlockFieldProps {
@@ -22,7 +22,7 @@ export function LinksBlockField({ field, draft, invalid, onChange }: LinksBlockF
         value={draft.links}
         onChange={(event) => onChange(event.value ?? [])}
         className={`${styles.linksInput} ${invalid ? 'p-invalid' : ''}`}
-        placeholder={field.placeholder}
+        placeholder={draft.links ? undefined : field.placeholder}
         separator=","
       />
     </label>

@@ -1,11 +1,11 @@
-import {useState } from 'react';
-import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
+import {useState} from 'react';
+import {Button} from 'primereact/button';
+import {Dropdown} from 'primereact/dropdown';
 
-import type { Building } from '@/types/building';
-import type { Venue } from '@/types/venue';
-import type { VenuesBlock } from './form-config';
-import type { FormDraft } from '@/types/form-draft';
+import type {Building} from '@/types/building';
+import type {Venue} from '@/types/venue';
+import type {VenuesBlock} from './form-config';
+import type {FormDraft} from '@/types/form-draft';
 import styles from './VenuesBlockField.module.css';
 import {observer} from "mobx-react-lite";
 
@@ -71,35 +71,37 @@ export const VenuesBlockField = observer(function VenuesBlockField({
       </legend>
 
       <div className={styles.controls}>
-        <label>
-          <span>Здание</span>
-          <Dropdown
-            value={buildingId}
-            options={buildings}
-            optionLabel="name"
-            optionValue="id"
-            onChange={(event) => selectBuilding(event.value ?? null)}
-            placeholder={loadingBuildings ? 'Загрузка зданий...' : 'Выберите здание'}
-            filter
-            disabled={loadingBuildings}
-            emptyMessage={buildingsError ?? 'Здания не найдены'}
-          />
-        </label>
+        <div className={styles.fields}>
+          <label>
+            <span>Здание</span>
+            <Dropdown
+              value={buildingId}
+              options={buildings}
+              optionLabel="name"
+              optionValue="id"
+              onChange={(event) => selectBuilding(event.value ?? null)}
+              placeholder={loadingBuildings ? 'Загрузка зданий...' : 'Выберите здание'}
+              filter
+              disabled={loadingBuildings}
+              emptyMessage={buildingsError ?? 'Здания не найдены'}
+            />
+          </label>
 
-        <label>
-          <span>Место проведения</span>
-          <Dropdown
-            value={venueId}
-            options={buildingVenues}
-            optionLabel="name"
-            optionValue="id"
-            onChange={(event) => setVenueId(event.value ?? null)}
-            placeholder={!buildingId ? 'Сначала выберите здание' : loadingVenues ? 'Загрузка помещений...' : 'Выберите место'}
-            filter
-            disabled={!buildingId || loadingVenues}
-            emptyMessage={venuesError ?? 'Помещения не найдены'}
-          />
-        </label>
+          <label>
+            <span>Место проведения</span>
+            <Dropdown
+              value={venueId}
+              options={buildingVenues}
+              optionLabel="name"
+              optionValue="id"
+              onChange={(event) => setVenueId(event.value ?? null)}
+              placeholder={!buildingId ? 'Сначала выберите здание' : loadingVenues ? 'Загрузка помещений...' : 'Выберите место'}
+              filter
+              disabled={!buildingId || loadingVenues}
+              emptyMessage={venuesError ?? 'Помещения не найдены'}
+            />
+          </label>
+        </div>
 
         <Button
           type="button"
