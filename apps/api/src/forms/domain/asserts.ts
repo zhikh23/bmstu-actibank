@@ -1,4 +1,5 @@
 import { Result } from 'neverthrow';
+
 import { FormsError } from './errors';
 
 export function expectOk<T>(res: Result<T, FormsError>): T {

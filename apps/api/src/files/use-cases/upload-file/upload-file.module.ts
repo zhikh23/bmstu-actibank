@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { FileRepositoryModule } from '../../infra/repository/file.module';
+
+import { FileRepositoryModule } from '@/files/infra/repository/file.module';
+import { StorageModule } from '@/files/infra/storage/storage.module';
+import { UuidModule } from '@/shared/infra/uuid/uuid.module';
+
 import { UploadFileHandler } from './upload-file.handler';
-import { StorageModule } from '../../infra/storage/storage.module';
-import { UuidModule } from '../../../shared/infra/uuid/uuid.module';
 
 @Module({
   imports: [FileRepositoryModule, StorageModule, UuidModule],

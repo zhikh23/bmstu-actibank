@@ -1,4 +1,5 @@
-import { Level } from '../../../domain/level.entity';
+import { Level } from '@/catalog/domain/level.entity';
+
 import { LevelModel } from './level.model';
 
 export class LevelMapper {

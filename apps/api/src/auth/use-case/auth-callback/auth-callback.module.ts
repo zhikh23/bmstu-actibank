@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+
+import { OidcModule } from '@/auth/infrastructure/oidc/oidc.module';
+import { UserRepositoryModule } from '@/auth/infrastructure/repositories/user.module';
+import { UuidModule } from '@/shared/infra/uuid/uuid.module';
+
 import { AuthCallbackHandler } from './auth-callback.handler';
-import { UserRepositoryModule } from '../../infrastructure/repositories/user.module';
-import { OidcModule } from '../../infrastructure/oidc/oidc.module';
-import { UuidModule } from '../../../shared/infra/uuid/uuid.module';
 
 @Module({
   imports: [OidcModule, UserRepositoryModule, UuidModule],

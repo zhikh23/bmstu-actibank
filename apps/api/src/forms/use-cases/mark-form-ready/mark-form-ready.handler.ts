@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { FormRepository } from '../../infra/repository/form.repository';
 import { ResultAsync } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
-import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+
+import { FormsError } from '@/forms/domain/errors';
+import { AccessDecision, FormAccess } from '@/forms/domain/form-access.policy';
+import { FormRepository } from '@/forms/infra/repository/form.repository';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
 
 export type MarkFormReadyCommand = {
   actor: AuthenticatedUser;

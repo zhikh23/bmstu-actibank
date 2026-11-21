@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ThemeRepositoryModule } from '../../infra/repository/theme/theme.module';
+
+import { ThemeRepositoryModule } from '@/catalog/infra/repository/theme/theme.module';
+
 import { GetThemesHandler } from './get-themes.handler';
 
 @Module({

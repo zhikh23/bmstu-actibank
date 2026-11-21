@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
-import { FormRepositoryModule } from '../../infra/repository/form.module';
-import { CatalogServiceModule } from '../../../catalog/external/catalog-service.module';
+
+import { CatalogServiceModule } from '@/catalog/external/catalog-service.module';
+import { FormRepositoryModule } from '@/forms/infra/repository/form.module';
+
 import { UpdateFormHandler } from './update-form.handler';
 
 @Module({

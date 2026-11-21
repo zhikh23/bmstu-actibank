@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { FormatRepository } from '@/catalog/infra/repository/format/format.repository';
+
 import { Format } from './get-format.data';
-import { CatalogError } from '../../domain/errors';
-import { FormatRepository } from '../../infra/repository/format/format.repository';
 
 export type GetFormatQuery = {
   id: string;

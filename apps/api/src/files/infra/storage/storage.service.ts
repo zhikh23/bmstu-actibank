@@ -1,18 +1,19 @@
-import { Inject, Injectable } from '@nestjs/common';
 import {
   DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
+import { Readable } from 'stream';
+
 import {
   StorageDownloadResult,
   StorageError,
   StoragePort,
 } from './storage.port';
-import { Readable } from 'stream';
 import { S3_CLIENT } from './storage.tokens';
 
 @Injectable()

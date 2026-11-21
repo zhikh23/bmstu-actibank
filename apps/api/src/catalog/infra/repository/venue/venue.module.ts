@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { BuildingModel, VenueModel } from './venue.model';
 import { VenueRepository } from './venue.repository';
 

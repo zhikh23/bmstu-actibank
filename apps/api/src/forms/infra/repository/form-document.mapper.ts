@@ -1,8 +1,10 @@
-import { FormDocumentEntity } from '../../domain/form-document.entity';
-import { FormDocumentModel } from './form.model';
-import { dateToInstant, instantToDate } from '../../../shared/utils/dates';
 import { Result } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
+
+import { FormsError } from '@/forms/domain/errors';
+import { FormDocumentEntity } from '@/forms/domain/form-document.entity';
+import { dateToInstant, instantToDate } from '@/shared/utils/dates';
+
+import { FormDocumentModel } from './form.model';
 
 export class FormDocumentMapper {
   static toModel(d: FormDocumentEntity, formId: string): FormDocumentModel {

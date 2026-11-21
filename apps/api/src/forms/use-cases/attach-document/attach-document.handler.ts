@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { FormRepository } from '../../infra/repository/form.repository';
 import { ResultAsync } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
+
+import { FormsError } from '@/forms/domain/errors';
+import { FormRepository } from '@/forms/infra/repository/form.repository';
 
 export type AttachDocumentCommand = {
   actorId: string;

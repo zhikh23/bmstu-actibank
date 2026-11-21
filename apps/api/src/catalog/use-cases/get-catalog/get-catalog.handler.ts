@@ -1,22 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
-import { CatalogError } from '../../domain/errors';
-import { EventType } from '../../domain/event-type.entity';
-import { Format } from '../../domain/format.entity';
-import { Level } from '../../domain/level.entity';
-import { Rank } from '../../domain/rank.entity';
-import { Theme } from '../../domain/theme.entity';
-import { VenueWithBuilding } from '../../infra/repository/venue/venue-with-building.read-model';
-import { VenueRepository } from '../../infra/repository/venue/venue.repository';
-import { EventTypeRepository } from '../../infra/repository/event-type/event-type.repository';
-import { FormatRepository } from '../../infra/repository/format/format.repository';
-import { LevelRepository } from '../../infra/repository/level/level.repository';
-import { RankRepository } from '../../infra/repository/rank/rank.repository';
-import { ThemeRepository } from '../../infra/repository/theme/theme.repository';
-import { OrganizationRepository } from '../../infra/repository/organization/organization.repository';
-import { OrganizationCategory } from '../../infra/repository/organization/organization-with-category.read-model';
-import { RoleRepository } from '../../infra/repository/role/role.repository';
-import { Building } from '../../domain/building.entity';
+
+import { Building } from '@/catalog/domain/building.entity';
+import { CatalogError } from '@/catalog/domain/errors';
+import { EventType } from '@/catalog/domain/event-type.entity';
+import { Format } from '@/catalog/domain/format.entity';
+import { Level } from '@/catalog/domain/level.entity';
+import { Rank } from '@/catalog/domain/rank.entity';
+import { Theme } from '@/catalog/domain/theme.entity';
+import { EventTypeRepository } from '@/catalog/infra/repository/event-type/event-type.repository';
+import { FormatRepository } from '@/catalog/infra/repository/format/format.repository';
+import { LevelRepository } from '@/catalog/infra/repository/level/level.repository';
+import { OrganizationCategory } from '@/catalog/infra/repository/organization/organization-with-category.read-model';
+import { OrganizationRepository } from '@/catalog/infra/repository/organization/organization.repository';
+import { RankRepository } from '@/catalog/infra/repository/rank/rank.repository';
+import { RoleRepository } from '@/catalog/infra/repository/role/role.repository';
+import { ThemeRepository } from '@/catalog/infra/repository/theme/theme.repository';
+import { VenueWithBuilding } from '@/catalog/infra/repository/venue/venue-with-building.read-model';
+import { VenueRepository } from '@/catalog/infra/repository/venue/venue.repository';
+
 import {
   OrganizationType,
   RoleCategoryType,

@@ -1,5 +1,5 @@
-import { IsString, Length, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Length, IsUUID } from 'class-validator';
 
 export class FormatDto {
   @ApiProperty({

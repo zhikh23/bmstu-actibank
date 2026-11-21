@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { SLUG_PORT } from './slug.tokens';
+
 import { SlugService } from './slug.service';
+import { SLUG_PORT } from './slug.tokens';
 
 @Module({
   providers: [

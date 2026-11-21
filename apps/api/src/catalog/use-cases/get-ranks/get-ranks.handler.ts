@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { RankRepository } from '@/catalog/infra/repository/rank/rank.repository';
+
 import { RankType } from './get-ranks.data';
-import { CatalogError } from '../../domain/errors';
-import { RankRepository } from '../../infra/repository/rank/rank.repository';
 
 export type GetRanksQuery = {
   ids: string[];

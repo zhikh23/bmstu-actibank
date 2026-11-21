@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
-import { VenueRepositoryModule } from '../../infra/repository/venue/venue.module';
+
+import { VenueRepositoryModule } from '@/catalog/infra/repository/venue/venue.module';
+
 import { GetVenuesHandler } from './get-venues.handler';
 
 @Module({

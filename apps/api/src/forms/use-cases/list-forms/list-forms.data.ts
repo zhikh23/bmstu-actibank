@@ -1,5 +1,5 @@
-import { FormStatus } from '../../domain/status.enum';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+import { FormStatus } from '@/forms/domain/status.enum';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
 
 export type ListFormsSortBy = 'createdAt' | 'start';
 export type ListFormsSortOrder = 'asc' | 'desc';

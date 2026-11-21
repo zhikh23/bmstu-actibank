@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
 import { ResultAsync, okAsync, errAsync } from 'neverthrow';
-import { Building } from '../../../domain/building.entity';
+import { In, Repository } from 'typeorm';
+
+import { Building } from '@/catalog/domain/building.entity';
+import { CatalogError } from '@/catalog/domain/errors';
+
+import { VenueWithBuilding } from './venue-with-building.read-model';
+import { VenueWithBuildingMapper } from './venue.mapper';
 import { BuildingModel } from './venue.model';
 import { VenueModel } from './venue.model';
-import { VenueWithBuilding } from './venue-with-building.read-model';
-import { CatalogError } from '../../../domain/errors';
-import { VenueWithBuildingMapper } from './venue.mapper';
 
 @Injectable()
 export class VenueRepository {

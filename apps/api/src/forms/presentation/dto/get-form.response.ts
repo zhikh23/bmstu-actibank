@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dto';
-import { VenueDto } from '../../../shared/presentation/dto/venue.dto';
-import { ThemeDto } from '../../../shared/presentation/dto/theme.dto';
-import { EventTypeDto } from '../../../shared/presentation/dto/event-type.dto';
-import { FormatDto } from '../../../shared/presentation/dto/format.dto';
-import { LevelDto } from '../../../shared/presentation/dto/level.dto';
-import { RoleWithCategoryDto } from '../../../shared/presentation/dto/role-with-category.dto';
-import { RankDto } from '../../../shared/presentation/dto/rank.dto';
-import { OrganizationWithCategoryDto } from '../../../shared/presentation/dto/organization-with-category.dto';
+
+import { EventTypeDto } from '@/shared/presentation/dto/event-type.dto';
+import { FormatDto } from '@/shared/presentation/dto/format.dto';
+import { LevelDto } from '@/shared/presentation/dto/level.dto';
+import { OrganizationWithCategoryDto } from '@/shared/presentation/dto/organization-with-category.dto';
+import { ParticipantsDto } from '@/shared/presentation/dto/participant.dto';
+import { RankDto } from '@/shared/presentation/dto/rank.dto';
+import { RoleWithCategoryDto } from '@/shared/presentation/dto/role-with-category.dto';
+import { ThemeDto } from '@/shared/presentation/dto/theme.dto';
+import { VenueDto } from '@/shared/presentation/dto/venue.dto';
 
 export class GetFormGuestDto {
   @ApiProperty({

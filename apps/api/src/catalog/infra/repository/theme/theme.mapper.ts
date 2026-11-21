@@ -1,4 +1,5 @@
-import { Theme } from '../../../domain/theme.entity';
+import { Theme } from '@/catalog/domain/theme.entity';
+
 import { ThemeModel } from './theme.model';
 
 export class ThemeMapper {

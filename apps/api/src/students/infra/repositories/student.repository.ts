@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StudentModel } from './student.model';
-import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { StudentEntity } from '../../domain/student.entity';
-import { StudentsError } from '../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { StudentsError } from '@/students/domain/errors';
+import { StudentEntity } from '@/students/domain/student.entity';
+
 import { StudentMapper } from './student.mapper';
+import { StudentModel } from './student.model';
 
 @Injectable()
 export class StudentRepository {

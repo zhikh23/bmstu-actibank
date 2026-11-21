@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { StudentRepository } from '../../infra/repositories/student.repository';
 import { ResultAsync } from 'neverthrow';
-import { StudentsError } from '../../domain/errors';
+
+import { StudentsError } from '@/students/domain/errors';
+import { StudentRepository } from '@/students/infra/repositories/student.repository';
+
 import { StudentsListItem } from './list-students.data';
 
 @Injectable()

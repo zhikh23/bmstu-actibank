@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { EventTypeRepository } from '../../infra/repository/event-type/event-type.repository';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { EventTypeRepository } from '@/catalog/infra/repository/event-type/event-type.repository';
+
 import { EventType } from './get-event-type.data';
-import { CatalogError } from '../../domain/errors';
 
 export type GetEventTypeQuery = {
   id: string;

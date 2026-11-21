@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+
+import { StudentRepositoryModule } from '@/students/infra/repositories/student.module';
+
 import { ListStudentsHandler } from './list-students.handler';
-import { StudentRepositoryModule } from '../../infra/repositories/student.module';
 
 @Module({
   imports: [StudentRepositoryModule],

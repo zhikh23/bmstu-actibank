@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ThemeModel } from './theme.model';
-import { In, Repository } from 'typeorm';
 import { okAsync, ResultAsync } from 'neverthrow';
-import { Theme } from '../../../domain/theme.entity';
-import { CatalogError } from '../../../domain/errors';
+import { In, Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { Theme } from '@/catalog/domain/theme.entity';
+
 import { ThemeMapper } from './theme.mapper';
+import { ThemeModel } from './theme.model';
 
 @Injectable()
 export class ThemeRepository {

@@ -1,5 +1,6 @@
 import { ResultAsync } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
+
+import { FormsError } from '@/forms/domain/errors';
 
 export interface IDocumentData {
   formId: string;

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoleCategoryModel, RoleModel } from './role.model';
-import { In, Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
+import { In, Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+
 import { RoleWithCategory } from './role-with-category.read-model';
-import { CatalogError } from '../../../domain/errors';
 import { RoleWithCategoryMapper } from './role.mapper';
+import { RoleCategoryModel, RoleModel } from './role.model';
 
 @Injectable()
 export class RoleRepository {

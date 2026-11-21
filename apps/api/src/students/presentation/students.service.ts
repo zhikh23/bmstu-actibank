@@ -5,11 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
-import { StudentDto } from './dto/student.dto';
+
+import { StudentsError } from '@/students/domain/errors';
+import { GetStudentHandler } from '@/students/use-cases/get-student/get-student.handler';
+import { ListStudentsHandler } from '@/students/use-cases/list-students/list-students.handler';
+
 import { ListStudentsResponse } from './dto/list-students.response';
-import { GetStudentHandler } from '../use-cases/get-student/get-student.handler';
-import { ListStudentsHandler } from '../use-cases/list-students/list-students.handler';
-import { StudentsError } from '../domain/errors';
+import { StudentDto } from './dto/student.dto';
 
 @Injectable()
 export class StudentsService {

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FileModel } from './file.model';
-import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { File } from '../../domain/file.entity';
-import { FilesError } from '../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { FilesError } from '@/files/domain/errors';
+import { File } from '@/files/domain/file.entity';
+
 import { FileMapper } from './file.mapper';
+import { FileModel } from './file.model';
 
 @Injectable()
 export class FileRepository {

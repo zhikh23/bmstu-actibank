@@ -7,30 +7,32 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CreateFormHandler } from '../use-cases/create-form/create-form.handler';
+
+import { FormsError } from '@/forms/domain/errors';
+import { ApproveFormHandler } from '@/forms/use-cases/approve-form/approve-form.handler';
+import { AttachDocumentHandler } from '@/forms/use-cases/attach-document/attach-document.handler';
+import { CancelFormHandler } from '@/forms/use-cases/cancel-form/cancel-form.handler';
+import { ConvertToDraftFormHandler } from '@/forms/use-cases/convert-to-draft-form/convert-to-draft-form-handler.service';
+import { CreateFormHandler } from '@/forms/use-cases/create-form/create-form.handler';
+import { GenerateDocumentHandler } from '@/forms/use-cases/generate-document/generate-document.handler';
+import { FormType } from '@/forms/use-cases/get-form/get-form.data';
+import { GetFormHandler } from '@/forms/use-cases/get-form/get-form.handler';
+import { ListFormsHandler } from '@/forms/use-cases/list-forms/list-forms.handler';
+import { MarkFormReadyHandler } from '@/forms/use-cases/mark-form-ready/mark-form-ready.handler';
+import { RejectFormHandler } from '@/forms/use-cases/reject-form/reject-form.handler';
+import { StartFormReviewHandler } from '@/forms/use-cases/start-form-review/start-form-review.handler';
+import { UpdateFormHandler } from '@/forms/use-cases/update-form/update-form.handler';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+
+import { AttachDocumentRequest } from './dto/attach-document.request';
 import { CreateFormRequest } from './dto/create-form.request';
 import { CreateFormResponse } from './dto/create-form.response';
-import { GetFormHandler } from '../use-cases/get-form/get-form.handler';
-import { GetFormResponse } from './dto/get-form.response';
-import { MarkFormReadyHandler } from '../use-cases/mark-form-ready/mark-form-ready.handler';
-import { ConvertToDraftFormHandler } from '../use-cases/convert-to-draft-form/convert-to-draft-form-handler.service';
-import { ApproveFormHandler } from '../use-cases/approve-form/approve-form.handler';
-import { CancelFormHandler } from '../use-cases/cancel-form/cancel-form.handler';
-import { RejectFormHandler } from '../use-cases/reject-form/reject-form.handler';
-import { StartFormReviewHandler } from '../use-cases/start-form-review/start-form-review.handler';
-import { RejectFormRequest } from './dto/reject-form.request';
-import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
 import { GenerateDocumentResponse } from './dto/generate-document.response';
-import { GenerateDocumentHandler } from '../use-cases/generate-document/generate-document.handler';
-import { FormsError } from '../domain/errors';
-import { FormType } from '../use-cases/get-form/get-form.data';
-import { UpdateFormHandler } from '../use-cases/update-form/update-form.handler';
-import { UpdateFormRequest } from './dto/update-form.request';
-import { AttachDocumentHandler } from '../use-cases/attach-document/attach-document.handler';
-import { AttachDocumentRequest } from './dto/attach-document.request';
-import { ListFormsHandler } from '../use-cases/list-forms/list-forms.handler';
+import { GetFormResponse } from './dto/get-form.response';
 import { ListFormsRequest } from './dto/list-forms.request';
 import { ListFormResponse } from './dto/list-forms.response';
+import { RejectFormRequest } from './dto/reject-form.request';
+import { UpdateFormRequest } from './dto/update-form.request';
 
 @Injectable()
 export class FormsService {

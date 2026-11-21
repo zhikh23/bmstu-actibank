@@ -1,4 +1,5 @@
-import { Format } from '../../../domain/format.entity';
+import { Format } from '@/catalog/domain/format.entity';
+
 import { FormatModel } from './format.model';
 
 export class FormatMapper {

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UploadFileHandler } from '../use-cases/upload-file/upload-file.handler';
-import { DownloadFileHandler } from '../use-cases/download-file/download-file.handler';
 import { ResultAsync } from 'neverthrow';
+
+import { DownloadFileHandler } from '@/files/use-cases/download-file/download-file.handler';
+import { UploadFileHandler } from '@/files/use-cases/upload-file/upload-file.handler';
+
 import {
   DownloadFileRequest,
   DownloadFileResponse,

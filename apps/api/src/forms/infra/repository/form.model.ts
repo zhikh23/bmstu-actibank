@@ -9,7 +9,8 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
-import { FormStatus } from '../../domain/status.enum';
+
+import { FormStatus } from '@/forms/domain/status.enum';
 
 @Entity('forms_organizers')
 export class FormOrganizer {

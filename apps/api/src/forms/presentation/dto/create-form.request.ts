@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsISO8601,
@@ -6,11 +8,10 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { ParticipantsDto } from '../../../shared/presentation/dto/participant.dto';
-import { GuestDto } from '../../../shared/presentation/dto/guest.dto';
-import { MemberDto } from '../../../shared/presentation/dto/member.dto';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+
+import { GuestDto } from '@/shared/presentation/dto/guest.dto';
+import { MemberDto } from '@/shared/presentation/dto/member.dto';
+import { ParticipantsDto } from '@/shared/presentation/dto/participant.dto';
 
 export class CreateFormRequest {
   @ApiProperty({

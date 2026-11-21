@@ -1,4 +1,5 @@
 import { err, ok, Result } from 'neverthrow';
+
 import { FormsError } from './errors';
 
 export type FormDocumentCreate = {

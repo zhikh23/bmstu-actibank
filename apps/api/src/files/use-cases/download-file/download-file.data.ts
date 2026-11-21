@@ -1,5 +1,6 @@
 import { Readable } from 'node:stream';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
 
 export type DownloadFileCommand = {
   actor: AuthenticatedUser;

@@ -1,13 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FileRepository } from '../../infra/repository/file.repository';
-import { UUID_PORT, UuidPort } from '../../../shared/infra/uuid/uuid.port';
-import { STORAGE_PORT } from '../../infra/storage/storage.tokens';
-import { StoragePort } from '../../infra/storage/storage.port';
 import { ResultAsync } from 'neverthrow';
-import { FilesError } from '../../domain/errors';
 import path from 'node:path';
+
+import { FilesError } from '@/files/domain/errors';
+import { File } from '@/files/domain/file.entity';
+import { FileRepository } from '@/files/infra/repository/file.repository';
+import { StoragePort } from '@/files/infra/storage/storage.port';
+import { STORAGE_PORT } from '@/files/infra/storage/storage.tokens';
+import { UUID_PORT, UuidPort } from '@/shared/infra/uuid/uuid.port';
+
 import { UploadFileCommand, UploadFileResult } from './upload-file.data';
-import { File } from '../../domain/file.entity';
 
 @Injectable()
 export class UploadFileHandler {

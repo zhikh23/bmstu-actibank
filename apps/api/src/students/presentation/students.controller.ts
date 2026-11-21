@@ -1,16 +1,17 @@
+import { Controller, Get, Param } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Controller, Get, Param } from '@nestjs/common';
-import { StudentsService } from './students.service';
-import { StudentDto } from './dto/student.dto';
+
 import {
   ListStudentsItemDto,
   ListStudentsResponse,
 } from './dto/list-students.response';
+import { StudentDto } from './dto/student.dto';
+import { StudentsService } from './students.service';
 
 @ApiTags('Students')
 @Controller('students')

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserModel } from './user.model';
-import { Repository } from 'typeorm';
 import { okAsync, ResultAsync } from 'neverthrow';
-import { AuthError } from '../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { AuthError } from '@/auth/domain/errors';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+
 import { UserMapper } from './user.mapper';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+import { UserModel } from './user.model';
 
 @Injectable()
 export class UserRepository {

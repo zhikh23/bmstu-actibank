@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { RoleRepository } from '../../infra/repository/role/role.repository';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { RoleRepository } from '@/catalog/infra/repository/role/role.repository';
+
 import { RoleType } from './get-roles.data';
-import { CatalogError } from '../../domain/errors';
 
 export type GetRolesQuery = {
   ids: string[];

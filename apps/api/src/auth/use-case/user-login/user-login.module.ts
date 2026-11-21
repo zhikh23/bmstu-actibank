@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+
+import { OidcModule } from '@/auth/infrastructure/oidc/oidc.module';
+
 import { UserLoginHandler } from './user-login.handler';
-import { OidcModule } from '../../infrastructure/oidc/oidc.module';
 
 @Module({
   imports: [OidcModule],

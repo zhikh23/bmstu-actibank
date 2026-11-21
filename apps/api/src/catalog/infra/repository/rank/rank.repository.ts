@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
 import { okAsync, ResultAsync } from 'neverthrow';
-import { RankModel } from './rank.model';
-import { Rank } from '../../../domain/rank.entity';
-import { CatalogError } from '../../../domain/errors';
+import { In, Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { Rank } from '@/catalog/domain/rank.entity';
+
 import { RankMapper } from './rank.mapper';
+import { RankModel } from './rank.model';
 
 @Injectable()
 export class RankRepository {

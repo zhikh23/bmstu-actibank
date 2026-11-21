@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { GetEventTypeHandler } from '../use-cases/get-event-type/get-event-type.handler';
-import { GetFormatHandler } from '../use-cases/get-format/get-format.handler';
-import { GetLevelHandler } from '../use-cases/get-level/get-level.handler';
-import { GetRanksHandler } from '../use-cases/get-ranks/get-ranks.handler';
-import { GetRolesHandler } from '../use-cases/get-roles/get-roles.handler';
-import { GetOrganizationsHandler } from '../use-cases/get-organizations/get-organizations.handler';
 import { ResultAsync } from 'neverthrow';
+
+import { GetEventTypeHandler } from '@/catalog/use-cases/get-event-type/get-event-type.handler';
+import { GetFormatHandler } from '@/catalog/use-cases/get-format/get-format.handler';
+import { GetLevelHandler } from '@/catalog/use-cases/get-level/get-level.handler';
+import { GetOrganizationsHandler } from '@/catalog/use-cases/get-organizations/get-organizations.handler';
+import { GetRanksHandler } from '@/catalog/use-cases/get-ranks/get-ranks.handler';
+import { GetRolesHandler } from '@/catalog/use-cases/get-roles/get-roles.handler';
+import { GetThemesHandler } from '@/catalog/use-cases/get-themes/get-themes.handler';
+import { GetVenuesHandler } from '@/catalog/use-cases/get-venues/get-venues.handler';
+
 import {
   EventTypeDto,
   FormatDto,
@@ -16,8 +20,6 @@ import {
   ThemeDto,
   VenueDto,
 } from './dto';
-import { GetThemesHandler } from '../use-cases/get-themes/get-themes.handler';
-import { GetVenuesHandler } from '../use-cases/get-venues/get-venues.handler';
 
 export type CatalogServiceError =
   | { kind: 'NotFound'; message: string }

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FormatModel } from './format.model';
-import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { Format } from '../../../domain/format.entity';
-import { CatalogError } from '../../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { Format } from '@/catalog/domain/format.entity';
+
 import { FormatMapper } from './format.mapper';
+import { FormatModel } from './format.model';
 
 @Injectable()
 export class FormatRepository {

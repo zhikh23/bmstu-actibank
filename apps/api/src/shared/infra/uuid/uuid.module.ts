@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { UuidService } from './uuid.service';
+
 import { UUID_PORT } from './uuid.port';
+import { UuidService } from './uuid.service';
 
 @Module({
   providers: [UuidService, { provide: UUID_PORT, useExisting: UuidService }],

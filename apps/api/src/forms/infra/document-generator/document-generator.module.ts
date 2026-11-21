@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { DOCUMENT_GENERATOR_PORT } from './document-generator.tokens';
+
 import { DocumentGeneratorService } from './document-generator.service';
+import { DOCUMENT_GENERATOR_PORT } from './document-generator.tokens';
 
 @Module({
   providers: [

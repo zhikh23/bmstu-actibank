@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthenticationGuard, RolesGuard } from './presentation/auth.guards';
-import { AuthController } from './presentation/auth.controller';
-import { AuthService } from './presentation/auth.service';
+
+import { AuthController } from '@/auth/presentation/auth.controller';
+import {
+  AuthenticationGuard,
+  RolesGuard,
+} from '@/auth/presentation/auth.guards';
+import { AuthService } from '@/auth/presentation/auth.service';
+
 import { OidcAdapter } from './infrastructure/oidc/oidc.adapter';
 import { AuthCallbackModule } from './use-case/auth-callback/auth-callback.module';
 import { GetSessionUserModule } from './use-case/get-session-user/get-session-user.module';

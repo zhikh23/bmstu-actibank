@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { RoleCategoryModel, RoleModel } from './role.model';
 import { RoleRepository } from './role.repository';
 

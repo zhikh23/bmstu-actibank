@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CatalogService } from '../../../catalog/external/catalog.service';
-import { FormEntity } from '../../domain/form.entity';
 import { ResultAsync } from 'neverthrow';
-import { IDocumentData } from '../../infra/document-generator/document-generator.port';
-import { FormsError } from '../../domain/errors';
+
+import { CatalogService } from '@/catalog/external/catalog.service';
+import { FormsError } from '@/forms/domain/errors';
+import { FormEntity } from '@/forms/domain/form.entity';
+import { IDocumentData } from '@/forms/infra/document-generator/document-generator.port';
 
 @Injectable()
 export class FormDocumentDataFactory {

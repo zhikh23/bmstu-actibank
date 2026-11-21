@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ThemeRepository } from '../../infra/repository/theme/theme.repository';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { ThemeRepository } from '@/catalog/infra/repository/theme/theme.repository';
+
 import { ThemeType } from './get-themes.data';
-import { CatalogError } from '../../domain/errors';
 
 export type GetThemesQuery = {
   ids: string[];

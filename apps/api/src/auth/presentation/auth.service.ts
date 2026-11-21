@@ -4,15 +4,17 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthRequest, AuthResponse } from './http.types';
-import { AuthCallbackHandler } from '../use-case/auth-callback/auth-callback.handler';
 import { err, errAsync, okAsync } from 'neverthrow';
-import { AuthError } from '../domain/errors';
-import { UserLoginHandler } from '../use-case/user-login/user-login.handler';
-import { UserLogoutHandler } from '../use-case/user-logout/user-logout.handler';
-import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
-import { GetSessionUserHandler } from '../use-case/get-session-user/get-session-user.handler';
+
+import { AuthError } from '@/auth/domain/errors';
+import { AuthCallbackHandler } from '@/auth/use-case/auth-callback/auth-callback.handler';
+import { GetSessionUserHandler } from '@/auth/use-case/get-session-user/get-session-user.handler';
+import { UserLoginHandler } from '@/auth/use-case/user-login/user-login.handler';
+import { UserLogoutHandler } from '@/auth/use-case/user-logout/user-logout.handler';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+
 import { AuthenticatedUserDto } from './dto/authenticated-user.dto';
+import { AuthRequest, AuthResponse } from './http.types';
 
 const SESSION_COOKIE = 'actibank_session';
 

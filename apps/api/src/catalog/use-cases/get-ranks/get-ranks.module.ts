@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
-import { RankRepositoryModule } from '../../infra/repository/rank/rank.module';
+
+import { RankRepositoryModule } from '@/catalog/infra/repository/rank/rank.module';
+
 import { GetRanksHandler } from './get-ranks.handler';
 
 @Module({

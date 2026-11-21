@@ -6,11 +6,13 @@ import {
   NotFoundException,
   StreamableFile,
 } from '@nestjs/common';
-import { UploadFileHandler } from '../use-cases/upload-file/upload-file.handler';
-import { DownloadFileHandler } from '../use-cases/download-file/download-file.handler';
+
+import { DownloadFileHandler } from '@/files/use-cases/download-file/download-file.handler';
+import { UploadFileHandler } from '@/files/use-cases/upload-file/upload-file.handler';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+
 import { FormDataFileDto } from './dto/form-data-file.dto';
 import { UploadFileResponse } from './dto/upload-file.response';
-import { AuthenticatedUser } from '../../shared/domain/authenticated-user.entity';
 
 @Injectable()
 export class FilesService {

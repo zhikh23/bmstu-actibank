@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
-import { UserRole } from '../../../shared/domain/authenticated-user.entity';
+
+import { FormsError } from '@/forms/domain/errors';
 import {
   FormRepository,
   GetAllFormsQuery,
-} from '../../infra/repository/form.repository';
-import { FormsError } from '../../domain/errors';
-import {
-  instantToDate,
-  plainDateTimeToDate,
-} from '../../../shared/utils/dates';
+} from '@/forms/infra/repository/form.repository';
+import { UserRole } from '@/shared/domain/authenticated-user.entity';
+import { instantToDate, plainDateTimeToDate } from '@/shared/utils/dates';
+
 import { FormSummary, ListFormsQuery } from './list-forms.data';
 
 @Injectable()

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
-import { AuthError } from '../../domain/errors';
-import { OidcAdapter } from '../../infrastructure/oidc/oidc.adapter';
+
+import { AuthError } from '@/auth/domain/errors';
+import { OidcAdapter } from '@/auth/infrastructure/oidc/oidc.adapter';
 
 export type UserLoginCommand = {
   returnTo?: string;

@@ -1,12 +1,13 @@
-import { FormEntity } from './form.entity';
-import { FormStatus } from './status.enum';
+import { describe } from 'node:test';
+
 import {
   expectInvalidTransitionError,
   expectInvariantError,
   expectOk,
 } from './asserts';
 import { baseInit, later, now, start, validInit } from './fixtures';
-import { describe } from 'node:test';
+import { FormEntity } from './form.entity';
+import { FormStatus } from './status.enum';
 
 const MSG = {
   startBeforeEnd: 'start must be before end',

@@ -1,4 +1,5 @@
-import { EventType } from '../../../domain/event-type.entity';
+import { EventType } from '@/catalog/domain/event-type.entity';
+
 import { EventTypeModel } from './event-type.model';
 
 export class EventTypeMapper {

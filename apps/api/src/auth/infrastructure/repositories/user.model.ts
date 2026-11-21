@@ -1,3 +1,4 @@
+import type { Relation } from 'typeorm';
 import {
   Column,
   Entity,
@@ -7,8 +8,8 @@ import {
   PrimaryColumn,
   Unique,
 } from 'typeorm';
-import type { Relation } from 'typeorm';
-import { UserRole } from '../../../shared/domain/authenticated-user.entity';
+
+import { UserRole } from '@/shared/domain/authenticated-user.entity';
 
 @Entity('users')
 @Unique(['subject'])

@@ -1,8 +1,9 @@
+import { S3Client } from '@aws-sdk/client-s3';
 import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
 import { StorageService } from './storage.service';
 import { S3_CLIENT, STORAGE_PORT } from './storage.tokens';
-import { ConfigService } from '@nestjs/config';
-import { S3Client } from '@aws-sdk/client-s3';
 
 @Module({
   providers: [

@@ -10,9 +10,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { FormsService } from './forms.service';
-import { CreateFormRequest } from './dto/create-form.request';
-import { CreateFormResponse } from './dto/create-form.response';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -27,19 +24,24 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { GetFormResponse } from './dto/get-form.response';
-import { RejectFormRequest } from './dto/reject-form.request';
-import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
-import { RolesGuard } from '../../auth/presentation/auth.guards';
+
+import { CurrentUser, Roles } from '@/auth/presentation/auth.decorators';
+import { RolesGuard } from '@/auth/presentation/auth.guards';
 import {
   AuthenticatedUser,
   UserRole,
-} from '../../shared/domain/authenticated-user.entity';
-import { GenerateDocumentResponse } from './dto/generate-document.response';
-import { UpdateFormRequest } from './dto/update-form.request';
+} from '@/shared/domain/authenticated-user.entity';
+
 import { AttachDocumentRequest } from './dto/attach-document.request';
+import { CreateFormRequest } from './dto/create-form.request';
+import { CreateFormResponse } from './dto/create-form.response';
+import { GenerateDocumentResponse } from './dto/generate-document.response';
+import { GetFormResponse } from './dto/get-form.response';
 import { ListFormsRequest } from './dto/list-forms.request';
 import { ListFormResponse } from './dto/list-forms.response';
+import { RejectFormRequest } from './dto/reject-form.request';
+import { UpdateFormRequest } from './dto/update-form.request';
+import { FormsService } from './forms.service';
 
 @Controller('forms')
 @ApiTags('Forms')

@@ -1,5 +1,6 @@
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+
 import { UserModel } from './user.model';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 
 export class UserMapper {
   static toDomain(u: UserModel): AuthenticatedUser {

@@ -8,6 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -19,16 +20,17 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { FilesService } from './files.service';
-import { RolesGuard } from '../../auth/presentation/auth.guards';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { FormDataFileDto } from './dto/form-data-file.dto';
-import { CurrentUser, Roles } from '../../auth/presentation/auth.decorators';
-import { UploadFileResponse } from './dto/upload-file.response';
+
+import { CurrentUser, Roles } from '@/auth/presentation/auth.decorators';
+import { RolesGuard } from '@/auth/presentation/auth.guards';
 import {
   AuthenticatedUser,
   UserRole,
-} from '../../shared/domain/authenticated-user.entity';
+} from '@/shared/domain/authenticated-user.entity';
+
+import { FormDataFileDto } from './dto/form-data-file.dto';
+import { UploadFileResponse } from './dto/upload-file.response';
+import { FilesService } from './files.service';
 
 @Controller('files')
 @ApiTags('Files')

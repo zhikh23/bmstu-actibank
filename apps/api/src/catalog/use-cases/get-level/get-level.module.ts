@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+
+import { LevelRepositoryModule } from '@/catalog/infra/repository/level/level.module';
+
 import { GetLevelHandler } from './get-level.handler';
-import { LevelRepositoryModule } from '../../infra/repository/level/level.module';
 
 @Module({
   imports: [LevelRepositoryModule],

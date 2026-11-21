@@ -1,5 +1,6 @@
-import { IsString, IsUUID, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsUUID, Length } from 'class-validator';
+
 import { OrganizationCategoryDto } from './organization-category.dto';
 
 export class OrganizationWithCategoryDto {

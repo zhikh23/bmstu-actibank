@@ -1,9 +1,11 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { FormEntity } from '../../domain/form.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { errAsync, okAsync, Result, ResultAsync } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { FormsError } from '@/forms/domain/errors';
+import { FormEntity } from '@/forms/domain/form.entity';
+
 import { FormMapper } from './form.mapper';
 import { FormModel } from './form.model';
 

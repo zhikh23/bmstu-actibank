@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
-import { CatalogError } from '../../domain/errors';
-import { VenueRepository } from '../../infra/repository/venue/venue.repository';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { VenueRepository } from '@/catalog/infra/repository/venue/venue.repository';
+
 import { VenueType } from './get-venues.data';
 
 export type GetVenuesQuery = {

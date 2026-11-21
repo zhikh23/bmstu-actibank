@@ -1,6 +1,7 @@
-import { File } from '../../domain/file.entity';
+import { File } from '@/files/domain/file.entity';
+import { dateToInstant, instantToDate } from '@/shared/utils/dates';
+
 import { FileModel } from './file.model';
-import { dateToInstant, instantToDate } from '../../../shared/utils/dates';
 
 export class FileMapper {
   static toModel(f: File): FileModel {

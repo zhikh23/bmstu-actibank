@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { UserLogoutHandler } from './user-logout.handler';
 
 @Module({

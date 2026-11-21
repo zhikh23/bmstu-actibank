@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FormRepository } from '../../infra/repository/form.repository';
 import { err, ok, Result, ResultAsync } from 'neverthrow';
-import { FormEntity } from '../../domain/form.entity';
-import { FormsError } from '../../domain/errors';
-import { UUID_PORT, type UuidPort } from '../../../shared/infra/uuid/uuid.port';
 
-import { Member } from '../../domain/member.entity';
-import { Guest } from '../../domain/guest.entity';
+import { FormsError } from '@/forms/domain/errors';
+import { FormEntity } from '@/forms/domain/form.entity';
+import { Guest } from '@/forms/domain/guest.entity';
+import { Member } from '@/forms/domain/member.entity';
+import { Participants } from '@/forms/domain/participants.entity';
+import { FormRepository } from '@/forms/infra/repository/form.repository';
 import {
   AuthenticatedUser,
   UserRole,
-} from '../../../shared/domain/authenticated-user.entity';
-import { Participants } from '../../domain/participants.entity';
-import { SLUG_PORT } from '../../../shared/infra/slug/slug.tokens';
-import { SlugPort } from '../../../shared/infra/slug/slug.port';
+} from '@/shared/domain/authenticated-user.entity';
+import { SlugPort } from '@/shared/infra/slug/slug.port';
+import { SLUG_PORT } from '@/shared/infra/slug/slug.tokens';
+import { UUID_PORT, type UuidPort } from '@/shared/infra/uuid/uuid.port';
 
 export type CreateFormCommand = {
   actor: AuthenticatedUser;

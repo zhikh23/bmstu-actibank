@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { OrganizationRepository } from '../../infra/repository/organization/organization.repository';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { OrganizationRepository } from '@/catalog/infra/repository/organization/organization.repository';
+
 import { OrganizationWithCategoryType } from './get-organizations.data';
-import { CatalogError } from '../../domain/errors';
 
 export type GetOrganizationsQuery = {
   ids: string[];

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { LevelRepository } from '@/catalog/infra/repository/level/level.repository';
+
 import { Level } from './get-level.data';
-import { CatalogError } from '../../domain/errors';
-import { LevelRepository } from '../../infra/repository/level/level.repository';
 
 export type GetLevelQuery = {
   id: string;

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'node:fs';
-import PizZip from 'pizzip';
-import path from 'node:path';
 import Docxtemplater from 'docxtemplater';
 import { okAsync, ResultAsync } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
+import * as fs from 'node:fs';
+import path from 'node:path';
+import PizZip from 'pizzip';
+
+import { FormsError } from '@/forms/domain/errors';
+
 import {
   IDocumentData,
   IDocumentGeneratorPort,

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LevelModel } from './level.model';
-import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { Level } from '../../../domain/level.entity';
-import { CatalogError } from '../../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { Level } from '@/catalog/domain/level.entity';
+
 import { LevelMapper } from './level.mapper';
+import { LevelModel } from './level.model';
 
 @Injectable()
 export class LevelRepository {

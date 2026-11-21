@@ -1,6 +1,7 @@
+import { Role } from '@/catalog/domain/role.entity';
+
 import { RoleWithCategory } from './role-with-category.read-model';
 import { RoleModel } from './role.model';
-import { Role } from '../../../domain/role.entity';
 
 export class RoleMapper {
   static toDomain(m: RoleModel): Role {

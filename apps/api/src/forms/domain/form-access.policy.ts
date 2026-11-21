@@ -1,11 +1,13 @@
 import { err, ok, Result } from 'neverthrow';
-import { FormEntity } from './form.entity';
-import { FormStatus } from './status.enum';
-import { FormsError } from './errors';
+
 import {
   AuthenticatedUser,
   UserRole,
-} from '../../shared/domain/authenticated-user.entity';
+} from '@/shared/domain/authenticated-user.entity';
+
+import { FormsError } from './errors';
+import { FormEntity } from './form.entity';
+import { FormStatus } from './status.enum';
 
 export type AccessDecision =
   { allowed: true } | { allowed: false; reason?: string };

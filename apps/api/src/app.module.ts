@@ -1,14 +1,15 @@
-import { Module } from '@nestjs/common';
-import { FormsModule } from './forms/forms.module';
-import { LoggerModule } from 'nestjs-pino';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CatalogModule } from './catalog/catalog.module';
-import { AuthModule } from './auth/auth.module';
-import { FilesModule } from './files/files.module';
-import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
-import { StudentsModule } from './students/students.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from 'nestjs-pino';
+
+import { AuthModule } from '@/auth/auth.module';
+import { CatalogModule } from '@/catalog/catalog.module';
+import { FilesModule } from '@/files/files.module';
+import { FormsModule } from '@/forms/forms.module';
+import { StudentsModule } from '@/students/students.module';
 
 @Module({
   imports: [

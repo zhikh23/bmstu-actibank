@@ -14,19 +14,21 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ResultAsync } from 'neverthrow';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { BuildingDto } from '@/shared/presentation/dto/building.dto';
+import { EventTypeDto } from '@/shared/presentation/dto/event-type.dto';
+import { FormatDto } from '@/shared/presentation/dto/format.dto';
+import { LevelDto } from '@/shared/presentation/dto/level.dto';
+import { OrganizationCategoryDto } from '@/shared/presentation/dto/organization-category.dto';
+import { OrganizationDto } from '@/shared/presentation/dto/organization.dto';
+import { RankDto } from '@/shared/presentation/dto/rank.dto';
+import { RoleCategoryDto } from '@/shared/presentation/dto/role-category.dto';
+import { RoleWithCategoryDto } from '@/shared/presentation/dto/role-with-category.dto';
+import { ThemeDto } from '@/shared/presentation/dto/theme.dto';
+import { VenueDto } from '@/shared/presentation/dto/venue.dto';
+
 import { CatalogService } from './catalog.service';
-import { CatalogError } from '../domain/errors';
-import { BuildingDto } from '../../shared/presentation/dto/building.dto';
-import { EventTypeDto } from '../../shared/presentation/dto/event-type.dto';
-import { FormatDto } from '../../shared/presentation/dto/format.dto';
-import { LevelDto } from '../../shared/presentation/dto/level.dto';
-import { OrganizationCategoryDto } from '../../shared/presentation/dto/organization-category.dto';
-import { RankDto } from '../../shared/presentation/dto/rank.dto';
-import { RoleCategoryDto } from '../../shared/presentation/dto/role-category.dto';
-import { ThemeDto } from '../../shared/presentation/dto/theme.dto';
-import { VenueDto } from '../../shared/presentation/dto/venue.dto';
-import { OrganizationDto } from '../../shared/presentation/dto/organization.dto';
-import { RoleWithCategoryDto } from '../../shared/presentation/dto/role-with-category.dto';
 
 @ApiTags('Catalog')
 @Controller('catalog')

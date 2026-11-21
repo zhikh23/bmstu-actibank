@@ -1,4 +1,5 @@
-import { StudentEntity } from '../../domain/student.entity';
+import { StudentEntity } from '@/students/domain/student.entity';
+
 import { StudentModel } from './student.model';
 
 export class StudentMapper {

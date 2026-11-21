@@ -1,4 +1,5 @@
-import { Rank } from '../../../domain/rank.entity';
+import { Rank } from '@/catalog/domain/rank.entity';
+
 import { RankModel } from './rank.model';
 
 export class RankMapper {

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { GetSessionUserHandler } from './get-session-user.handler';
 
 @Module({

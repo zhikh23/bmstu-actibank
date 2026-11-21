@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FormStatus } from '../../domain/status.enum';
+
+import { FormStatus } from '@/forms/domain/status.enum';
 
 export class ListFormResponse {
   @ApiProperty({

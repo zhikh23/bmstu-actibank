@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventTypeModel } from './event-type.model';
-import { Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { EventType } from '../../../domain/event-type.entity';
-import { CatalogError } from '../../../domain/errors';
+import { Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { EventType } from '@/catalog/domain/event-type.entity';
+
 import { EventTypeMapper } from './event-type.mapper';
+import { EventTypeModel } from './event-type.model';
 
 @Injectable()
 export class EventTypeRepository {

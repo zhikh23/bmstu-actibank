@@ -1,5 +1,5 @@
-import { DataSource } from 'typeorm';
 import { BetterNamingStrategy } from 'better-typeorm-naming-strategies';
+import { DataSource } from 'typeorm';
 
 export default new DataSource({
   type: 'postgres',

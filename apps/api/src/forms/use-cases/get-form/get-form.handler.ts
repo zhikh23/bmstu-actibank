@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync, okAsync } from 'neverthrow';
-import { FormRepository } from '../../infra/repository/form.repository';
-import { FormsError } from '../../domain/errors';
-import { AccessDecision, FormAccess } from '../../domain/form-access.policy';
-import {
-  instantToDate,
-  plainDateTimeToDate,
-} from '../../../shared/utils/dates';
+
+import { CatalogService } from '@/catalog/external/catalog.service';
+import { FormsError } from '@/forms/domain/errors';
+import { AccessDecision, FormAccess } from '@/forms/domain/form-access.policy';
+import { FormRepository } from '@/forms/infra/repository/form.repository';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+import { instantToDate, plainDateTimeToDate } from '@/shared/utils/dates';
+
 import { FormType } from './get-form.data';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
-import { CatalogService } from '../../../catalog/external/catalog.service';
 
 export type GetFormCommand = {
   actor: AuthenticatedUser;

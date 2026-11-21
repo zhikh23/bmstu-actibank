@@ -1,11 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { OidcAdapter } from '../../infrastructure/oidc/oidc.adapter';
-import { UserRepository } from '../../infrastructure/repositories/user.repository';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { AuthError } from '../../domain/errors';
-import { UUID_PORT, UuidPort } from '../../../shared/infra/uuid/uuid.port';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
+
+import { AuthError } from '@/auth/domain/errors';
+import { OidcAdapter } from '@/auth/infrastructure/oidc/oidc.adapter';
+import { UserRepository } from '@/auth/infrastructure/repositories/user.repository';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+import { UUID_PORT, UuidPort } from '@/shared/infra/uuid/uuid.port';
 
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
 

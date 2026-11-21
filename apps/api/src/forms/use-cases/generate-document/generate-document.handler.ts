@@ -1,14 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FormRepository } from '../../infra/repository/form.repository';
-import { FilesService } from '../../../files/export/files.service';
-import { IDocumentGeneratorPort } from '../../infra/document-generator/document-generator.port';
-import { AuthenticatedUser } from '../../../shared/domain/authenticated-user.entity';
 import { ResultAsync } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
-import { DOCUMENT_GENERATOR_PORT } from '../../infra/document-generator/document-generator.tokens';
+
+import { FilesService } from '@/files/export/files.service';
+import { FormsError } from '@/forms/domain/errors';
+import { FormDocumentEntity } from '@/forms/domain/form-document.entity';
+import { IDocumentGeneratorPort } from '@/forms/infra/document-generator/document-generator.port';
+import { DOCUMENT_GENERATOR_PORT } from '@/forms/infra/document-generator/document-generator.tokens';
+import { FormRepository } from '@/forms/infra/repository/form.repository';
+import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
+import { UUID_PORT, UuidPort } from '@/shared/infra/uuid/uuid.port';
+
 import { FormDocumentDataFactory } from './form-document-data.factory';
-import { UUID_PORT, UuidPort } from '../../../shared/infra/uuid/uuid.port';
-import { FormDocumentEntity } from '../../domain/form-document.entity';
 
 export type GenerateDocumentCommand = {
   actor: AuthenticatedUser;

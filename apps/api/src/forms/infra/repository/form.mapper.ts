@@ -1,4 +1,19 @@
-import { FormEntity } from '../../domain/form.entity';
+import { err, Result } from 'neverthrow';
+
+import { FormsError } from '@/forms/domain/errors';
+import { FormDocumentEntity } from '@/forms/domain/form-document.entity';
+import { FormEntity } from '@/forms/domain/form.entity';
+import { Guest } from '@/forms/domain/guest.entity';
+import { Member } from '@/forms/domain/member.entity';
+import { Participants } from '@/forms/domain/participants.entity';
+import {
+  dateToInstant,
+  dateToPlainDateTime,
+  instantToDate,
+  plainDateTimeToDate,
+} from '@/shared/utils/dates';
+
+import { FormDocumentMapper } from './form-document.mapper';
 import {
   FormGuest,
   FormLink,
@@ -8,19 +23,6 @@ import {
   FormTheme,
   FormVenue,
 } from './form.model';
-import {
-  dateToInstant,
-  dateToPlainDateTime,
-  instantToDate,
-  plainDateTimeToDate,
-} from '../../../shared/utils/dates';
-import { err, Result } from 'neverthrow';
-import { FormsError } from '../../domain/errors';
-import { Guest } from '../../domain/guest.entity';
-import { Participants } from '../../domain/participants.entity';
-import { Member } from '../../domain/member.entity';
-import { FormDocumentMapper } from './form-document.mapper';
-import { FormDocumentEntity } from '../../domain/form-document.entity';
 
 export class FormMapper {
   static toModel(f: FormEntity): FormModel {

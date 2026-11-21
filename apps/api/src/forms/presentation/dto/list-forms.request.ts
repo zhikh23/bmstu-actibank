@@ -1,9 +1,10 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { FormStatus } from '../../domain/status.enum';
+
+import { FormStatus } from '@/forms/domain/status.enum';
 import {
   ListFormsSortBy,
   ListFormsSortOrder,
-} from '../../use-cases/list-forms/list-forms.data';
+} from '@/forms/use-cases/list-forms/list-forms.data';
 
 export class ListFormsRequest {
   @IsOptional()

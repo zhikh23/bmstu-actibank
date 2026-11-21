@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FormRepository } from './form.repository';
+
 import {
   FormDocumentModel,
   FormGuest,
@@ -11,6 +11,7 @@ import {
   FormTheme,
   FormVenue,
 } from './form.model';
+import { FormRepository } from './form.repository';
 
 @Module({
   imports: [

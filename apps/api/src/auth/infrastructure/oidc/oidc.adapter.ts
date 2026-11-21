@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createHash, createPublicKey, randomBytes, verify } from 'node:crypto';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
-import { AuthError } from '../../domain/errors';
+import { createHash, createPublicKey, randomBytes, verify } from 'node:crypto';
+
+import { AuthError } from '@/auth/domain/errors';
 
 type OidcMetadata = {
   authorization_endpoint: string;

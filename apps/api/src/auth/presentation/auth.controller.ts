@@ -6,10 +6,11 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
+
 import { Public } from './auth.decorators';
-import { AuthRequest, AuthResponse } from './http.types';
+import { AuthService } from './auth.service';
 import { AuthenticatedUserDto } from './dto/authenticated-user.dto';
+import { AuthRequest, AuthResponse } from './http.types';
 
 @Controller('auth')
 @ApiTags('Authentication')

@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  OrganizationCategoryModel,
-  OrganizationModel,
-} from './organization.model';
-import { IsNull, Repository } from 'typeorm';
 import { ResultAsync, errAsync, okAsync } from 'neverthrow';
+import { IsNull, Repository } from 'typeorm';
+
+import { CatalogError } from '@/catalog/domain/errors';
+import { Organization } from '@/catalog/domain/organization.entity';
+
 import {
   OrganizationCategory,
   OrganizationWithCategory,
 } from './organization-with-category.read-model';
-import { CatalogError } from '../../../domain/errors';
 import {
   OrganizationMapper,
   OrganizationWithCategoryMapper,
 } from './organization.mapper';
-import { Organization } from '../../../domain/organization.entity';
+import {
+  OrganizationCategoryModel,
+  OrganizationModel,
+} from './organization.model';
 
 @Injectable()
 export class OrganizationRepository {

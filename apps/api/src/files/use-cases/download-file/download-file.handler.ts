@@ -1,15 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FileRepository } from '../../infra/repository/file.repository';
-import { STORAGE_PORT } from '../../infra/storage/storage.tokens';
-import { StoragePort } from '../../infra/storage/storage.port';
-import { DownloadFileCommand, DownloadFileResult } from './download-file.data';
 import { err, ok, Result, ResultAsync } from 'neverthrow';
-import { FilesError } from '../../domain/errors';
+
+import { FilesError } from '@/files/domain/errors';
+import { File } from '@/files/domain/file.entity';
+import { FileRepository } from '@/files/infra/repository/file.repository';
+import { StoragePort } from '@/files/infra/storage/storage.port';
+import { STORAGE_PORT } from '@/files/infra/storage/storage.tokens';
 import {
   AuthenticatedUser,
   UserRole,
-} from '../../../shared/domain/authenticated-user.entity';
-import { File } from '../../domain/file.entity';
+} from '@/shared/domain/authenticated-user.entity';
+
+import { DownloadFileCommand, DownloadFileResult } from './download-file.data';
 
 @Injectable()
 export class DownloadFileHandler {

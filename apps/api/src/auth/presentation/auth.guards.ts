@@ -6,13 +6,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC } from './auth.decorators';
-import { AuthService } from './auth.service';
-import { AuthRequest } from './http.types';
+
 import {
   AuthenticatedUser,
   UserRole,
-} from '../../shared/domain/authenticated-user.entity';
+} from '@/shared/domain/authenticated-user.entity';
+
+import { IS_PUBLIC } from './auth.decorators';
+import { AuthService } from './auth.service';
+import { AuthRequest } from './http.types';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
