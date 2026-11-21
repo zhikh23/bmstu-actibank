@@ -12,7 +12,7 @@ import type {Building} from "@/types/building";
 import type {Venue} from "@/types/venue";
 import type {RoleCategory} from "@/types/role";
 import type {Role} from "@/types/role-category";
-import type {Person} from "@/types/person";
+import type {Student} from "@/types/student";
 
 interface FormFieldProps {
   field: FieldBlock;
@@ -27,13 +27,13 @@ interface FormFieldProps {
   venuesError?: string | null;
   roleCategories?: RoleCategory[];
   roles?: Record<string, Role>;
-  persons?: Person[];
+  students?: Student[];
   loadingRoleCategories?: boolean;
   loadingRoles?: boolean;
-  loadingPersons?: boolean;
+  loadingStudents?: boolean;
   roleCategoriesError?: string | null;
   rolesError?: string | null;
-  personsError?: string | null;
+  studentsError?: string | null;
   onLoadVenues?: (buildingId: string) => void;
   onLoadRoles?: (categoryId: string) => void;
   invalid: boolean;
@@ -53,13 +53,13 @@ export function FormField({
   venuesError,
   roleCategories = [],
   roles = {},
-  persons = [],
+  students = [],
   loadingRoleCategories = false,
   loadingRoles = false,
-  loadingPersons = false,
+  loadingStudents = false,
   roleCategoriesError,
   rolesError,
-  personsError,
+  studentsError,
   onLoadVenues = () => undefined,
   onLoadRoles = () => undefined,
   invalid,
@@ -133,13 +133,13 @@ export function FormField({
         draft={draft}
         categories={roleCategories}
         roles={roles}
-        persons={persons}
+        students={students}
         loadingCategories={loadingRoleCategories}
         loadingRoles={loadingRoles}
-        loadingPersons={loadingPersons}
+        loadingStudents={loadingStudents}
         categoriesError={roleCategoriesError ?? null}
         rolesError={rolesError ?? null}
-        personsError={personsError ?? null}
+        studentsError={studentsError ?? null}
         invalid={invalid}
         onLoadRoles={onLoadRoles}
         onChange={(value) => onChange(field.field, value)}

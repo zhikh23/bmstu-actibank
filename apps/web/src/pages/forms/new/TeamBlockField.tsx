@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 
-import type { Person } from '@/types/person';
+import type { Student } from '@/types/student';
 import type { RoleCategory } from '@/types/role';
 import type { Role } from '@/types/role-category';
 import type { FormDraft } from '@/types/form-draft';
@@ -15,13 +15,13 @@ interface TeamBlockFieldProps {
   draft: FormDraft;
   categories: RoleCategory[];
   roles: Record<string, Role>;
-  persons: Person[];
+  students: Student[];
   loadingCategories: boolean;
   loadingRoles: boolean;
-  loadingPersons: boolean;
+  loadingStudents: boolean;
   categoriesError: string | null;
   rolesError: string | null;
-  personsError: string | null;
+  studentsError: string | null;
   invalid: boolean;
   onLoadRoles: (categoryId: string) => void;
   onChange: (value: FormDraft['team']) => void;
@@ -32,20 +32,20 @@ export const TeamBlockField = observer(function TeamBlockField({
   draft,
   categories,
   roles,
-  persons,
+  students,
   loadingCategories,
   loadingRoles,
-  loadingPersons,
+  loadingStudents,
   categoriesError,
   rolesError,
-  personsError,
+  studentsError,
   invalid,
   onLoadRoles,
   onChange,
 }: TeamBlockFieldProps) {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [roleId, setRoleId] = useState<string | null>(null);
-  const [personId, setPersonId] = useState<string | null>(null);
+  const [studentId, setStudentId] = useState<string | null>(null);
 
   const categoryRoles = Object.values(roles).filter(
     (role) => role.category.id === categoryId,
@@ -54,24 +54,24 @@ export const TeamBlockField = observer(function TeamBlockField({
   const selectCategory = (value: string | null) => {
     setCategoryId(value);
     setRoleId(null);
-    setPersonId(null);
+    setStudentId(null);
     if (value) void onLoadRoles(value);
   };
 
   const addMember = () => {
-    if (!roleId || !personId) return;
+    if (!roleId || !studentId) return;
 
     const alreadyAdded = draft.team.some(
-      (member) => member.roleId === roleId && member.userId === personId,
+      (member) => member.roleId === roleId && member.userId === studentId,
     );
     if (!alreadyAdded) {
-      onChange([...draft.team, { roleId, userId: personId }]);
+      onChange([...draft.team, { roleId, userId: studentId }]);
     }
   };
 
-  const removeMember = (roleIdToRemove: string, personIdToRemove: string) => {
+  const removeMember = (roleIdToRemove: string, studentIdToRemove: string) => {
     onChange(draft.team.filter(
-      (member) => !(member.roleId === roleIdToRemove && member.userId === personIdToRemove),
+      (member) => !(member.roleId === roleIdToRemove && member.userId === studentIdToRemove),
     ));
   };
 
@@ -128,7 +128,7 @@ export const TeamBlockField = observer(function TeamBlockField({
             optionValue="id"
             onChange={(event) => {
               setRoleId(event.value ?? null);
-              setPersonId(null);
+              setStudentId(null);
             }}
             placeholder={!categoryId ? 'Сначала выберите категорию' : loadingRoles ? 'Загрузка ролей...' : 'Выберите роль'}
             filter
@@ -138,17 +138,17 @@ export const TeamBlockField = observer(function TeamBlockField({
         </label>
 
         <label>
-          <span>Пользователь</span>
+          <span>Студент</span>
           <Dropdown
-            value={personId}
-            options={persons}
+            value={studentId}
+            options={students}
             optionLabel="fullName"
             optionValue="id"
-            onChange={(event) => setPersonId(event.value ?? null)}
-            placeholder={loadingPersons ? 'Загрузка пользователей...' : 'Выберите пользователя'}
+            onChange={(event) => setStudentId(event.value ?? null)}
+            placeholder={loadingStudents ? 'Загрузка студентов...' : 'Выберите студента'}
             filter
-            disabled={loadingPersons || !roleId}
-            emptyMessage={personsError ?? 'Пользователи не найдены'}
+            disabled={loadingStudents || !roleId}
+            emptyMessage={studentsError ?? 'Студенты не найдены'}
           />
         </label>
 
@@ -157,7 +157,7 @@ export const TeamBlockField = observer(function TeamBlockField({
           icon="pi pi-plus"
           label="Добавить"
           onClick={addMember}
-          disabled={!categoryId || !roleId || !personId}
+          disabled={!categoryId || !roleId || !studentId}
         />
       </div>
 
@@ -173,18 +173,18 @@ export const TeamBlockField = observer(function TeamBlockField({
                   <h4>{role.name}</h4>
                   <ul>
                     {members.map((member) => {
-                      const person = persons.find((item) => item.id === member.userId);
-                      if (!person) return null;
+                      const student = students.find((item) => item.id === member.userId);
+                      if (!student) return null;
                       return (
-                        <li key={person.id}>
-                          <span>{person.fullName}</span>
+                        <li key={student.id}>
+                          <span>{student.fullName}</span>
                           <Button
                             type="button"
                             icon="pi pi-times"
                             rounded
                             text
-                            aria-label={`Удалить ${person.fullName}`}
-                            onClick={() => removeMember(role.id, person.id)}
+                            aria-label={`Удалить ${student.fullName}`}
+                            onClick={() => removeMember(role.id, student.id)}
                           />
                         </li>
                       );

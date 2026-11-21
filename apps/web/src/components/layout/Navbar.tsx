@@ -8,19 +8,19 @@ import {BMSTUIcon, EUIcon} from "@/components/icons";
 import styles from './navbar.module.css';
 
 export const Navbar = observer(function Navbar() {
-  const { auth, person } = stores;
+  const { auth, student } = stores;
   const me = auth.me;
-  const personInfo = person.current;
+  const studentInfo = student.current;
 
   useEffect(() => {
     if (me) {
-      void person.load(me.id);
+      void student.load(me.id);
     } else {
-      person.clear();
+      student.clear();
     }
-  }, [me, person]);
+  }, [me, student]);
 
-  const fullName = personInfo?.fullName;
+  const fullName = studentInfo?.fullName;
   const initials = fullName
     ?.split(/\s+/)
     .filter(Boolean)
@@ -39,7 +39,7 @@ export const Navbar = observer(function Navbar() {
         {me && (
           <>
             <span className={styles.userName}>{fullName ?? 'Загрузка...'}</span>
-            <span className={styles.userAvatar} aria-label={fullName ?? 'Пользователь'}>
+            <span className={styles.userAvatar} aria-label={fullName ?? 'Студент'}>
               {initials ?? '...'}
             </span>
             <Button

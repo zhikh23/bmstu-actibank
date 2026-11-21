@@ -12,7 +12,7 @@ import type {SelectOption} from './SelectBlockField';
 import styles from './NewFormPage.module.css';
 
 export const NewFormPage = observer(function NewFormPage() {
-  const { themes, organizations, venues, eventCatalog, roles, persons } = stores;
+  const { themes, organizations, venues, eventCatalog, roles, students } = stores;
   const [draft, setDraft] = useState<FormDraft>(defaultFormDraft);
   const [activeStep, setActiveStep] = useState(0);
   const [unlockedStep, setUnlockedStep] = useState(0);
@@ -24,8 +24,8 @@ export const NewFormPage = observer(function NewFormPage() {
     void venues.loadBuildings();
     void eventCatalog.load();
     void roles.loadCategories();
-    void persons.load();
-  }, [themes, organizations, venues, eventCatalog, roles, persons]);
+    void students.load();
+  }, [themes, organizations, venues, eventCatalog, roles, students]);
 
   const updateDraft = <K extends keyof FormDraft>(field: K, value: FormDraft[K]) => {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -130,13 +130,13 @@ export const NewFormPage = observer(function NewFormPage() {
               venuesError: venues.venuesError,
               roleCategories: roles.categories,
               roles: roles.roles,
-              persons: persons.items,
+              students: students.items,
               loadingRoleCategories: roles.loadingCategories,
               loadingRoles: roles.loadingRoles,
-              loadingPersons: persons.loading,
+              loadingStudents: students.loading,
               roleCategoriesError: roles.categoriesError,
               rolesError: roles.rolesError,
-              personsError: persons.error,
+              studentsError: students.error,
               onLoadVenues: (buildingId) => void venues.loadVenues(buildingId),
               onLoadRoles: (categoryId) => void roles.loadRoles(categoryId),
             }}

@@ -6,8 +6,8 @@ import {OrganizationsStore} from "@/stores/organizations.store";
 import {VenuesStore} from "@/stores/venues.store";
 import {EventCatalogStore} from "@/stores/event-catalog.store";
 import {RolesStore} from "@/stores/roles.store";
-import {PersonsStore} from "@/stores/persons.store";
-import {PersonStore} from "@/stores/person.store";
+import {StudentsStore} from "@/stores/students.store";
+import {StudentStore} from "@/stores/student.store";
 
 export interface Stores {
   auth: AuthStore
@@ -17,8 +17,8 @@ export interface Stores {
   venues: VenuesStore
   eventCatalog: EventCatalogStore
   roles: RolesStore
-  persons: PersonsStore
-  person: PersonStore
+  students: StudentsStore
+  student: StudentStore
 }
 
 const api = httpApi
@@ -32,8 +32,8 @@ export function createStores(): Stores {
     venues: new VenuesStore(api),
     eventCatalog: new EventCatalogStore(api),
     roles: new RolesStore(api),
-    persons: new PersonsStore(api),
-    person: new PersonStore(api),
+    students: new StudentsStore(api),
+    student: new StudentStore(api),
   }
 }
 

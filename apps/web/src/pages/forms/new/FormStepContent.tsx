@@ -7,7 +7,7 @@ import type {Building} from "@/types/building";
 import type {Venue} from "@/types/venue";
 import type {RoleCategory} from "@/types/role";
 import type {Role} from "@/types/role-category";
-import type {Person} from "@/types/person";
+import type {Student} from "@/types/student";
 
 interface LookupState {
   options: Record<string, SelectOption[]>;
@@ -20,13 +20,13 @@ interface LookupState {
   venuesError?: string | null;
   roleCategories?: RoleCategory[];
   roles?: Record<string, Role>;
-  persons?: Person[];
+  students?: Student[];
   loadingRoleCategories?: boolean;
   loadingRoles?: boolean;
-  loadingPersons?: boolean;
+  loadingStudents?: boolean;
   roleCategoriesError?: string | null;
   rolesError?: string | null;
-  personsError?: string | null;
+  studentsError?: string | null;
   onLoadVenues?: (buildingId: string) => void;
   onLoadRoles?: (categoryId: string) => void;
 }

@@ -1,12 +1,13 @@
-import { meToDomain } from "@/adapters/auth.adapter";
-import { formsToDomain as formToDomain } from "@/adapters/forms.adapter";
-import { AuthApi } from "@/api/AuthApi";
-import { FormsApi } from "@/api/FormsApi";
+import {meToDomain} from "@/adapters/auth.adapter";
+import {formsToDomain as formToDomain} from "@/adapters/forms.adapter";
+import {AuthApi} from "@/api/AuthApi";
+import {FormsApi} from "@/api/FormsApi";
 import {CatalogApi} from "@/api/CatalogApi";
 import {
   buildingToDomain,
   catalogOptionToDomain,
-  organizationToDomain, roleToDomain,
+  organizationToDomain,
+  roleToDomain,
   themeToDomain,
   venueToDomain,
 } from "@/adapters/catalog.adapter";
@@ -17,14 +18,14 @@ import {CatalogOption, Organization, Theme} from "@/types/catalog";
 import {Me} from "@/types/user";
 import {RoleCategory} from "@/types/role";
 import {Role} from "@/types/role-category";
-import {PersonsApi} from "@/api/PersonsApi";
-import {Person} from "@/types/person";
-import {personToDomain} from "@/adapters/persons.adapter";
+import {StudentsApi} from "@/api/StudentsApi";
+import {Student, StudentSummary} from "@/types/student";
+import {studentsListItemToDomain, studentToDomain} from "@/adapters/students.adapter";
 
 const authApi = new AuthApi();
 const formsApi = new FormsApi();
 const catalogApi = new CatalogApi();
-const personsApi = new PersonsApi();
+const studentsApi = new StudentsApi();
 
 export const httpApi = {
   async getMe(): Promise<Me> {
@@ -86,13 +87,13 @@ export const httpApi = {
     return roles.map(roleToDomain);
   },
 
-  async getPersons(): Promise<Person[]> {
-    const persons = await personsApi.getPersonsList();
-    return persons.map(personToDomain)
+  async getStudents(): Promise<StudentSummary[]> {
+    const students = await studentsApi.getStudentsList();
+    return students.map(studentsListItemToDomain)
   },
 
-  async getPerson(personId: string): Promise<Person> {
-    const person = await personsApi.getPerson(personId);
-    return personToDomain(person)
+  async getStudent(studentId: string): Promise<Student> {
+    const student = await studentsApi.getStudent(studentId);
+    return studentToDomain(student)
   },
 }
