@@ -21,10 +21,6 @@ export class VenuesStore {
     makeAutoObservable(this);
   }
 
-  buildingVenues(buildingId: string): Venue[] {
-    return Object.values(this.venues).filter((venue) => venue.building.id === buildingId);
-  }
-
   async loadBuildings(force = false): Promise<void> {
     if (this.buildingsLoaded && !force) return;
 

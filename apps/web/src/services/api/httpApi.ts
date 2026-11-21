@@ -6,7 +6,7 @@ import {CatalogApi} from "@/api/CatalogApi";
 import {
   buildingToDomain,
   catalogOptionToDomain,
-  organizationToDomain,
+  organizationToDomain, roleToDomain,
   themeToDomain,
   venueToDomain,
 } from "@/adapters/catalog.adapter";
@@ -15,10 +15,16 @@ import {Venue} from "@/types/venue";
 import {FormsListItem} from "@/types/forms-list";
 import {CatalogOption, Organization, Theme} from "@/types/catalog";
 import {Me} from "@/types/user";
+import {RoleCategory} from "@/types/role";
+import {Role} from "@/types/role-category";
+import {PersonsApi} from "@/api/PersonsApi";
+import {Person} from "@/types/person";
+import {personToDomain} from "@/adapters/persons.adapter";
 
 const authApi = new AuthApi();
 const formsApi = new FormsApi();
 const catalogApi = new CatalogApi();
+const personsApi = new PersonsApi();
 
 export const httpApi = {
   async getMe(): Promise<Me> {
@@ -68,5 +74,25 @@ export const httpApi = {
   async getEventTypes(): Promise<CatalogOption[]> {
     const types = await catalogApi.getEventTypes();
     return types.map(catalogOptionToDomain);
-  }
+  },
+
+  async getRoleCategories(): Promise<RoleCategory[]> {
+    const categories = await catalogApi.getRoleCategories();
+    return categories.map(catalogOptionToDomain);
+  },
+
+  async getCategoryRoles(categoryId: string): Promise<Role[]> {
+    const roles = await catalogApi.getCategoryRoles(categoryId);
+    return roles.map(roleToDomain);
+  },
+
+  async getPersons(): Promise<Person[]> {
+    const persons = await personsApi.getPersonsList();
+    return persons.map(personToDomain)
+  },
+
+  async getPerson(personId: string): Promise<Person> {
+    const person = await personsApi.getPerson(personId);
+    return personToDomain(person)
+  },
 }

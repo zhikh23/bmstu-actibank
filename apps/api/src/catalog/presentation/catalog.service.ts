@@ -11,8 +11,8 @@ import { ThemeDto } from '../../shared/presentation/dto/theme.dto';
 import { OrganizationCategoryDto } from '../../shared/presentation/dto/organization-category.dto';
 import { RoleCategoryDto } from '../../shared/presentation/dto/role-category.dto';
 import { VenueDto } from '../../shared/presentation/dto/venue.dto';
-import { RoleDto } from '../../shared/presentation/dto/role.dto';
 import { OrganizationDto } from '../../shared/presentation/dto/organization.dto';
+import { RoleWithCategoryDto } from '../../shared/presentation/dto/role-with-category.dto';
 
 @Injectable()
 export class CatalogService {
@@ -69,7 +69,9 @@ export class CatalogService {
     return this.getCatalog.getRoleCategories();
   }
 
-  getRolesByCategory(id: string): ResultAsync<RoleDto[], CatalogError> {
+  getRolesByCategory(
+    id: string,
+  ): ResultAsync<RoleWithCategoryDto[], CatalogError> {
     return this.getCatalog.getRoles(id);
   }
 

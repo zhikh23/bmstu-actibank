@@ -1,6 +1,5 @@
-import { makeAutoObservable, runInAction } from 'mobx'
-
-import type { FormsListItem } from "@/types/domain";
+import {makeAutoObservable, runInAction} from 'mobx'
+import {FormsListItem} from "@/types/forms-list";
 
 export interface FormsApi {
   getFormsList(): Promise<FormsListItem[]>

@@ -1,10 +1,13 @@
-import { httpApi } from "@/services/api/httpApi";
-import { FormsStore } from "./forms.store";
-import { AuthStore } from "./auth.store";
-import { ThemesStore } from "@/stores/themes.store";
+import {httpApi} from "@/services/api/httpApi";
+import {FormsStore} from "./forms.store";
+import {AuthStore} from "./auth.store";
+import {ThemesStore} from "@/stores/themes.store";
 import {OrganizationsStore} from "@/stores/organizations.store";
 import {VenuesStore} from "@/stores/venues.store";
 import {EventCatalogStore} from "@/stores/event-catalog.store";
+import {RolesStore} from "@/stores/roles.store";
+import {PersonsStore} from "@/stores/persons.store";
+import {PersonStore} from "@/stores/person.store";
 
 export interface Stores {
   auth: AuthStore
@@ -13,6 +16,9 @@ export interface Stores {
   organizations: OrganizationsStore
   venues: VenuesStore
   eventCatalog: EventCatalogStore
+  roles: RolesStore
+  persons: PersonsStore
+  person: PersonStore
 }
 
 const api = httpApi
@@ -25,6 +31,9 @@ export function createStores(): Stores {
     organizations: new OrganizationsStore(api),
     venues: new VenuesStore(api),
     eventCatalog: new EventCatalogStore(api),
+    roles: new RolesStore(api),
+    persons: new PersonsStore(api),
+    person: new PersonStore(api),
   }
 }
 

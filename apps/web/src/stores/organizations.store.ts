@@ -1,5 +1,5 @@
-import { Organization } from "@/types/domain";
-import { makeAutoObservable, runInAction } from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
+import {Organization} from "@/types/catalog";
 
 export interface CatalogApi {
   getOrganizations(): Promise<Organization[]>

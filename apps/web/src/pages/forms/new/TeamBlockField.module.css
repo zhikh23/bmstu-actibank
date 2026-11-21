@@ -1,0 +1,109 @@
+.teamField {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.teamField legend {
+  margin-bottom: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.teamField legend em {
+  margin-left: 3px;
+  color: #d32f2f;
+  font-style: normal;
+}
+
+.invalid legend {
+  color: #d32f2f;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.controls label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.controls :global(.p-dropdown) {
+  width: 100%;
+}
+
+.empty {
+  margin-top: 10px;
+  color: var(--color-placeholder);
+  font-size: 12px;
+}
+
+.groups {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.categoryGroup {
+  padding: 12px;
+  border: 1px solid var(--color-gray-light);
+  border-radius: 8px;
+  background: var(--color-white);
+}
+
+.categoryGroup h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.roleGroup {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  align-items: start;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-gray-light);
+}
+
+.roleGroup h4 {
+  margin: 8px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.roleGroup ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roleGroup li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 4px 4px 4px 10px;
+  border-radius: 6px;
+  background: var(--color-bg-muted);
+}
+
+@media (max-width: 900px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .roleGroup {
+    grid-template-columns: 1fr;
+  }
+}

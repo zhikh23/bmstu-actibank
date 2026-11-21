@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import styles from './FormsTable.module.css';
-import { formatDateTime } from '@/shared/lib/format-date';
-
-import { FormsListItem } from '@/types/domain';
+import {formatDateTime} from '@/shared/lib/format-date';
+import {FormsListItem} from "@/types/forms-list";
 
 interface FormsTableProps {
   forms: FormsListItem[];

@@ -2,7 +2,7 @@ import { httpClient } from './http'
 import {
   BuildingContract,
   CatalogOptionContract,
-  OrganizationContract,
+  OrganizationContract, RoleCategoryContract, RoleContract,
   ThemeContract,
   VenueContract,
 } from "@/adapters/catalog.adapter";
@@ -42,6 +42,16 @@ export class CatalogApi {
 
   async getEventTypes(): Promise<CatalogOptionContract[]> {
     const response = await this.http.get<CatalogOptionContract[]>('/api/v1/catalog/event-types');
+    return response.data;
+  }
+
+  async getRoleCategories(): Promise<RoleCategoryContract[]> {
+    const response = await this.http.get<RoleCategoryContract[]>('/api/v1/catalog/role-categories');
+    return response.data;
+  }
+
+  async getCategoryRoles(categoryId: string): Promise<RoleContract[]> {
+    const response = await this.http.get<RoleContract[]>(`/api/v1/catalog/role-categories/${categoryId}/roles`);
     return response.data;
   }
 }

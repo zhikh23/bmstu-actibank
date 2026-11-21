@@ -5,6 +5,9 @@ import styles from './FormStepContent.module.css';
 import {FormDraft} from "@/types/form-draft";
 import type {Building} from "@/types/building";
 import type {Venue} from "@/types/venue";
+import type {RoleCategory} from "@/types/role";
+import type {Role} from "@/types/role-category";
+import type {Person} from "@/types/person";
 
 interface LookupState {
   options: Record<string, SelectOption[]>;
@@ -15,7 +18,17 @@ interface LookupState {
   loadingVenues?: boolean;
   buildingsError?: string | null;
   venuesError?: string | null;
+  roleCategories?: RoleCategory[];
+  roles?: Record<string, Role>;
+  persons?: Person[];
+  loadingRoleCategories?: boolean;
+  loadingRoles?: boolean;
+  loadingPersons?: boolean;
+  roleCategoriesError?: string | null;
+  rolesError?: string | null;
+  personsError?: string | null;
   onLoadVenues?: (buildingId: string) => void;
+  onLoadRoles?: (categoryId: string) => void;
 }
 
 interface FormStepContentProps {

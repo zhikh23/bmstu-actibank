@@ -3,6 +3,8 @@ import {CatalogOption, Organization, Theme} from "@/types/catalog";
 import {Venue} from "@/types/venue";
 import {Building} from "@/types/building";
 import {capitalize} from "@/shared/lib";
+import {RoleCategory} from "@/types/role";
+import {Role} from "@/types/role-category";
 
 export const themeSchema = z.object({
   id: z.uuid(),
@@ -62,4 +64,34 @@ export function catalogOptionToDomain(raw: CatalogOptionContract): CatalogOption
     id: raw.id,
     name: capitalize(raw.name),
   };
+}
+
+export const roleCategorySchema = z.object({
+  id: z.uuid(),
+  name: z.string().min(1),
+});
+
+export type RoleCategoryContract = z.infer<typeof roleCategorySchema>;
+
+export function roleCategoryToDomain(raw: RoleCategoryContract): RoleCategory {
+  return {
+    id: raw.id,
+    name: raw.name,
+  }
+}
+
+export const roleSchema = z.object({
+  id: z.uuid(),
+  name: z.string().min(1),
+  category: roleCategorySchema,
+})
+
+export type RoleContract = z.infer<typeof roleSchema>;
+
+export function roleToDomain(raw: RoleContract): Role {
+  return {
+    id: raw.id,
+    name: raw.name,
+    category: roleCategoryToDomain(raw.category),
+  }
 }

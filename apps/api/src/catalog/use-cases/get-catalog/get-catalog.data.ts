@@ -8,6 +8,12 @@ export type RoleType = {
   name: string;
 };
 
+export type RoleWithCategoryType = {
+  id: string;
+  name: string;
+  category: RoleCategoryType;
+};
+
 export type OrganizationType = {
   id: string;
   name: string;

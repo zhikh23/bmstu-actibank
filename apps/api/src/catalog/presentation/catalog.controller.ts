@@ -2,8 +2,8 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
-  Param,
   NotFoundException,
+  Param,
 } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
@@ -25,8 +25,8 @@ import { RankDto } from '../../shared/presentation/dto/rank.dto';
 import { RoleCategoryDto } from '../../shared/presentation/dto/role-category.dto';
 import { ThemeDto } from '../../shared/presentation/dto/theme.dto';
 import { VenueDto } from '../../shared/presentation/dto/venue.dto';
-import { RoleDto } from '../../shared/presentation/dto/role.dto';
 import { OrganizationDto } from '../../shared/presentation/dto/organization.dto';
+import { RoleWithCategoryDto } from '../../shared/presentation/dto/role-with-category.dto';
 
 @ApiTags('Catalog')
 @Controller('catalog')
@@ -88,7 +88,10 @@ export class CatalogController {
     summary: 'Получить все организации',
     description: 'Возвращает все доступные уровни организации.',
   })
-  @ApiOkResponse({ description: 'Организации успешно получены.', type: [OrganizationDto] })
+  @ApiOkResponse({
+    description: 'Организации успешно получены.',
+    type: [OrganizationDto],
+  })
   getOrganizations(): Promise<OrganizationDto[]> {
     return this.resolve(this.catalogService.getOrganizations());
   }
@@ -194,12 +197,12 @@ export class CatalogController {
   })
   @ApiOkResponse({
     description: 'Роли категории успешно получены.',
-    type: [RoleDto],
+    type: [RoleWithCategoryDto],
   })
   @ApiNotFoundResponse({ description: 'Категория роли не найдена.' })
   getRolesByCategory(
     @Param('categoryId') categoryId: string,
-  ): Promise<RoleDto[]> {
+  ): Promise<RoleWithCategoryDto[]> {
     return this.resolve(this.catalogService.getRolesByCategory(categoryId));
   }
 

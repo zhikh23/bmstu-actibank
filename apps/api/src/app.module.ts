@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
+import { PersonsModule } from './persons/persons.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { createKeyv } from '@keyv/redis';
     CatalogModule,
     FilesModule,
     FormsModule,
+    PersonsModule,
   ],
 })
 export class AppModule {}

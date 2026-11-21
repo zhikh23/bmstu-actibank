@@ -1,6 +1,6 @@
-import { Me } from "@/types/domain";
-import { makeAutoObservable, runInAction } from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import {isUnauthorized} from "@/shared/auth/unauthorized";
+import {Me} from "@/types/user";
 
 export interface AuthApi {
   getMe(): Promise<Me>

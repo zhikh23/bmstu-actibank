@@ -18,9 +18,9 @@ import { OrganizationCategory } from '../../infra/repository/organization/organi
 import { RoleRepository } from '../../infra/repository/role/role.repository';
 import { Building } from '../../domain/building.entity';
 import {
-  RoleType,
-  RoleCategoryType,
   OrganizationType,
+  RoleCategoryType,
+  RoleWithCategoryType,
 } from './get-catalog.data';
 
 @Injectable()
@@ -87,8 +87,10 @@ export class GetCatalogHandler {
     return this.roles.getCategories();
   }
 
-  getRoles(categoryId: string): ResultAsync<RoleType[], CatalogError> {
-    return this.roles.getAllByCategory(categoryId);
+  getRoles(
+    categoryId: string,
+  ): ResultAsync<RoleWithCategoryType[], CatalogError> {
+    return this.roles.getAllWithCategoryByCategory(categoryId);
   }
 
   getVenues(

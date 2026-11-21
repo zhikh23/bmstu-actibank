@@ -5,8 +5,7 @@ import { In, Repository } from 'typeorm';
 import { errAsync, okAsync, ResultAsync } from 'neverthrow';
 import { RoleWithCategory } from './role-with-category.read-model';
 import { CatalogError } from '../../../domain/errors';
-import { RoleMapper, RoleWithCategoryMapper } from './role.mapper';
-import { Role } from '../../../domain/role.entity';
+import { RoleWithCategoryMapper } from './role.mapper';
 
 @Injectable()
 export class RoleRepository {
@@ -25,16 +24,19 @@ export class RoleRepository {
     ).map((models) => models.map(({ id, name }) => ({ id, name })));
   }
 
-  getAllByCategory(categoryId: string): ResultAsync<Role[], CatalogError> {
+  getAllWithCategoryByCategory(
+    categoryId: string,
+  ): ResultAsync<RoleWithCategory[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { category_id: categoryId },
+        relations: { category: true },
       }),
       (error): CatalogError =>
         CatalogError.repository(
           error instanceof Error ? error.message : String(error),
         ),
-    ).map((models) => models.map(RoleMapper.toDomain));
+    ).map((models) => models.map(RoleWithCategoryMapper.toReadModel));
   }
 
   getWithCategory(id: string): ResultAsync<RoleWithCategory, CatalogError> {

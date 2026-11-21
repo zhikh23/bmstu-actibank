@@ -65,6 +65,13 @@ export interface VenuesBlock {
   required?: boolean;
 }
 
+export interface TeamBlock {
+  type: 'team';
+  field: 'team';
+  label: string;
+  required?: boolean;
+}
+
 export type FieldBlock =
   | TextBlock
   | DateBlock
@@ -72,7 +79,8 @@ export type FieldBlock =
   | LinksBlock
   | SelectBlock
   | NumberBlock
-  | VenuesBlock;
+  | VenuesBlock
+  | TeamBlock;
 
 export interface FieldGroup {
   type: 'group';
@@ -223,7 +231,13 @@ export const formSteps: FormStep[] = [
   },
   {
     label: 'Команда организаторов',
-    placeholder: 'Скоро здесь всё будет!',
-    blocks: [],
+    blocks: [
+      {
+        type: 'team',
+        field: 'team',
+        label: 'Команда организаторов',
+        required: true,
+      },
+    ],
   }
 ];
