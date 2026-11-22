@@ -197,6 +197,40 @@ export class FormsController {
     return this.formService.cancel(user, id);
   }
 
+  @Post(':id/cancel-review')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Отменить ревью формы',
+    description:
+      'Отменяет ревью формы модератора и возвращает её в статус pending.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Идентификатор формы.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiNoContentResponse({
+    description: 'Ревью формы успешно отменено.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Форма не находится в состоянии, допускающем отмену ревью.',
+  })
+  @ApiForbiddenResponse({
+    description: 'У пользователя нет прав на отмену ревью формы.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Форма с указанным идентификатором не найдена.',
+  })
+  @Roles(UserRole.Moderator)
+  @UseGuards(RolesGuard)
+  async cancelReview(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.formService.cancelReview(user, id);
+  }
+
   @Post(':id/convert-to-draft')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({

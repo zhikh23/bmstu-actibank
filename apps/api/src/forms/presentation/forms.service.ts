@@ -34,6 +34,7 @@ import { ListFormResponse } from './dto/list-forms.response';
 import { RejectFormRequest } from './dto/reject-form.request';
 import { UpdateFormRequest } from './dto/update-form.request';
 import { ConvertToDraftRequest } from '@/forms/presentation/dto/convert-to-draft.request';
+import { CancelFormReviewHandler } from '@/forms/use-cases/cancel-form-review/cancel-form-review.handler';
 
 @Injectable()
 export class FormsService {
@@ -43,6 +44,7 @@ export class FormsService {
     private readonly approveForm: ApproveFormHandler,
     private readonly attachDocument: AttachDocumentHandler,
     private readonly cancelForm: CancelFormHandler,
+    private readonly cancelFormReview: CancelFormReviewHandler,
     private readonly convertToDraftForm: ConvertToDraftFormHandler,
     private readonly createForm: CreateFormHandler,
     private readonly generateDocument: GenerateDocumentHandler,
@@ -80,6 +82,13 @@ export class FormsService {
 
   async cancel(actor: AuthenticatedUser, formId: string): Promise<void> {
     return this.cancelForm.execute({ actor, formId }).match(
+      () => {},
+      (error) => this.handlerError(error),
+    );
+  }
+
+  async cancelReview(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.cancelFormReview.execute({ actor, formId }).match(
       () => {},
       (error) => this.handlerError(error),
     );

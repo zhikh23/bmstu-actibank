@@ -14,8 +14,8 @@ import {
   formToDomain,
 } from '@/adapters/forms.adapter';
 import {
-  studentToDomain,
   studentsListItemToDomain,
+  studentToDomain,
 } from '@/adapters/students.adapter';
 import { AuthApi } from '@/api/AuthApi';
 import { CatalogApi } from '@/api/CatalogApi';
@@ -94,6 +94,10 @@ export const httpApi = {
 
   async cancelForm(id: string): Promise<void> {
     await formsApi.cancel(id);
+  },
+
+  async cancelFormReview(id: string): Promise<void> {
+    await formsApi.cancelReview(id);
   },
 
   async startFormReview(id: string): Promise<void> {

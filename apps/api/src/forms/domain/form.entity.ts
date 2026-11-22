@@ -1,4 +1,4 @@
-import { Result, err, ok } from 'neverthrow';
+import { err, ok, Result } from 'neverthrow';
 
 import { FormsError } from './errors';
 import { FormDocumentEntity } from './form-document.entity';
@@ -6,7 +6,6 @@ import { Guest } from './guest.entity';
 import { Member } from './member.entity';
 import { Participants } from './participants.entity';
 import { FormStatus } from './status.enum';
-
 import Instant = Temporal.Instant;
 import Now = Temporal.Now;
 import PlainDateTime = Temporal.PlainDateTime;
@@ -20,6 +19,7 @@ const FORM_STATUS_TRANSITIONS: Record<FormStatus, FormStatus[]> = {
   ],
   [FormStatus.Reviewing]: [
     FormStatus.Draft,
+    FormStatus.Pending,
     FormStatus.Approved,
     FormStatus.Rejected,
   ],
@@ -272,6 +272,16 @@ export class FormEntity {
       return t;
     }
     this.reviewerId = reviewerId;
+    return ok();
+  }
+
+  // Возвращает заявку в состояние Pending, если модератор передумал её модерировать.
+  public cancelReview(now: Instant = Now.instant()): Result<void, FormsError> {
+    const t = this.transition(FormStatus.Pending, now);
+    if (t.isErr()) {
+      return t;
+    }
+    this.reviewerId = null;
     return ok();
   }
 

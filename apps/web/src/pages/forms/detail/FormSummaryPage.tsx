@@ -192,6 +192,12 @@ export const FormSummaryPage = observer(function FormSummaryPage() {
                     outlined
                     onClick={() => setRevisionOpen(true)}
                   />
+                  <Button
+                    label="Отмена"
+                    icon="pi pi-times"
+                    outlined
+                    onClick={() => perform(() => forms.cancelReview(form.id))}
+                  />
                 </>
               )}
             </>

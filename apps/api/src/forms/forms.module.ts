@@ -14,6 +14,7 @@ import { MarkFormReadyModule } from './use-cases/mark-form-ready/mark-form-ready
 import { RejectFormModule } from './use-cases/reject-form/reject-form.module';
 import { StartFormReviewModule } from './use-cases/start-form-review/start-form-review.module';
 import { UpdateFormModule } from './use-cases/update-form/update-form.module';
+import { CancelFormReviewModule } from '@/forms/use-cases/cancel-form-review/cancel-form-review.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UpdateFormModule } from './use-cases/update-form/update-form.module';
     AttachDocumentModule,
     ListFormsModule,
     CancelFormModule,
+    CancelFormReviewModule,
     ConvertToDraftModule,
     CreateFormModule,
     GenerateDocumentModule,

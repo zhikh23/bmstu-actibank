@@ -70,6 +70,10 @@ export class FormsApi {
     await this.http.post(`/api/v1/forms/${id}/cancel`);
   }
 
+  async cancelReview(id: string): Promise<void> {
+    await this.http.post(`/api/v1/forms/${id}/cancel-review`);
+  }
+
   async startReview(id: string): Promise<void> {
     await this.http.post(`/api/v1/forms/${id}/start-review`);
   }

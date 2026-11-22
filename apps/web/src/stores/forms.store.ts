@@ -15,6 +15,7 @@ export interface FormsApi {
   markFormReady(id: string): Promise<void>;
   convertFormToDraft(id: string, reason: string | null): Promise<void>;
   cancelForm(id: string): Promise<void>;
+  cancelFormReview(id: string): Promise<void>;
   startFormReview(id: string): Promise<void>;
   approveForm(id: string): Promise<void>;
   rejectForm(id: string, reason: string | null): Promise<void>;
@@ -173,6 +174,10 @@ export class FormsStore {
 
   cancel(id: string) {
     return this.performAction(() => this.api.cancelForm(id));
+  }
+
+  cancelReview(id: string) {
+    return this.performAction(() => this.api.cancelFormReview(id));
   }
 
   startReview(id: string) {

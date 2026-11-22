@@ -103,6 +103,15 @@ export const FormAccess = {
     );
   },
 
+  canCancelReview(form: FormEntity, user: AuthenticatedUser): AccessDecision {
+    return checkAccess(
+      form,
+      user,
+      Role.Moderator,
+      'form can be canceled review only by moderator',
+    );
+  },
+
   canApprove(form: FormEntity, user: AuthenticatedUser): AccessDecision {
     return checkAccess(
       form,
