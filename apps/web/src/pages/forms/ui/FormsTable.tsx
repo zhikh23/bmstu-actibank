@@ -1,8 +1,8 @@
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import styles from './FormsTable.module.css';
-import {formatDateTime} from '@/shared/lib/format-date';
-import {FormsListItem} from "@/types/forms-list";
+import { formatDateTime } from '@/shared/lib/format-date';
+import { FormsListItem } from '@/types/forms-list';
 
 interface FormsTableProps {
   forms: FormsListItem[];
@@ -46,11 +46,16 @@ export function FormsTable({ forms }: FormsTableProps) {
                     <span>{formatDateTime(form.start)}</span>
                     <span>{formatDateTime(form.end)}</span>
                   </span>
-                  <span className={`${styles.status} ${styles[`status-${form.status}`] ?? ''}`}>
+                  <span
+                    className={`${styles.status} ${styles[`status-${form.status}`] ?? ''}`}
+                  >
                     {statusLabels[form.status] ?? form.status}
                   </span>
                   <span>{formatDateTime(form.createdAt)}</span>
-                  <i className={`pi pi-arrow-right ${styles.arrow}`} aria-hidden="true" />
+                  <i
+                    className={`pi pi-arrow-right ${styles.arrow}`}
+                    aria-hidden="true"
+                  />
                 </Link>
               </td>
             </tr>

@@ -35,12 +35,20 @@ export function FormStepNavigation({
                 aria-label={`Перейти к этапу ${index + 1}: ${label}`}
                 aria-current={isActive ? 'step' : undefined}
               >
-                {isCompleted ? <i className="pi pi-check" aria-hidden="true" /> : index + 1}
+                {isCompleted ? (
+                  <i className="pi pi-check" aria-hidden="true" />
+                ) : (
+                  index + 1
+                )}
               </button>
-              <span className={`${styles.label} ${!isAllowed ? styles.disabled : ''}`}>
+              <span
+                className={`${styles.label} ${!isAllowed ? styles.disabled : ''}`}
+              >
                 {label}
               </span>
-              {index < labels.length - 1 && <span className={styles.connector} aria-hidden="true" />}
+              {index < labels.length - 1 && (
+                <span className={styles.connector} aria-hidden="true" />
+              )}
             </li>
           );
         })}

@@ -2,6 +2,9 @@
   "name": "bmstu-actibank",
   "private": true,
   "scripts": {
-    "dev": "pnpm --parallel -r run start:dev"
+    "start:dev": "pnpm --parallel -r run start:dev"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2"
   }
 }

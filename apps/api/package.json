@@ -42,12 +42,12 @@
   "devDependencies": {
     "@nestjs/testing": "^11.0.0",
     "@swc/jest": "^0.2.39",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.5",
     "jest": "^30.5.2",
     "pg": "^8.23.1",
     "prettier": "^3.9.10",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   }
 }

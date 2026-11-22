@@ -20,7 +20,7 @@ export class VenueMapper {
   static toDomain(m: VenueModel): Venue {
     return {
       id: m.id,
-      buildingId: m.building.id,
+      buildingId: m.building_id,
       name: m.name,
     };
   }

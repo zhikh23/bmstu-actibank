@@ -1,27 +1,37 @@
-import {meToDomain} from "@/adapters/auth.adapter";
-import {formDraftToContract, formToDomain} from "@/adapters/forms.adapter";
-import {AuthApi} from "@/api/AuthApi";
-import {CatalogApi} from "@/api/CatalogApi";
+import { meToDomain } from '@/adapters/auth.adapter';
 import {
   buildingToDomain,
   catalogOptionToDomain,
   organizationToDomain,
   roleToDomain,
+  roleWithCategoryToDomain,
   themeToDomain,
-  venueToDomain,
-} from "@/adapters/catalog.adapter";
-import {Building} from "@/types/building";
-import {Venue} from "@/types/venue";
-import {FormsListItem} from "@/types/forms-list";
-import {CatalogOption, Organization, Theme} from "@/types/catalog";
-import {Me} from "@/types/user";
-import {RoleCategory} from "@/types/role";
-import {Role} from "@/types/role-category";
-import {StudentsApi} from "@/api/StudentsApi";
-import {Student, StudentSummary} from "@/types/student";
-import {studentsListItemToDomain, studentToDomain} from "@/adapters/students.adapter";
-import {FormDraft} from "@/types/form-draft";
-import {FormsApi} from "@/api/FormsApi";
+  venueWithBuildingToDomain,
+} from '@/adapters/catalog.adapter';
+import {
+  formDetailToDomain,
+  formDraftToContract,
+  formToDomain,
+} from '@/adapters/forms.adapter';
+import {
+  studentToDomain,
+  studentsListItemToDomain,
+} from '@/adapters/students.adapter';
+import { AuthApi } from '@/api/AuthApi';
+import { CatalogApi } from '@/api/CatalogApi';
+import { FormsApi } from '@/api/FormsApi';
+import { StudentsApi } from '@/api/StudentsApi';
+import { Building } from '@/types/building';
+import { CatalogOption, Organization, Theme } from '@/types/catalog';
+import { FormDetail } from '@/types/form-detail';
+import { FormDraft } from '@/types/form-draft';
+import { FormsListItem } from '@/types/forms-list';
+import { Role } from '@/types/role';
+import { RoleCategory } from '@/types/role-category';
+import { RoleWithCategory } from '@/types/role-with-category';
+import { Student, StudentSummary } from '@/types/student';
+import { Me } from '@/types/user';
+import { VenueWithBuilding } from '@/types/venue-with-building';
 
 const authApi = new AuthApi();
 const formsApi = new FormsApi();
@@ -48,6 +58,35 @@ export const httpApi = {
     return response.formId;
   },
 
+  async getForm(id: string): Promise<FormDetail> {
+    return formDetailToDomain(await formsApi.getForm(id));
+  },
+
+  async updateForm(id: string, draft: FormDraft): Promise<FormDetail> {
+    return formDetailToDomain(
+      await formsApi.updateForm(id, formDraftToContract(draft)),
+    );
+  },
+
+  async markFormReady(id: string): Promise<void> {
+    await formsApi.markReady(id);
+  },
+  async convertFormToDraft(id: string): Promise<void> {
+    await formsApi.convertToDraft(id);
+  },
+  async cancelForm(id: string): Promise<void> {
+    await formsApi.cancel(id);
+  },
+  async startFormReview(id: string): Promise<void> {
+    await formsApi.startReview(id);
+  },
+  async approveForm(id: string): Promise<void> {
+    await formsApi.approve(id);
+  },
+  async rejectForm(id: string, reason: string | null): Promise<void> {
+    await formsApi.reject(id, reason);
+  },
+
   async getThemes(): Promise<Theme[]> {
     const themes = await catalogApi.getThemes();
     return themes.map(themeToDomain);
@@ -63,9 +102,9 @@ export const httpApi = {
     return buildings.map(buildingToDomain);
   },
 
-  async getBuildingVenues(buildingId: string): Promise<Venue[]> {
+  async getBuildingVenues(buildingId: string): Promise<VenueWithBuilding[]> {
     const venues = await catalogApi.getBuildingVenues(buildingId);
-    return venues.map(venueToDomain);
+    return venues.map(venueWithBuildingToDomain);
   },
 
   async getLevels(): Promise<CatalogOption[]> {
@@ -95,11 +134,21 @@ export const httpApi = {
 
   async getStudents(): Promise<StudentSummary[]> {
     const students = await studentsApi.getStudentsList();
-    return students.map(studentsListItemToDomain)
+    return students.map(studentsListItemToDomain);
   },
 
   async getStudent(studentId: string): Promise<Student> {
     const student = await studentsApi.getStudent(studentId);
-    return studentToDomain(student)
+    return studentToDomain(student);
   },
-}
+
+  async resolveVenues(ids: string[]): Promise<VenueWithBuilding[]> {
+    const venues = await catalogApi.resolveVenues(ids);
+    return venues.map(venueWithBuildingToDomain);
+  },
+
+  async resolveRoles(ids: string[]): Promise<RoleWithCategory[]> {
+    const roles = await catalogApi.resolveRoles(ids);
+    return roles.map(roleWithCategoryToDomain);
+  },
+};

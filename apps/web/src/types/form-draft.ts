@@ -24,8 +24,8 @@ export interface FormDraft {
 }
 
 export const defaultFormDraft: FormDraft = {
-  name: "",
-  description: "",
+  name: '',
+  description: '',
   organizers: [],
   links: [],
   venues: [],

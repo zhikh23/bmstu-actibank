@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Button } from 'primereact/button';
-import { observer } from "mobx-react-lite";
+import { observer } from 'mobx-react-lite';
 
 import { stores } from '@/stores';
-import {BMSTUIcon, EUIcon} from "@/components/icons";
+import { BMSTUIcon, EUIcon } from '@/components/icons';
 
 import styles from './navbar.module.css';
 
@@ -39,7 +39,10 @@ export const Navbar = observer(function Navbar() {
         {me && (
           <>
             <span className={styles.userName}>{fullName ?? 'Загрузка...'}</span>
-            <span className={styles.userAvatar} aria-label={fullName ?? 'Студент'}>
+            <span
+              className={styles.userAvatar}
+              aria-label={fullName ?? 'Студент'}
+            >
               {initials ?? '...'}
             </span>
             <Button

@@ -1,0 +1,17 @@
+{
+  "extends": ["prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaFeatures": { "jsx": true },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "@trivago/prettier-plugin-sort-imports"],
+  "settings": {
+    "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+    "importOrder": ["^react$", "<THIRD_PARTY_MODULES>", "^@/(.*)$", "^[./]"],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
+  }
+}

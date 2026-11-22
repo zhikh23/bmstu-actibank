@@ -1,26 +1,26 @@
-import axios from 'axios'
+import axios from 'axios';
 
-export const apiBaseUrl = import.meta.env.VITE_API_URL ?? ''
+export const apiBaseUrl = import.meta.env.VITE_API_URL ?? '';
 
 export const httpClient = axios.create({
   baseURL: apiBaseUrl,
   timeout: 15000,
   withCredentials: true,
-})
+});
 
 export function resolveMediaUrl(path: string | null | undefined): string {
-  if (!path) return ''
-  if (/^https?:\/\//i.test(path)) return path
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
 
   const base =
     apiBaseUrl !== ''
       ? apiBaseUrl
       : typeof window !== 'undefined'
         ? window.location.origin
-        : 'http://localhost'
+        : 'http://localhost';
   try {
-    return new URL(path, base).toString()
+    return new URL(path, base).toString();
   } catch {
-    return path
+    return path;
   }
 }

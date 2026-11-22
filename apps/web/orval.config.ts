@@ -16,9 +16,9 @@ export default defineConfig({
       override: {
         mutator: {
           path: './src/shared/api/http-client.ts',
-          name: 'customFetch'
-        }
-      }
+          name: 'customFetch',
+        },
+      },
     },
   },
 });

@@ -11,7 +11,12 @@ interface NumberBlockFieldProps {
   onChange: (value: number | null) => void;
 }
 
-export function NumberBlockField({ field, draft, invalid, onChange }: NumberBlockFieldProps) {
+export function NumberBlockField({
+  field,
+  draft,
+  invalid,
+  onChange,
+}: NumberBlockFieldProps) {
   return (
     <label className={styles.field}>
       <span className={styles.labelText}>

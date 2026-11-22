@@ -1,8 +1,9 @@
 import { MeContract } from '@/adapters/auth.adapter';
-import { httpClient } from './http'
+
+import { httpClient } from './http';
 
 export class AuthApi {
-  constructor(private http = httpClient) { }
+  constructor(private http = httpClient) {}
 
   async getMe(): Promise<MeContract> {
     const response = await this.http.get<MeContract>('/api/v1/auth/me');

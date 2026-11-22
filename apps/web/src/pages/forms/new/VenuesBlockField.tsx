@@ -1,70 +1,80 @@
-import {useState} from 'react';
-import {Button} from 'primereact/button';
-import {Dropdown} from 'primereact/dropdown';
+import { useEffect, useState } from 'react';
+import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
 
-import type {Building} from '@/types/building';
-import type {Venue} from '@/types/venue';
-import type {VenuesBlock} from './form-config';
-import type {FormDraft} from '@/types/form-draft';
+import type { VenuesBlock } from './form-config';
+import type { FormDraft } from '@/types/form-draft';
 import styles from './VenuesBlockField.module.css';
-import {observer} from "mobx-react-lite";
+import { observer } from 'mobx-react-lite';
+import { stores } from '@/stores';
 
 interface VenuesBlockFieldProps {
   field: VenuesBlock;
   draft: FormDraft;
-  buildings: Building[];
-  venues: Record<string, Venue>;
-  loadingBuildings: boolean;
-  loadingVenues: boolean;
-  buildingsError: string | null;
-  venuesError: string | null;
   invalid: boolean;
-  onLoadVenues: (buildingId: string) => void;
   onChange: (value: string[]) => void;
 }
 
 export const VenuesBlockField = observer(function VenuesBlockField({
   field,
   draft,
-  buildings,
-  venues,
-  loadingBuildings,
-  loadingVenues,
-  buildingsError,
-  venuesError,
   invalid,
-  onLoadVenues,
   onChange,
 }: VenuesBlockFieldProps) {
+  const { venues, selectedVenues } = stores;
+
   const [buildingId, setBuildingId] = useState<string | null>(null);
   const [venueId, setVenueId] = useState<string | null>(null);
 
-  const selected = draft.venues.map((venueId) => venues[venueId]).filter(Boolean);
-  const buildingVenues = Object.values(venues).filter((venue) => venue.building.id === buildingId);
+  useEffect(() => {
+    void venues.loadBuildings();
+  }, [venues]);
+
+  useEffect(() => {
+    if (buildingId) {
+      void venues.loadVenues(buildingId);
+    }
+  }, [buildingId, venues]);
+
+  useEffect(() => {
+    selectedVenues.setIds(draft.venues);
+    void selectedVenues.loadVenues();
+  }, [draft.venues, selectedVenues]);
+
+  const buildingVenues = venues.buildingVenues(buildingId ?? '');
+  const loadingVenues = venues.isLoadingVenues(buildingId ?? '');
+  const venuesError = buildingId ? venues.venuesError.get(buildingId) : null;
+
+  const selected = selectedVenues.venues;
+  const selectedIds = new Set(selectedVenues.ids);
 
   const selectBuilding = (value: string | null) => {
     setBuildingId(value);
     setVenueId(null);
-    if (value) {
-      void onLoadVenues(value);
-    }
   };
 
   const addVenue = () => {
-    if (!buildingId || !venueId || selected.some((venue) => venue.id === venueId)) {
+    if (!buildingId || !venueId || selectedIds.has(venueId)) {
       return;
     }
-    if (venues[venueId]) {
-      onChange([ ...draft.venues, venueId ]);
+    const building = venues.buildings.find((b) => b.id === buildingId);
+    const venue = buildingVenues.find((v) => v.id === venueId);
+    if (!building || !venue) {
+      return;
     }
-  }
+    onChange([...draft.venues, venueId]);
+    setVenueId(null);
+  };
 
-  const removeVenue = (venueIdToRemove: string) => {
-    onChange(draft.venues.filter((id) => id !== venueIdToRemove));
+  const removeVenue = (target: string) => {
+    selectedVenues.remove(target);
+    onChange(draft.venues.filter((id) => id !== target));
   };
 
   return (
-    <fieldset className={`${styles.venuesField} ${invalid ? styles.invalid : ''}`}>
+    <fieldset
+      className={`${styles.venuesField} ${invalid ? styles.invalid : ''}`}
+    >
       <legend>
         {field.label}
         {field.required && <em aria-hidden="true">*</em>}
@@ -76,14 +86,18 @@ export const VenuesBlockField = observer(function VenuesBlockField({
             <span>Здание</span>
             <Dropdown
               value={buildingId}
-              options={buildings}
+              options={venues.buildings}
               optionLabel="name"
               optionValue="id"
               onChange={(event) => selectBuilding(event.value ?? null)}
-              placeholder={loadingBuildings ? 'Загрузка зданий...' : 'Выберите здание'}
+              placeholder={
+                venues.loadingBuildings
+                  ? 'Загрузка зданий...'
+                  : 'Выберите здание'
+              }
               filter
-              disabled={loadingBuildings}
-              emptyMessage={buildingsError ?? 'Здания не найдены'}
+              disabled={venues.loadingBuildings}
+              emptyMessage={venues.buildingsError ?? 'Здания не найдены'}
             />
           </label>
 
@@ -95,7 +109,13 @@ export const VenuesBlockField = observer(function VenuesBlockField({
               optionLabel="name"
               optionValue="id"
               onChange={(event) => setVenueId(event.value ?? null)}
-              placeholder={!buildingId ? 'Сначала выберите здание' : loadingVenues ? 'Загрузка помещений...' : 'Выберите место'}
+              placeholder={
+                !buildingId
+                  ? 'Сначала выберите здание'
+                  : loadingVenues
+                    ? 'Загрузка помещений...'
+                    : 'Выберите место'
+              }
               filter
               disabled={!buildingId || loadingVenues}
               emptyMessage={venuesError ?? 'Помещения не найдены'}
@@ -108,7 +128,7 @@ export const VenuesBlockField = observer(function VenuesBlockField({
           icon="pi pi-plus"
           label="Добавить"
           onClick={addVenue}
-          disabled={!buildingId || !venueId}
+          disabled={!buildingId || !venueId || selectedIds.has(venueId)}
         />
       </div>
 

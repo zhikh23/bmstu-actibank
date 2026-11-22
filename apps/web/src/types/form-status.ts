@@ -1,10 +1,5 @@
 export type FormStatus =
-  | 'draft'
-  | 'pending'
-  | 'approved'
-  | 'reviewing'
-  | 'canceled'
-  | 'rejected';
+  'draft' | 'pending' | 'approved' | 'reviewing' | 'canceled' | 'rejected';
 
 export const FormStatus = {
   all: () => {
@@ -14,7 +9,7 @@ export const FormStatus = {
       'approved',
       'reviewing',
       'canceled',
-      'rejected'
-    ]
-  }
-}
+      'rejected',
+    ];
+  },
+};

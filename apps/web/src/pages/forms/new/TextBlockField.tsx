@@ -12,7 +12,12 @@ interface TextBlockFieldProps {
   onChange: (value: string) => void;
 }
 
-export function TextBlockField({ field, draft, invalid, onChange }: TextBlockFieldProps) {
+export function TextBlockField({
+  field,
+  draft,
+  invalid,
+  onChange,
+}: TextBlockFieldProps) {
   const label = (
     <span className={styles.labelText}>
       {field.label}

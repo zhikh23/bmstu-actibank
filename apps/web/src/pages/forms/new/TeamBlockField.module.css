@@ -107,8 +107,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 40px;
   padding: 4px 4px 4px 10px;
   border-radius: 6px;
   background: var(--color-bg-muted);
+}
+
+.roleGroup li :global(.p-button) {
+  width: 2rem;
+  height: 2rem;
 }

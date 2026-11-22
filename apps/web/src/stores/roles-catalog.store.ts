@@ -1,19 +1,20 @@
-import {RoleCategory} from "@/types/role";
-import {Role} from "@/types/role-category";
-import {makeAutoObservable, runInAction} from "mobx";
+import { makeAutoObservable, runInAction } from 'mobx';
+
+import { Role } from '@/types/role';
+import { RoleCategory } from '@/types/role-category';
 
 export interface RolesApi {
-  getRoleCategories(): Promise<RoleCategory[]>
-  getCategoryRoles(categoryId: string): Promise<Role[]>
+  getRoleCategories(): Promise<RoleCategory[]>;
+  getCategoryRoles(categoryId: string): Promise<Role[]>;
 }
 
-export class RolesStore {
+export class RolesCatalogStore {
   categories: RoleCategory[] = [];
-  roles: Record<string, Role> = {};
+  rolesByCategories: Map<string, Role[]> = new Map();
   loadingCategories: boolean = false;
-  loadingRoles: boolean = false;
+  loadingRoles: Set<string> = new Set();
   categoriesError: string | null = null;
-  rolesError: string | null = null;
+  rolesError: Map<string, string | null> = new Map();
 
   private categoriesLoaded = false;
 
@@ -21,10 +22,19 @@ export class RolesStore {
     makeAutoObservable(this);
   }
 
+  categoryRoles(categoryId: string): Role[] {
+    return this.rolesByCategories.get(categoryId) ?? [];
+  }
+
+  isLoadingRoles(categoryId: string): boolean {
+    return this.loadingRoles.has(categoryId);
+  }
+
   async loadCategories(force: boolean = false): Promise<void> {
     if (this.categoriesLoaded && !force) return;
 
     this.loadingCategories = true;
+    this.categoriesError = null;
 
     try {
       const categories = await this.api.getRoleCategories();
@@ -34,7 +44,8 @@ export class RolesStore {
       });
     } catch (cause) {
       runInAction(() => {
-        this.categoriesError = 'Не удалось загрузить категории.';
+        this.categoriesError =
+          cause instanceof Error ? cause.message : String(cause);
       });
       console.error('RolesStore: roles request failed', cause);
     } finally {
@@ -45,25 +56,26 @@ export class RolesStore {
   }
 
   async loadRoles(categoryId: string): Promise<void> {
-    this.loadingRoles = true;
-    this.rolesError = null;
+    this.loadingRoles.add(categoryId);
+    this.rolesError.set(categoryId, null);
 
     try {
       const roles = await this.api.getCategoryRoles(categoryId);
       runInAction(() => {
-        roles.forEach(role => {
-          this.roles[role.id] = role;
-        });
-      })
+        this.rolesByCategories.set(categoryId, roles);
+      });
     } catch (cause) {
       runInAction(() => {
-        this.rolesError = 'Не удалось загрузить роли.';
+        this.rolesError.set(
+          categoryId,
+          cause instanceof Error ? cause.message : String(cause),
+        );
       });
       console.error('RolesStore: roles request failed', cause);
     } finally {
       runInAction(() => {
-        this.loadingRoles = false;
-      })
+        this.loadingRoles.delete(categoryId);
+      });
     }
   }
 }

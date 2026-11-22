@@ -1,4 +1,4 @@
-import {FormDraft} from "@/types/form-draft";
+import { FormDraft } from '@/types/form-draft';
 
 export type FieldKey = keyof FormDraft;
 
@@ -231,13 +231,7 @@ export const formSteps: FormStep[] = [
             min: 0,
             required: true,
           },
-        ]
-      },
-      {
-        type: 'text',
-        field: 'guests',
-        label: 'Присутствие администрации',
-        placeholder: 'Скоро будет доступно'
+        ],
       },
     ],
   },
@@ -251,5 +245,5 @@ export const formSteps: FormStep[] = [
         required: true,
       },
     ],
-  }
+  },
 ];

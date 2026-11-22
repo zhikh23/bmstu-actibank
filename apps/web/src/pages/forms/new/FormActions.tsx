@@ -6,17 +6,31 @@ interface FormActionsProps {
   isFirstStep: boolean;
   isLastStep: boolean;
   submitting?: boolean;
+  submittingText?: string;
   onBack: () => void;
   onNext: () => void;
 }
 
-export function FormActions({ isFirstStep, isLastStep, submitting = false, onBack, onNext }: FormActionsProps) {
+export function FormActions({
+  isFirstStep,
+  isLastStep,
+  submitting = false,
+  submittingText,
+  onBack,
+  onNext,
+}: FormActionsProps) {
   return (
     <footer className={styles.footer}>
-      <Button type="button" label="Назад" outlined onClick={onBack} disabled={isFirstStep || submitting} />
       <Button
         type="button"
-        label={isLastStep ? 'Готово' : 'Продолжить'}
+        label="Назад"
+        outlined
+        onClick={onBack}
+        disabled={isFirstStep || submitting}
+      />
+      <Button
+        type="button"
+        label={isLastStep ? (submittingText ?? 'Готово') : 'Продолжить'}
         icon={isLastStep ? 'pi pi-check' : 'pi pi-arrow-right'}
         iconPos="right"
         onClick={onNext}

@@ -6,6 +6,7 @@ import { In, Repository } from 'typeorm';
 import { CatalogError } from '@/catalog/domain/errors';
 import { RoleCategory } from '@/catalog/domain/role-category.entity';
 import { Role } from '@/catalog/domain/role.entity';
+import { RoleCategoryMapper } from '@/catalog/infra/repository/role/role-category.mapper';
 
 import { RoleWithCategory } from './role-with-category.read-model';
 import { RoleMapper, RoleWithCategoryMapper } from './role.mapper';
@@ -20,12 +21,14 @@ export class RoleRepository {
 
   getAllCategories(): ResultAsync<RoleCategory[], CatalogError> {
     return ResultAsync.fromPromise(
-      this.repository.manager.getRepository(RoleCategoryModel).find(),
+      this.repository.manager.getRepository(RoleCategoryModel).find({
+        order: { priority: 'DESC' },
+      }),
       (error): CatalogError =>
         CatalogError.repository(
           error instanceof Error ? error.message : String(error),
         ),
-    ).map((models) => models.map(({ id, name }) => ({ id, name })));
+    ).map((models) => models.map(RoleCategoryMapper.toDomain));
   }
 
   getAllByCategory(categoryId: string): ResultAsync<Role[], CatalogError> {
@@ -33,6 +36,7 @@ export class RoleRepository {
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { category_id: categoryId },
+        order: { priority: 'DESC' },
       }),
       (error): CatalogError =>
         CatalogError.repository(

@@ -145,7 +145,7 @@ export class CatalogController {
     return this.organizations.getAllOrganizations();
   }
 
-  @Get('organizations/resolve')
+  @Post('organizations/resolve')
   @ApiOperation({
     summary: 'Разрешить организации',
     description: 'Возвращает список организаций по их идентификаторам.',
@@ -208,7 +208,7 @@ export class CatalogController {
     return this.roles.getCategoryRoles(categoryId);
   }
 
-  @Get('roles/resolve')
+  @Post('roles/resolve')
   @ApiOperation({
     summary: 'Разрешить роли',
     description: 'Возвращает список ролей по их идентификаторам.',

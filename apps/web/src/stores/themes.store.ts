@@ -1,19 +1,20 @@
-import {makeAutoObservable, runInAction} from "mobx";
-import {Theme} from "@/types/catalog";
+import { makeAutoObservable, runInAction } from 'mobx';
+
+import { Theme } from '@/types/catalog';
 
 export interface CatalogApi {
-  getThemes(): Promise<Theme[]>
+  getThemes(): Promise<Theme[]>;
 }
 
 export class ThemesStore {
-  items: Theme[] = []
+  items: Theme[] = [];
   loading: boolean = false;
   error: string | null = null;
 
   private loaded: boolean = false;
 
   constructor(private api: CatalogApi) {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
   async load(force: boolean = false): Promise<void> {
@@ -25,7 +26,7 @@ export class ThemesStore {
       runInAction(() => {
         this.items = items;
         this.loaded = true;
-      })
+      });
     } catch (cause) {
       runInAction(() => {
         this.error = 'Не удалось загрузить темы. Попробуйте ещё раз.';

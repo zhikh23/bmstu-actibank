@@ -39,7 +39,9 @@ export function SelectBlockField({
         onChange={(event) =>
           onChange(
             Array.isArray(event.value)
-              ? event.value.filter((value): value is string => typeof value === 'string')
+              ? event.value.filter(
+                  (value): value is string => typeof value === 'string',
+                )
               : [],
           )
         }

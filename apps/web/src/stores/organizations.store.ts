@@ -1,19 +1,20 @@
-import {makeAutoObservable, runInAction} from "mobx";
-import {Organization} from "@/types/catalog";
+import { makeAutoObservable, runInAction } from 'mobx';
+
+import { Organization } from '@/types/catalog';
 
 export interface CatalogApi {
-  getOrganizations(): Promise<Organization[]>
+  getOrganizations(): Promise<Organization[]>;
 }
 
 export class OrganizationsStore {
-  items: Organization[] = []
+  items: Organization[] = [];
   loading: boolean = false;
   error: string | null = null;
 
   private loaded: boolean = false;
 
   constructor(private api: CatalogApi) {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
   async load(force: boolean = false): Promise<void> {
@@ -25,7 +26,7 @@ export class OrganizationsStore {
       runInAction(() => {
         this.items = items;
         this.loaded = true;
-      })
+      });
     } catch (cause) {
       runInAction(() => {
         this.error = 'Не удалось загрузить организации. Попробуйте ещё раз.';

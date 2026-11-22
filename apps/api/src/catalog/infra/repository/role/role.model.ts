@@ -13,6 +13,9 @@ export class RoleCategoryModel {
   @PrimaryColumn('uuid')
   declare id: string;
 
+  @Column('integer', { default: 0 })
+  declare priority: number;
+
   @Column('varchar')
   declare name: string;
 
@@ -27,6 +30,9 @@ export class RoleModel {
 
   @Column('uuid')
   declare category_id: string;
+
+  @Column('integer', { default: 0 })
+  declare priority: number;
 
   @Column('varchar')
   declare name: string;

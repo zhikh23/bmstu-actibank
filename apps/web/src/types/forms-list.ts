@@ -1,4 +1,4 @@
-import { FormStatus } from "@/types/form-status";
+import { FormStatus } from '@/types/form-status';
 
 export interface FormsListItem {
   id: string;

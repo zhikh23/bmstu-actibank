@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom'
-import { observer } from "mobx-react-lite";
+import { Outlet } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 
 import { getLoginUrl } from '@/shared/auth';
 import { stores } from '@/stores';
@@ -27,11 +27,14 @@ export const Layout = observer(function Layout() {
     <div className={styles.page}>
       <Navbar />
       <div className={styles.body}>
-        <Sidebar open={menuOpen} onToggle={() => setMenuOpen((open) => !open)} />
+        <Sidebar
+          open={menuOpen}
+          onToggle={() => setMenuOpen((open) => !open)}
+        />
         <main className={styles.main}>
           <Outlet />
         </main>
       </div>
     </div>
-  )
+  );
 });

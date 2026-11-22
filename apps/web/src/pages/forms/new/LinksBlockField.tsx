@@ -1,7 +1,7 @@
-import {Chips} from 'primereact/chips';
+import { Chips } from 'primereact/chips';
 
-import type {LinksBlock} from './form-config';
-import type {FormDraft} from '@/types/form-draft';
+import type { LinksBlock } from './form-config';
+import type { FormDraft } from '@/types/form-draft';
 import styles from './FormField.module.css';
 
 interface LinksBlockFieldProps {
@@ -11,7 +11,12 @@ interface LinksBlockFieldProps {
   onChange: (value: string[]) => void;
 }
 
-export function LinksBlockField({ field, draft, invalid, onChange }: LinksBlockFieldProps) {
+export function LinksBlockField({
+  field,
+  draft,
+  invalid,
+  onChange,
+}: LinksBlockFieldProps) {
   return (
     <label className={styles.field}>
       <span className={styles.labelText}>

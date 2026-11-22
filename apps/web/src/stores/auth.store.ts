@@ -1,18 +1,15 @@
-import {makeAutoObservable, runInAction} from "mobx";
-import {isUnauthorized} from "@/shared/auth/unauthorized";
-import {Me} from "@/types/user";
+import { makeAutoObservable, runInAction } from 'mobx';
+
+import { isUnauthorized } from '@/shared/auth/unauthorized';
+import { Me } from '@/types/user';
 
 export interface AuthApi {
-  getMe(): Promise<Me>
-  logout(): Promise<void>
+  getMe(): Promise<Me>;
+  logout(): Promise<void>;
 }
 
 export type AuthStatus =
-  | 'idle'
-  | 'loading'
-  | 'authenticated'
-  | 'unauthenticated'
-  | 'error';
+  'idle' | 'loading' | 'authenticated' | 'unauthenticated' | 'error';
 
 export class AuthStore {
   me: Me | null = null;
@@ -22,7 +19,7 @@ export class AuthStore {
   private pending: Promise<void> | null = null;
 
   constructor(private api: AuthApi) {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
   load(force: boolean = false): Promise<void> {
@@ -70,7 +67,7 @@ export class AuthStore {
         this.me = null;
         this.status = 'unauthenticated';
         this.error = null;
-      })
+      });
     }
   }
 }

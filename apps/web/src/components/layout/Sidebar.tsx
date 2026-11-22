@@ -47,16 +47,24 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
     >
       <nav className={styles.navigation}>
         <MenuCategory title="Заявки">
-          <NavLink to="/forms/new" className={linkClassName}>Подать заявку</NavLink>
-          <NavLink to="/forms" end className={linkClassName}>Все заявки</NavLink>
+          <NavLink to="/forms/new" className={linkClassName}>
+            Подать заявку
+          </NavLink>
+          <NavLink to="/forms" end className={linkClassName}>
+            Все заявки
+          </NavLink>
         </MenuCategory>
 
         <MenuCategory title="Мероприятия">
-          <NavLink to="/events" className={linkClassName}>Все мероприятия</NavLink>
+          <NavLink to="/events" className={linkClassName}>
+            Все мероприятия
+          </NavLink>
         </MenuCategory>
 
         <MenuCategory title="Модератору">
-          <NavLink to="/catalog" className={linkClassName}>Каталог</NavLink>
+          <NavLink to="/catalog" className={linkClassName}>
+            Каталог
+          </NavLink>
         </MenuCategory>
       </nav>
 

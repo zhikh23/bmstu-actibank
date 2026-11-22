@@ -11,7 +11,12 @@ interface DateBlockFieldProps {
   onChange: (value: Date | null) => void;
 }
 
-export function DateBlockField({ field, draft, invalid, onChange }: DateBlockFieldProps) {
+export function DateBlockField({
+  field,
+  draft,
+  invalid,
+  onChange,
+}: DateBlockFieldProps) {
   return (
     <label className={styles.field}>
       <span className={styles.labelText}>

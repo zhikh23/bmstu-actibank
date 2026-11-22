@@ -13,6 +13,6 @@ const dataTimeFormatter = new Intl.DateTimeFormat('ru-RU', {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
-})
+});
 
 export const formatDateTime = (d: Date) => dataTimeFormatter.format(d);

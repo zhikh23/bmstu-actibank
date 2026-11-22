@@ -1,103 +1,132 @@
-import {useState} from 'react';
-import {observer} from 'mobx-react-lite';
-import {Button} from 'primereact/button';
-import {Dropdown} from 'primereact/dropdown';
+import { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
 
-import type {StudentSummary} from '@/types/student';
-import type {RoleCategory} from '@/types/role';
-import type {Role} from '@/types/role-category';
-import type {FormDraft} from '@/types/form-draft';
-import type {TeamBlock} from './form-config';
+import type { FormDraft } from '@/types/form-draft';
+import type { TeamBlock } from './form-config';
 import styles from './TeamBlockField.module.css';
+import { stores } from '@/stores';
+import { TeamMember } from '@/types/team-member';
+import { RoleCategory } from '@/types/role-category';
+import { Role } from '@/types/role';
+import { StudentSummary } from '@/types/student';
 
 interface TeamBlockFieldProps {
   field: TeamBlock;
   draft: FormDraft;
-  categories: RoleCategory[];
-  roles: Record<string, Role>;
-  students: StudentSummary[];
-  loadingCategories: boolean;
-  loadingRoles: boolean;
-  loadingStudents: boolean;
-  categoriesError: string | null;
-  rolesError: string | null;
-  studentsError: string | null;
   invalid: boolean;
-  onLoadRoles: (categoryId: string) => void;
   onChange: (value: FormDraft['team']) => void;
 }
 
 export const TeamBlockField = observer(function TeamBlockField({
   field,
   draft,
-  categories,
-  roles,
-  students,
-  loadingCategories,
-  loadingRoles,
-  loadingStudents,
-  categoriesError,
-  rolesError,
-  studentsError,
   invalid,
-  onLoadRoles,
   onChange,
 }: TeamBlockFieldProps) {
+  const { roles, selectedRoles, students } = stores;
+
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [roleId, setRoleId] = useState<string | null>(null);
   const [studentId, setStudentId] = useState<string | null>(null);
 
-  const categoryRoles = Object.values(roles).filter(
-    (role) => role.category.id === categoryId,
-  );
+  useEffect(() => {
+    void roles.loadCategories();
+  }, [roles]);
+
+  useEffect(() => {
+    if (categoryId) {
+      void roles.loadRoles(categoryId);
+    }
+  }, [categoryId, roles]);
+
+  useEffect(() => {
+    selectedRoles.setIds(draft.team.map((member) => member.roleId));
+    void selectedRoles.loadRoles();
+  }, [draft.team, selectedRoles]);
+
+  const categoryRoles = roles.categoryRoles(categoryId ?? '');
+  const loadingRoles = roles.isLoadingRoles(categoryId ?? '');
+  const rolesError = categoryId ? roles.rolesError.get(categoryId) : null;
 
   const selectCategory = (value: string | null) => {
     setCategoryId(value);
     setRoleId(null);
     setStudentId(null);
-    if (value) void onLoadRoles(value);
   };
 
   const addMember = () => {
-    if (!roleId || !studentId) return;
-
+    if (!categoryId || !roleId || !studentId) return;
     const alreadyAdded = draft.team.some(
       (member) => member.roleId === roleId && member.userId === studentId,
     );
-    if (!alreadyAdded) {
-      onChange([...draft.team, { roleId, userId: studentId }]);
+    if (alreadyAdded) {
+      return;
     }
+    onChange([...draft.team, { userId: studentId, roleId }]);
+    setStudentId(null);
   };
 
-  const removeMember = (roleIdToRemove: string, studentIdToRemove: string) => {
-    onChange(draft.team.filter(
-      (member) => !(member.roleId === roleIdToRemove && member.userId === studentIdToRemove),
-    ));
-  };
-
-  const grouped = categories.map((category) => {
-    const categoryRoleIds = new Set(
-      Object.values(roles)
-        .filter((role) => role.category.id === category.id)
-        .map((role) => role.id),
+  const removeMember = (target: TeamMember) => {
+    onChange(
+      draft.team.filter(
+        (member) =>
+          !(member.roleId === target.roleId && member.userId === target.userId),
+      ),
     );
+  };
 
-    const members = draft.team.filter((member) => categoryRoleIds.has(member.roleId));
-    if (members.length === 0) return null;
+  const grouped: {
+    category: RoleCategory;
+    roles: {
+      role: Role;
+      members: StudentSummary[];
+    }[];
+  }[] = [];
 
-    const roleGroups = Object.values(roles)
-      .filter((role) => role.category.id === category.id)
-      .map((role) => ({
+  const studentsByRoles: Map<string, StudentSummary[]> = new Map();
+  for (const member of draft.team) {
+    const student = students.getById(member.userId) ?? {
+      id: member.userId,
+      fullName: 'Неизвестный студент',
+    };
+    if (!studentsByRoles.has(member.roleId)) {
+      studentsByRoles.set(member.roleId, []);
+    }
+    studentsByRoles.get(member.roleId)!.push(student);
+  }
+
+  const existingRolesByCategory: Map<string, Role[]> = new Map();
+  for (const roleId of studentsByRoles.keys()) {
+    const roleWithCategory = selectedRoles.byId.get(roleId);
+    if (!roleWithCategory) continue;
+    const role = {
+      ...roleWithCategory,
+      categoryId: roleWithCategory.category.id,
+    };
+    if (!existingRolesByCategory.has(role.categoryId)) {
+      existingRolesByCategory.set(role.categoryId, []);
+    }
+    existingRolesByCategory.get(role.categoryId)!.push(role);
+  }
+
+  for (const category of roles.categories) {
+    const categoryRoles = existingRolesByCategory.get(category.id) ?? [];
+    if (categoryRoles.length === 0) continue;
+    grouped.push({
+      category,
+      roles: categoryRoles.map((role) => ({
         role,
-        members: members.filter((member) => member.roleId === role.id),
-      }))
-      .filter((group) => group.members.length > 0);
-
-    return { category, roleGroups };
-  }).filter((group): group is NonNullable<typeof group> => group !== null);
+        members: studentsByRoles.get(role.id) ?? [],
+      })),
+    });
+  }
 
   return (
-    <fieldset className={`${styles.teamField} ${invalid ? styles.invalid : ''}`}>
+    <fieldset
+      className={`${styles.teamField} ${invalid ? styles.invalid : ''}`}
+    >
       <legend>
         {field.label}
         {field.required && <em aria-hidden="true">*</em>}
@@ -109,14 +138,18 @@ export const TeamBlockField = observer(function TeamBlockField({
             <span>Категория роли</span>
             <Dropdown
               value={categoryId}
-              options={categories}
+              options={roles.categories}
               optionLabel="name"
               optionValue="id"
               onChange={(event) => selectCategory(event.value ?? null)}
-              placeholder={loadingCategories ? 'Загрузка категорий...' : 'Выберите категорию'}
+              placeholder={
+                roles.loadingCategories
+                  ? 'Загрузка категорий...'
+                  : 'Выберите категорию'
+              }
               filter
-              disabled={loadingCategories}
-              emptyMessage={categoriesError ?? 'Категории не найдены'}
+              disabled={roles.loadingCategories}
+              emptyMessage={roles.categoriesError ?? 'Категории не найдены'}
             />
           </label>
 
@@ -127,11 +160,14 @@ export const TeamBlockField = observer(function TeamBlockField({
               options={categoryRoles}
               optionLabel="name"
               optionValue="id"
-              onChange={(event) => {
-                setRoleId(event.value ?? null);
-                setStudentId(null);
-              }}
-              placeholder={!categoryId ? 'Сначала выберите категорию' : loadingRoles ? 'Загрузка ролей...' : 'Выберите роль'}
+              onChange={(event) => setRoleId(event.value ?? null)}
+              placeholder={
+                !categoryId
+                  ? 'Сначала выберите категорию'
+                  : loadingRoles
+                    ? 'Загрузка ролей...'
+                    : 'Выберите роль'
+              }
               filter
               disabled={!categoryId || loadingRoles}
               emptyMessage={rolesError ?? 'Роли не найдены'}
@@ -142,14 +178,18 @@ export const TeamBlockField = observer(function TeamBlockField({
             <span>Организатор</span>
             <Dropdown
               value={studentId}
-              options={students}
+              options={students.items}
               optionLabel="fullName"
               optionValue="id"
               onChange={(event) => setStudentId(event.value ?? null)}
-              placeholder={loadingStudents ? 'Загрузка студентов...' : 'Выберите организатора'}
+              placeholder={
+                students.loading
+                  ? 'Загрузка студентов...'
+                  : 'Выберите организатора'
+              }
               filter
-              disabled={loadingStudents || !roleId}
-              emptyMessage={studentsError ?? 'Студенты не найдены'}
+              disabled={students.loading || !roleId}
+              emptyMessage={students.error ?? 'Студенты не найдены'}
             />
           </label>
         </div>
@@ -167,30 +207,31 @@ export const TeamBlockField = observer(function TeamBlockField({
         <p className={styles.empty}>Добавьте хотя бы одного организатора</p>
       ) : (
         <div className={styles.groups}>
-          {grouped.map(({ category, roleGroups }) => (
+          {grouped.map(({ category, roles }) => (
             <section className={styles.categoryGroup} key={category.id}>
               <h3>{category.name}</h3>
-              {roleGroups.map(({ role, members }) => (
+              {roles.map(({ role, members }) => (
                 <div className={styles.roleGroup} key={role.id}>
                   <h4>{role.name}</h4>
                   <ul>
-                    {members.map((member) => {
-                      const student = students.find((item) => item.id === member.userId);
-                      if (!student) return null;
-                      return (
-                        <li key={student.id}>
-                          <span>{student.fullName}</span>
-                          <Button
-                            type="button"
-                            icon="pi pi-times"
-                            rounded
-                            text
-                            aria-label={`Удалить ${student.fullName}`}
-                            onClick={() => removeMember(role.id, student.id)}
-                          />
-                        </li>
-                      );
-                    })}
+                    {members.map((student) => (
+                      <li key={student.id}>
+                        <span>{student.fullName}</span>
+                        <Button
+                          type="button"
+                          icon="pi pi-times"
+                          rounded
+                          text
+                          aria-label={`Удалить ${student.fullName}`}
+                          onClick={() =>
+                            removeMember({
+                              userId: student.id,
+                              roleId: role.id,
+                            })
+                          }
+                        />
+                      </li>
+                    ))}
                   </ul>
                 </div>
               ))}

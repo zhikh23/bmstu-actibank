@@ -1,7 +1,7 @@
-import {makeAutoObservable, runInAction} from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 
-import {Student} from '@/types/student';
-import {StudentApi} from "@/stores/students.store";
+import { StudentApi } from '@/stores/students.store';
+import { Student } from '@/types/student';
 
 export class StudentStore {
   item: Student | null = null;

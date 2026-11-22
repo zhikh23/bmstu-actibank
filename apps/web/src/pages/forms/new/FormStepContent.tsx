@@ -2,31 +2,11 @@ import type { FormBlock } from './form-config';
 import { FormField } from './FormField';
 import type { SelectOption } from './SelectBlockField';
 import styles from './FormStepContent.module.css';
-import {FormDraft} from "@/types/form-draft";
-import type {Building} from "@/types/building";
-import type {Venue} from "@/types/venue";
-import type {RoleCategory} from "@/types/role";
-import type {Role} from "@/types/role-category";
-import type {StudentSummary} from "@/types/student";
+import { FormDraft } from '@/types/form-draft';
 
 interface LookupState {
   options: Record<string, SelectOption[]>;
   optionState?: Record<string, { loading: boolean; error: string | null }>;
-  buildings?: Building[];
-  venues?: Record<string, Venue>;
-  loadingBuildings?: boolean;
-  loadingVenues?: boolean;
-  buildingsError?: string | null;
-  venuesError?: string | null;
-  roleCategories?: RoleCategory[];
-  roles?: Record<string, Role>;
-  students?: StudentSummary[];
-  loadingRoleCategories?: boolean;
-  loadingRoles?: boolean;
-  loadingStudents?: boolean;
-  roleCategoriesError?: string | null;
-  rolesError?: string | null;
-  studentsError?: string | null;
   onLoadVenues?: (buildingId: string) => void;
   onLoadRoles?: (categoryId: string) => void;
 }
@@ -65,13 +45,21 @@ export function FormStepContent({
   const renderBlock = (block: FormBlock) => {
     if (block.type === 'group') {
       return (
-        <div className={styles.dateGrid} key={block.fields.map(({ field }) => field).join('-')}>
+        <div
+          className={styles.dateGrid}
+          key={block.fields.map(({ field }) => field).join('-')}
+        >
           {block.fields.map((field) => (
             <FormField
               key={field.field}
               field={field}
               {...sharedProps}
-              invalid={isInvalid(field.field, field.required, attempted, isFilled)}
+              invalid={isInvalid(
+                field.field,
+                field.required,
+                attempted,
+                isFilled,
+              )}
               onChange={onChange}
             />
           ))}
@@ -95,7 +83,9 @@ export function FormStepContent({
       <div className={styles.placeholder}>
         <i className="pi pi-check-circle" aria-hidden="true" />
         <p>{placeholder}</p>
-        <small>Здесь появятся дополнительные поля в следующем шаге разработки.</small>
+        <small>
+          Здесь появятся дополнительные поля в следующем шаге разработки.
+        </small>
       </div>
     );
   }

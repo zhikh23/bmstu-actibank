@@ -1,7 +1,4 @@
-import {RoleCategory} from "@/types/role";
-
-export type Role = {
+export type RoleCategory = {
   id: string;
   name: string;
-  category: RoleCategory;
 };
