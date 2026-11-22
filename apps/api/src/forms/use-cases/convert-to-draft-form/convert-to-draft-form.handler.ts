@@ -9,6 +9,7 @@ import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
 export type ConvertToDraftFormCommand = {
   actor: AuthenticatedUser;
   formId: string;
+  reason: string | null;
 };
 
 @Injectable()
@@ -24,7 +25,7 @@ export class ConvertToDraftFormHandler {
           form,
         ),
       )
-      .andThen((form) => form.convertToDraft().map(() => form))
+      .andThen((form) => form.convertToDraft(cmd.reason).map(() => form))
       .andThen((form) => this.formRepository.update(form));
   }
 }

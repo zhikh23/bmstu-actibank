@@ -10,7 +10,7 @@ interface FormsTableProps {
 
 const statusLabels: Record<string, string> = {
   draft: 'Черновик',
-  pending: 'На рассмотрении',
+  pending: 'Ожидает проверки',
   approved: 'Одобрено',
   reviewing: 'На проверке',
   canceled: 'Отменено',

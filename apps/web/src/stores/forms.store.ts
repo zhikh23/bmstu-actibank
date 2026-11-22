@@ -9,8 +9,11 @@ export interface FormsApi {
   createForm(draft: FormDraft): Promise<string>;
   getForm(id: string): Promise<FormDetail>;
   updateForm(id: string, draft: FormDraft): Promise<FormDetail>;
+  generateFormDocument(id: string): Promise<string>;
+  attachFormDocument(id: string, fileId: string): Promise<void>;
+  uploadFile(file: File): Promise<string>;
   markFormReady(id: string): Promise<void>;
-  convertFormToDraft(id: string): Promise<void>;
+  convertFormToDraft(id: string, reason: string | null): Promise<void>;
   cancelForm(id: string): Promise<void>;
   startFormReview(id: string): Promise<void>;
   approveForm(id: string): Promise<void>;
@@ -111,6 +114,31 @@ export class FormsStore {
     }
   }
 
+  async generateDocument(id: string): Promise<string | null> {
+    this.actionError = null;
+    try {
+      return await this.api.generateFormDocument(id);
+    } catch (cause) {
+      runInAction(() => {
+        this.actionError =
+          'Не удалось сгенерировать печатную форму. Попробуйте ещё раз.';
+      });
+      console.error('FormsStore: generate document failed', cause);
+      return null;
+    }
+  }
+
+  async uploadScan(id: string, file: File): Promise<boolean> {
+    return this.performAction(async () => {
+      const fileId = await this.api.uploadFile(file);
+      await this.api.attachFormDocument(id, fileId);
+      const selected = await this.api.getForm(id);
+      runInAction(() => {
+        this.selected = selected;
+      });
+    });
+  }
+
   private async performAction(action: () => Promise<void>): Promise<boolean> {
     this.actionLoading = true;
     this.actionError = null;
@@ -134,18 +162,27 @@ export class FormsStore {
   markReady(id: string) {
     return this.performAction(() => this.api.markFormReady(id));
   }
+
   convertToDraft(id: string) {
-    return this.performAction(() => this.api.convertFormToDraft(id));
+    return this.performAction(() => this.api.convertFormToDraft(id, null));
   }
+
+  convertToDraftModerator(id: string, reason: string) {
+    return this.performAction(() => this.api.convertFormToDraft(id, reason));
+  }
+
   cancel(id: string) {
     return this.performAction(() => this.api.cancelForm(id));
   }
+
   startReview(id: string) {
     return this.performAction(() => this.api.startFormReview(id));
   }
+
   approve(id: string) {
     return this.performAction(() => this.api.approveForm(id));
   }
+
   reject(id: string, reason: string | null) {
     return this.performAction(() => this.api.rejectForm(id, reason));
   }

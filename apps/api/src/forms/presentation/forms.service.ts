@@ -12,7 +12,7 @@ import { FormsError } from '@/forms/domain/errors';
 import { ApproveFormHandler } from '@/forms/use-cases/approve-form/approve-form.handler';
 import { AttachDocumentHandler } from '@/forms/use-cases/attach-document/attach-document.handler';
 import { CancelFormHandler } from '@/forms/use-cases/cancel-form/cancel-form.handler';
-import { ConvertToDraftFormHandler } from '@/forms/use-cases/convert-to-draft-form/convert-to-draft-form-handler.service';
+import { ConvertToDraftFormHandler } from '@/forms/use-cases/convert-to-draft-form/convert-to-draft-form.handler';
 import { CreateFormHandler } from '@/forms/use-cases/create-form/create-form.handler';
 import { GenerateDocumentHandler } from '@/forms/use-cases/generate-document/generate-document.handler';
 import { FormType } from '@/forms/use-cases/get-form/get-form.data';
@@ -33,6 +33,7 @@ import { ListFormsRequest } from './dto/list-forms.request';
 import { ListFormResponse } from './dto/list-forms.response';
 import { RejectFormRequest } from './dto/reject-form.request';
 import { UpdateFormRequest } from './dto/update-form.request';
+import { ConvertToDraftRequest } from '@/forms/presentation/dto/convert-to-draft.request';
 
 @Injectable()
 export class FormsService {
@@ -104,11 +105,14 @@ export class FormsService {
   async convertToDraft(
     actor: AuthenticatedUser,
     formId: string,
+    dto: ConvertToDraftRequest,
   ): Promise<void> {
-    return this.convertToDraftForm.execute({ actor, formId }).match(
-      () => {},
-      (error) => this.handlerError(error),
-    );
+    return this.convertToDraftForm
+      .execute({ actor, formId, reason: dto.reason ?? null })
+      .match(
+        () => {},
+        (error) => this.handlerError(error),
+      );
   }
 
   async generate(

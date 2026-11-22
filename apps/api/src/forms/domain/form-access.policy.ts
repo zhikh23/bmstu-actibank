@@ -1,4 +1,4 @@
-import { Result, err, ok } from 'neverthrow';
+import { err, ok, Result } from 'neverthrow';
 
 import {
   AuthenticatedUser,
@@ -41,7 +41,7 @@ const VIEW_POLICY: Record<FormStatus, Role> = {
   [FormStatus.Pending]: Role.Submitter | Role.Moderator,
   [FormStatus.Reviewing]: Role.Submitter | Role.Moderator,
   [FormStatus.Approved]: Role.Submitter | Role.Moderator | Role.Public,
-  [FormStatus.Rejected]: Role.Submitter,
+  [FormStatus.Rejected]: Role.Submitter | Role.Moderator,
   [FormStatus.Canceled]: Role.Submitter,
 };
 

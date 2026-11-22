@@ -3,6 +3,7 @@ import {
   CreateFormResponseContract,
   FormDetailContract,
   FormsListItemContract,
+  GenerateDocumentResponseContract,
 } from '@/adapters/forms.adapter';
 
 import { httpClient } from './http';
@@ -44,12 +45,25 @@ export class FormsApi {
     return response.data;
   }
 
+  async generateDocument(
+    id: string,
+  ): Promise<GenerateDocumentResponseContract> {
+    const response = await this.http.post<GenerateDocumentResponseContract>(
+      `/api/v1/forms/${id}/generate`,
+    );
+    return response.data;
+  }
+
+  async attachDocument(id: string, fileId: string): Promise<void> {
+    await this.http.post(`/api/v1/forms/${id}/attach-document`, { fileId });
+  }
+
   async markReady(id: string): Promise<void> {
     await this.http.post(`/api/v1/forms/${id}/mark-ready`);
   }
 
-  async convertToDraft(id: string): Promise<void> {
-    await this.http.post(`/api/v1/forms/${id}/convert-to-draft`);
+  async convertToDraft(id: string, reason: string | null): Promise<void> {
+    await this.http.post(`/api/v1/forms/${id}/convert-to-draft`, { reason });
   }
 
   async cancel(id: string): Promise<void> {

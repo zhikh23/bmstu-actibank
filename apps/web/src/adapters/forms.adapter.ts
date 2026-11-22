@@ -173,6 +173,10 @@ export const formDetailSchema = z.object({
 
 export type FormDetailContract = z.infer<typeof formDetailSchema>;
 
+export interface GenerateDocumentResponseContract {
+  fileId: string;
+}
+
 export function formDetailToDomain(raw: FormDetailContract): FormDetail {
   return {
     ...raw,

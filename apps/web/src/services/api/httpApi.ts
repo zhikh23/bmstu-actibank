@@ -19,6 +19,7 @@ import {
 } from '@/adapters/students.adapter';
 import { AuthApi } from '@/api/AuthApi';
 import { CatalogApi } from '@/api/CatalogApi';
+import { FilesApi } from '@/api/FilesApi';
 import { FormsApi } from '@/api/FormsApi';
 import { StudentsApi } from '@/api/StudentsApi';
 import { Building } from '@/types/building';
@@ -37,6 +38,7 @@ const authApi = new AuthApi();
 const formsApi = new FormsApi();
 const catalogApi = new CatalogApi();
 const studentsApi = new StudentsApi();
+const filesApi = new FilesApi();
 
 export const httpApi = {
   async getMe(): Promise<Me> {
@@ -68,21 +70,40 @@ export const httpApi = {
     );
   },
 
+  async generateFormDocument(id: string): Promise<string> {
+    const response = await formsApi.generateDocument(id);
+    return response.fileId;
+  },
+
+  async attachFormDocument(id: string, fileId: string): Promise<void> {
+    await formsApi.attachDocument(id, fileId);
+  },
+
+  async uploadFile(file: File): Promise<string> {
+    const response = await filesApi.upload(file);
+    return response.fileId;
+  },
+
   async markFormReady(id: string): Promise<void> {
     await formsApi.markReady(id);
   },
-  async convertFormToDraft(id: string): Promise<void> {
-    await formsApi.convertToDraft(id);
+
+  async convertFormToDraft(id: string, reason: string | null): Promise<void> {
+    await formsApi.convertToDraft(id, reason);
   },
+
   async cancelForm(id: string): Promise<void> {
     await formsApi.cancel(id);
   },
+
   async startFormReview(id: string): Promise<void> {
     await formsApi.startReview(id);
   },
+
   async approveForm(id: string): Promise<void> {
     await formsApi.approve(id);
   },
+
   async rejectForm(id: string, reason: string | null): Promise<void> {
     await formsApi.reject(id, reason);
   },

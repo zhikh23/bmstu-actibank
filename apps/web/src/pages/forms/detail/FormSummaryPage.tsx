@@ -3,16 +3,18 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { FileUpload } from 'primereact/fileupload';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Message } from 'primereact/message';
 
+import { resolveMediaUrl } from '@/api/http';
 import { stores } from '@/stores';
 import { formatDateTime } from '@/shared/lib/format-date';
 import styles from './FormSummaryPage.module.css';
 
 const statusLabels: Record<string, string> = {
   draft: 'Черновик',
-  pending: 'На рассмотрении',
+  pending: 'Ожидает проверки',
   reviewing: 'На проверке',
   approved: 'Одобрено',
   rejected: 'Отклонено',
@@ -78,8 +80,26 @@ export const FormSummaryPage = observer(function FormSummaryPage() {
 
   const sendForRevision = async () => {
     if (!revisionReason.trim()) return;
-    await perform(() => forms.reject(form.id, revisionReason.trim()));
-    setRevisionOpen(false);
+    await perform(() =>
+      forms.convertToDraftModerator(form.id, revisionReason.trim()),
+    );
+    navigate('/forms');
+  };
+
+  const downloadPrintedForm = async () => {
+    let fileId = form.document?.generatedId ?? null;
+    if (!fileId) {
+      fileId = await forms.generateDocument(form.id);
+      if (fileId) await reload();
+    }
+    if (!fileId) return;
+    window.location.assign(resolveMediaUrl(`/api/v1/files/${fileId}`));
+  };
+
+  const uploadScan = async (file: File, clear: () => void) => {
+    if (await forms.uploadScan(form.id, file)) {
+      clear();
+    }
   };
 
   return (
@@ -110,6 +130,12 @@ export const FormSummaryPage = observer(function FormSummaryPage() {
                 <Button
                   label="Отметить готовой"
                   icon="pi pi-check"
+                  disabled={!form.document?.scanId || forms.actionLoading}
+                  title={
+                    !form.document?.scanId
+                      ? 'Сначала прикрепите скан документа'
+                      : undefined
+                  }
                   onClick={() => perform(() => forms.markReady(form.id))}
                 />
               )}
@@ -180,6 +206,65 @@ export const FormSummaryPage = observer(function FormSummaryPage() {
           className={styles.error}
         />
       )}
+
+      <section className={styles.documentCard}>
+        <div>
+          <div className={styles.documentTitle}>
+            <h2>Документы</h2>
+            <p>
+              {form.document?.scanId
+                ? 'Скан подписанного документа прикреплён.'
+                : 'Скачайте печатную форму, подпишите и прикрепите её скан.'}
+            </p>
+            <Button
+              label="Скачать печатную форму"
+              icon="pi pi-download"
+              outlined
+              onClick={() => void downloadPrintedForm()}
+            />
+            <Button
+              type="button"
+              outlined
+              disabled={!form.document?.scanId}
+              icon="pi pi-file"
+              label="Скачать загруженный скан"
+              onClick={() => {
+                window.location.href = resolveMediaUrl(
+                  `/api/v1/files/${form.document!.scanId}`,
+                );
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.documentActions}>
+          {isApplicant && form.status === 'draft' && (
+            <FileUpload
+              name="file"
+              mode="advanced"
+              accept="application/pdf,image/*"
+              maxFileSize={20 * 1024 * 1024}
+              multiple={false}
+              customUpload
+              disabled={forms.actionLoading || form.document === null}
+              chooseLabel="Выбрать"
+              uploadLabel="Загрузить"
+              cancelLabel="Очистить"
+              className={styles.scanUploader}
+              emptyTemplate={
+                form.document ? (
+                  <span>Перетащите PDF или изображение или выберите файл</span>
+                ) : (
+                  <span>Сначала распечатайте печатную форму</span>
+                )
+              }
+              uploadHandler={(event) => {
+                const file = event.files[0];
+                if (file) void uploadScan(file, () => event.options.clear());
+              }}
+            />
+          )}
+        </div>
+      </section>
 
       <div className={styles.card}>
         <dl className={styles.details}>

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { FormRepositoryModule } from '@/forms/infra/repository/form.module';
 
-import { ConvertToDraftFormHandler } from './convert-to-draft-form-handler.service';
+import { ConvertToDraftFormHandler } from './convert-to-draft-form.handler';
 
 @Module({
   imports: [FormRepositoryModule],

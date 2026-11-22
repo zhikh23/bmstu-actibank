@@ -42,6 +42,7 @@ import { ListFormResponse } from './dto/list-forms.response';
 import { RejectFormRequest } from './dto/reject-form.request';
 import { UpdateFormRequest } from './dto/update-form.request';
 import { FormsService } from './forms.service';
+import { ConvertToDraftRequest } from '@/forms/presentation/dto/convert-to-draft.request';
 
 @Controller('forms')
 @ApiTags('Forms')
@@ -226,8 +227,9 @@ export class FormsController {
   async convertToDraft(
     @Param('id') id: string,
     @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ConvertToDraftRequest,
   ): Promise<void> {
-    return this.formService.convertToDraft(user, id);
+    return this.formService.convertToDraft(user, id, dto);
   }
 
   @Post('')
