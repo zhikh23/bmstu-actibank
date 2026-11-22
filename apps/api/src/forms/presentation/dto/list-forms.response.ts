@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { FormStatus } from '@/forms/domain/status.enum';
 
-export class ListFormResponse {
+export class ListFormsItem {
   @ApiProperty({
     description: 'Идентификатор формы',
     example: '00000000-0000-0000-0000-000000000000',
@@ -58,3 +58,5 @@ export class ListFormResponse {
   })
   declare createdAt: string;
 }
+
+export type ListFormsResponse = ListFormsItem[];

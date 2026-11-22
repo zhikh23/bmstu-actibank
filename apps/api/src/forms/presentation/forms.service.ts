@@ -30,11 +30,13 @@ import { CreateFormResponse } from './dto/create-form.response';
 import { GenerateDocumentResponse } from './dto/generate-document.response';
 import { GetFormResponse } from './dto/get-form.response';
 import { ListFormsRequest } from './dto/list-forms.request';
-import { ListFormResponse } from './dto/list-forms.response';
+import { ListFormsItem } from './dto/list-forms.response';
 import { RejectFormRequest } from './dto/reject-form.request';
 import { UpdateFormRequest } from './dto/update-form.request';
 import { ConvertToDraftRequest } from '@/forms/presentation/dto/convert-to-draft.request';
 import { CancelFormReviewHandler } from '@/forms/use-cases/cancel-form-review/cancel-form-review.handler';
+import { ResultAsync } from 'neverthrow';
+import { FormSummary } from '@/forms/use-cases/list-forms/list-forms.data';
 
 @Injectable()
 export class FormsService {
@@ -56,156 +58,129 @@ export class FormsService {
     private readonly listForms: ListFormsHandler,
   ) {}
 
-  async approve(actor: AuthenticatedUser, formId: string): Promise<void> {
-    return this.approveForm.execute({ actor, formId }).match(
-      () => {},
-      (error) => this.handlerError(error),
-    );
+  approve(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.resolve(this.approveForm.execute({ actor, formId }));
   }
 
-  async attach(
+  attach(
     actor: AuthenticatedUser,
     formId: string,
     dto: AttachDocumentRequest,
   ): Promise<void> {
-    return this.attachDocument
-      .execute({
+    return this.resolve(
+      this.attachDocument.execute({
         actorId: actor.id,
         formId,
         fileId: dto.fileId,
-      })
-      .match(
-        () => {},
-        (error) => this.handlerError(error),
-      );
-  }
-
-  async cancel(actor: AuthenticatedUser, formId: string): Promise<void> {
-    return this.cancelForm.execute({ actor, formId }).match(
-      () => {},
-      (error) => this.handlerError(error),
+      }),
     );
   }
 
-  async cancelReview(actor: AuthenticatedUser, formId: string): Promise<void> {
-    return this.cancelFormReview.execute({ actor, formId }).match(
-      () => {},
-      (error) => this.handlerError(error),
-    );
+  cancel(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.resolve(this.cancelForm.execute({ actor, formId }));
   }
 
-  async create(
+  cancelReview(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.resolve(this.cancelFormReview.execute({ actor, formId }));
+  }
+
+  create(
     actor: AuthenticatedUser,
     dto: CreateFormRequest,
   ): Promise<CreateFormResponse> {
-    return this.createForm
-      .execute({
-        actor,
-        ...dto,
-      })
-      .match(
-        (form) => ({
-          formId: form.id,
-        }),
-        (error) => this.handlerError(error),
-      );
+    return this.resolve(
+      this.createForm
+        .execute({
+          actor,
+          ...dto,
+        })
+        .map((form) => ({ formId: form.id })),
+    );
   }
 
-  async convertToDraft(
+  convertToDraft(
     actor: AuthenticatedUser,
     formId: string,
     dto: ConvertToDraftRequest,
   ): Promise<void> {
-    return this.convertToDraftForm
-      .execute({ actor, formId, reason: dto.reason ?? null })
-      .match(
-        () => {},
-        (error) => this.handlerError(error),
-      );
+    return this.resolve(
+      this.convertToDraftForm.execute({
+        actor,
+        formId,
+        reason: dto.reason ?? null,
+      }),
+    );
   }
 
-  async generate(
+  generate(
     actor: AuthenticatedUser,
     formId: string,
   ): Promise<GenerateDocumentResponse> {
-    return await this.generateDocument.execute({ actor, formId }).match(
-      (res) => res,
-      (error) => this.handlerError(error),
+    return this.resolve(this.generateDocument.execute({ actor, formId }));
+  }
+
+  get(actor: AuthenticatedUser, formId: string): Promise<GetFormResponse> {
+    return this.resolve(
+      this.getForm.execute({ actor, formId }).map(this.mapFormToResponse),
     );
   }
 
-  async get(
-    actor: AuthenticatedUser,
-    formId: string,
-  ): Promise<GetFormResponse> {
-    return this.getForm.execute({ actor, formId }).match(
-      (form) => this.mapFormToResponse(form),
-      (error) => this.handlerError(error),
-    );
-  }
-
-  async list(
+  list(
     actor: AuthenticatedUser,
     query: ListFormsRequest,
-  ): Promise<ListFormResponse[]> {
-    return this.listForms.execute({ actor, ...query }).match(
-      (forms) =>
-        forms.map((form) => ({
-          ...form,
-          start: form.start.toISOString(),
-          end: form.end.toISOString(),
-          createdAt: form.createdAt.toISOString(),
-        })),
-      (error) => this.handlerError(error),
+  ): Promise<ListFormsItem[]> {
+    return this.resolve(
+      this.listForms
+        .execute({ actor, ...query })
+        .map((forms) => forms.map(this.mapFormSummaryToResponse)),
     );
   }
 
-  async markReady(actor: AuthenticatedUser, formId: string): Promise<void> {
-    return this.markFormReady.execute({ actor, formId }).match(
-      () => {},
-      (error) => this.handlerError(error),
-    );
+  markReady(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.resolve(this.markFormReady.execute({ actor, formId }));
   }
 
-  async reject(
+  reject(
     actor: AuthenticatedUser,
     formId: string,
     dto: RejectFormRequest,
   ): Promise<void> {
-    return this.rejectForm
-      .execute({
+    return this.resolve(
+      this.rejectForm.execute({
         actor,
         formId,
         reason: dto.reason ?? null,
-      })
-      .match(
-        () => {},
-        (error) => this.handlerError(error),
-      );
-  }
-
-  async startReview(actor: AuthenticatedUser, formId: string): Promise<void> {
-    return this.startFormReview.execute({ actor, formId }).match(
-      () => {},
-      (error) => this.handlerError(error),
+      }),
     );
   }
 
-  async update(
+  startReview(actor: AuthenticatedUser, formId: string): Promise<void> {
+    return this.resolve(this.startFormReview.execute({ actor, formId }));
+  }
+
+  update(
     actor: AuthenticatedUser,
     formId: string,
     dto: UpdateFormRequest,
   ): Promise<GetFormResponse> {
-    return this.updateForm
-      .execute({
-        actor,
-        id: formId,
-        ...dto,
-      })
-      .match(
-        (form) => this.mapFormToResponse(form),
-        (error) => this.handlerError(error),
-      );
+    return this.resolve(
+      this.updateForm
+        .execute({
+          actor,
+          id: formId,
+          ...dto,
+        })
+        .map((form) => this.mapFormToResponse(form)),
+    );
+  }
+
+  private mapFormSummaryToResponse(form: FormSummary): ListFormsItem {
+    return {
+      ...form,
+      start: form.start.toISOString(),
+      end: form.end.toISOString(),
+      createdAt: form.createdAt.toISOString(),
+    };
   }
 
   private mapFormToResponse(form: FormType): GetFormResponse {
@@ -231,21 +206,26 @@ export class FormsService {
     };
   }
 
-  private handlerError(error: FormsError): never {
-    switch (error.kind) {
-      case 'InvalidStateTransition':
-        throw new BadRequestException(
-          `Invalid transition: ${error.from} -> ${error.to}`,
-        );
-      case 'Forbidden':
-        throw new ForbiddenException(error.reason);
-      case 'NotFound':
-        throw new NotFoundException(error.message);
-      case 'InvariantViolation':
-        throw new UnprocessableEntityException(error.message);
-      default:
-        this.logger.error(error);
-        throw new InternalServerErrorException();
-    }
+  private resolve<T>(result: ResultAsync<T, FormsError>): Promise<T> {
+    return result.match(
+      (value) => value,
+      (error) => {
+        switch (error.kind) {
+          case 'InvalidStateTransition':
+            throw new BadRequestException(
+              `Invalid transition: ${error.from} -> ${error.to}`,
+            );
+          case 'Forbidden':
+            throw new ForbiddenException(error.reason);
+          case 'NotFound':
+            throw new NotFoundException(error.message);
+          case 'InvariantViolation':
+            throw new UnprocessableEntityException(error.message);
+          default:
+            this.logger.error(error);
+            throw new InternalServerErrorException();
+        }
+      },
+    );
   }
 }

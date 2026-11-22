@@ -38,7 +38,7 @@ import { CreateFormResponse } from './dto/create-form.response';
 import { GenerateDocumentResponse } from './dto/generate-document.response';
 import { GetFormResponse } from './dto/get-form.response';
 import { ListFormsRequest } from './dto/list-forms.request';
-import { ListFormResponse } from './dto/list-forms.response';
+import { ListFormsItem } from './dto/list-forms.response';
 import { RejectFormRequest } from './dto/reject-form.request';
 import { UpdateFormRequest } from './dto/update-form.request';
 import { FormsService } from './forms.service';
@@ -80,12 +80,12 @@ export class FormsController {
   })
   @ApiOkResponse({
     description: 'Формы успешно найдены.',
-    type: [ListFormResponse],
+    type: [ListFormsItem],
   })
   async listForms(
     @Query() req: ListFormsRequest,
     @CurrentUser() user: AuthenticatedUser,
-  ): Promise<ListFormResponse[]> {
+  ): Promise<ListFormsItem[]> {
     return this.formService.list(user, req);
   }
 
