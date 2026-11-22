@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { okAsync, ResultAsync } from 'neverthrow';
+import { ResultAsync, okAsync } from 'neverthrow';
 import { Repository } from 'typeorm';
 
 import { AuthError } from '@/auth/domain/errors';

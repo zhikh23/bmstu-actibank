@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { err, ok, Result, ResultAsync } from 'neverthrow';
+import { Result, ResultAsync, err, ok } from 'neverthrow';
 
 import { FilesError } from '@/files/domain/errors';
 import { File } from '@/files/domain/file.entity';

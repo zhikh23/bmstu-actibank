@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { okAsync, ResultAsync } from 'neverthrow';
+import { ResultAsync, okAsync } from 'neverthrow';
 import { In, Repository } from 'typeorm';
 
 import { CatalogError } from '@/catalog/domain/errors';
@@ -16,7 +16,7 @@ export class RankRepository {
     private readonly repository: Repository<RankModel>,
   ) {}
 
-  getAll(ids: string[]): ResultAsync<Rank[], CatalogError> {
+  findByIds(ids: string[]): ResultAsync<Rank[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { id: In(ids) },
@@ -36,7 +36,7 @@ export class RankRepository {
     });
   }
 
-  getAllRanks(): ResultAsync<Rank[], CatalogError> {
+  getAll(): ResultAsync<Rank[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find(),
       (error): CatalogError =>

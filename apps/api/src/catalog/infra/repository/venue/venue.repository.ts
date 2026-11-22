@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ResultAsync, okAsync, errAsync } from 'neverthrow';
+import { ResultAsync, okAsync } from 'neverthrow';
 import { In, Repository } from 'typeorm';
 
 import { Building } from '@/catalog/domain/building.entity';
 import { CatalogError } from '@/catalog/domain/errors';
+import { Venue } from '@/catalog/domain/venue.entity';
 
 import { VenueWithBuilding } from './venue-with-building.read-model';
-import { VenueWithBuildingMapper } from './venue.mapper';
-import { BuildingModel } from './venue.model';
-import { VenueModel } from './venue.model';
+import { VenueMapper, VenueWithBuildingMapper } from './venue.mapper';
+import { BuildingModel, VenueModel } from './venue.model';
 
 @Injectable()
 export class VenueRepository {
@@ -32,26 +32,7 @@ export class VenueRepository {
     );
   }
 
-  getWithBuilding(id: string): ResultAsync<VenueWithBuilding, CatalogError> {
-    return ResultAsync.fromPromise(
-      this.repository.findOne({
-        where: { id },
-        relations: {
-          building: true,
-        },
-      }),
-      (error): CatalogError =>
-        CatalogError.repository(
-          error instanceof Error ? error.message : String(error),
-        ),
-    ).andThen((model) =>
-      model
-        ? okAsync(VenueWithBuildingMapper.toReadModel(model))
-        : errAsync(CatalogError.notFound(`venue with id "${id}" not found`)),
-    );
-  }
-
-  getAllWithBuildings(
+  findByIdsWithBuilding(
     ids: string[],
   ): ResultAsync<VenueWithBuilding[], CatalogError> {
     return ResultAsync.fromPromise(
@@ -79,18 +60,16 @@ export class VenueRepository {
     });
   }
 
-  getAllWithBuilding(
-    buildingId: string,
-  ): ResultAsync<VenueWithBuilding[], CatalogError> {
+  getBuildingVenues(buildingId: string): ResultAsync<Venue[], CatalogError> {
+    // TODO: Добавить проверку существования здания
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { building_id: buildingId },
-        relations: { building: true },
       }),
       (error): CatalogError =>
         CatalogError.repository(
           error instanceof Error ? error.message : String(error),
         ),
-    ).map((models) => models.map(VenueWithBuildingMapper.toReadModel));
+    ).map((models) => models.map(VenueMapper.toDomain));
   }
 }

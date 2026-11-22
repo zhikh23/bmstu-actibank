@@ -1,4 +1,4 @@
-import { err, Result } from 'neverthrow';
+import { Result, err } from 'neverthrow';
 
 import { FormsError } from '@/forms/domain/errors';
 import { FormDocumentEntity } from '@/forms/domain/form-document.entity';

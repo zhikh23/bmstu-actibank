@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ResultAsync } from 'neverthrow';
 
+import { VenueWithBuildingDto } from '@/catalog/external/dto/venue-with-building-dto';
 import { GetEventTypeHandler } from '@/catalog/use-cases/get-event-type/get-event-type.handler';
 import { GetFormatHandler } from '@/catalog/use-cases/get-format/get-format.handler';
 import { GetLevelHandler } from '@/catalog/use-cases/get-level/get-level.handler';
-import { GetOrganizationsHandler } from '@/catalog/use-cases/get-organizations/get-organizations.handler';
-import { GetRanksHandler } from '@/catalog/use-cases/get-ranks/get-ranks.handler';
-import { GetRolesHandler } from '@/catalog/use-cases/get-roles/get-roles.handler';
-import { GetThemesHandler } from '@/catalog/use-cases/get-themes/get-themes.handler';
-import { GetVenuesHandler } from '@/catalog/use-cases/get-venues/get-venues.handler';
+import { ResolveOrganizationsHandler } from '@/catalog/use-cases/resolve-organizations/resolve-organizations.handler';
+import { ResolveRanksHandler } from '@/catalog/use-cases/resolve-ranks/resolve-ranks.handler';
+import { ResolveRolesHandler } from '@/catalog/use-cases/resolve-roles/resolve-roles.handler';
+import { ResolveThemesHandler } from '@/catalog/use-cases/resolve-themes/resolve-themes.handler';
+import { ResolveVenuesHandler } from '@/catalog/use-cases/resolve-venues/resolve-venues.handler';
 
 import {
   EventTypeDto,
@@ -18,7 +19,6 @@ import {
   RankDto,
   RoleDto,
   ThemeDto,
-  VenueDto,
 } from './dto';
 
 export type CatalogServiceError =
@@ -28,47 +28,49 @@ export type CatalogServiceError =
 @Injectable()
 export class CatalogService {
   constructor(
-    private readonly getEventTypeHandler: GetEventTypeHandler,
-    private readonly getFormatHandler: GetFormatHandler,
-    private readonly getLevelHandler: GetLevelHandler,
-    private readonly getOrganizationsHandler: GetOrganizationsHandler,
-    private readonly getRanksHandler: GetRanksHandler,
-    private readonly getRolesHandler: GetRolesHandler,
-    private readonly getThemesHandler: GetThemesHandler,
-    private readonly getVenuesHandler: GetVenuesHandler,
+    private readonly eventType: GetEventTypeHandler,
+    private readonly format: GetFormatHandler,
+    private readonly level: GetLevelHandler,
+    private readonly organizations: ResolveOrganizationsHandler,
+    private readonly ranks: ResolveRanksHandler,
+    private readonly roles: ResolveRolesHandler,
+    private readonly themes: ResolveThemesHandler,
+    private readonly venues: ResolveVenuesHandler,
   ) {}
 
   getEventType(id: string): ResultAsync<EventTypeDto, CatalogServiceError> {
-    return this.getEventTypeHandler.execute({ id });
+    return this.eventType.execute({ id });
   }
 
   getFormat(id: string): ResultAsync<FormatDto, CatalogServiceError> {
-    return this.getFormatHandler.execute({ id });
+    return this.format.execute({ id });
   }
 
   getLevel(id: string): ResultAsync<LevelDto, CatalogServiceError> {
-    return this.getLevelHandler.execute({ id });
+    return this.level.execute({ id });
   }
 
   getOrganizations(
     ids: string[],
   ): ResultAsync<OrganizationWithCategoryDto[], CatalogServiceError> {
-    return this.getOrganizationsHandler.execute({ ids });
+    return this.organizations.execute({ ids });
   }
 
   getRanks(ids: string[]): ResultAsync<RankDto[], CatalogServiceError> {
-    return this.getRanksHandler.execute({ ids });
+    return this.ranks.execute({ ids });
   }
 
   getRoles(ids: string[]): ResultAsync<RoleDto[], CatalogServiceError> {
-    return this.getRolesHandler.execute({ ids });
+    return this.roles.execute({ ids });
   }
 
   getThemes(ids: string[]): ResultAsync<ThemeDto[], CatalogServiceError> {
-    return this.getThemesHandler.execute({ ids });
+    return this.themes.execute({ ids });
   }
 
-  getVenues(ids: string[]): ResultAsync<VenueDto[], CatalogServiceError> {
-    return this.getVenuesHandler.execute({ ids });
+  getVenues(
+    ids: string[],
+  ): ResultAsync<VenueWithBuildingDto[], CatalogServiceError> {
+    return this.venues.execute({ ids });
   }
 }

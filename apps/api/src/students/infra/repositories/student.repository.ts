@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { errAsync, okAsync, ResultAsync } from 'neverthrow';
+import { ResultAsync, errAsync, okAsync } from 'neverthrow';
 import { Repository } from 'typeorm';
 
 import { StudentsError } from '@/students/domain/errors';

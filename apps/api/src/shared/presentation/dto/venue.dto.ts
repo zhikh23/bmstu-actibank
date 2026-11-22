@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, Length } from 'class-validator';
 
-import { BuildingDto } from './building.dto';
-
 export class VenueDto {
   @ApiProperty({
     description: 'Идентификатор места проведения',
@@ -18,10 +16,4 @@ export class VenueDto {
   @IsString()
   @Length(1, 64)
   declare name: string;
-
-  @ApiProperty({
-    description: 'Здание, в котором находится место проведения',
-    type: BuildingDto,
-  })
-  declare building: BuildingDto;
 }

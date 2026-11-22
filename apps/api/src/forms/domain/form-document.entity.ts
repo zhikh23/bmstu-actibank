@@ -1,4 +1,4 @@
-import { err, ok, Result } from 'neverthrow';
+import { Result, err, ok } from 'neverthrow';
 
 import { FormsError } from './errors';
 

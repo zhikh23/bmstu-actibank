@@ -6,7 +6,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { errAsync, okAsync, ResultAsync } from 'neverthrow';
+import { ResultAsync, errAsync, okAsync } from 'neverthrow';
 import { Readable } from 'stream';
 
 import {

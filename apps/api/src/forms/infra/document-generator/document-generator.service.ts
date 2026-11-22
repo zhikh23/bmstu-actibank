@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Docxtemplater from 'docxtemplater';
-import { okAsync, ResultAsync } from 'neverthrow';
+import { ResultAsync, okAsync } from 'neverthrow';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import PizZip from 'pizzip';

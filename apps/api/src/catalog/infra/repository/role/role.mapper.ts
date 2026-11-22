@@ -5,7 +5,7 @@ import { RoleModel } from './role.model';
 
 export class RoleMapper {
   static toDomain(m: RoleModel): Role {
-    return new Role(m.id, m.name);
+    return new Role(m.id, m.category_id, m.name);
   }
 }
 

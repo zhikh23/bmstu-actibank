@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { okAsync, ResultAsync } from 'neverthrow';
+import { ResultAsync, okAsync } from 'neverthrow';
 import { In, Repository } from 'typeorm';
 
 import { CatalogError } from '@/catalog/domain/errors';
@@ -16,7 +16,7 @@ export class ThemeRepository {
     private readonly repository: Repository<ThemeModel>,
   ) {}
 
-  getAll(ids: string[]): ResultAsync<Theme[], CatalogError> {
+  findByIds(ids: string[]): ResultAsync<Theme[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find({
         where: { id: In(ids) },
@@ -36,7 +36,7 @@ export class ThemeRepository {
     });
   }
 
-  getAllThemes(): ResultAsync<Theme[], CatalogError> {
+  getAll(): ResultAsync<Theme[], CatalogError> {
     return ResultAsync.fromPromise(
       this.repository.find(),
       (error): CatalogError =>

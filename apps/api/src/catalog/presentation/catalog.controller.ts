@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  InternalServerErrorException,
-  NotFoundException,
-  Param,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -13,28 +7,46 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { ResultAsync } from 'neverthrow';
 
-import { CatalogError } from '@/catalog/domain/errors';
 import { BuildingDto } from '@/shared/presentation/dto/building.dto';
 import { EventTypeDto } from '@/shared/presentation/dto/event-type.dto';
 import { FormatDto } from '@/shared/presentation/dto/format.dto';
 import { LevelDto } from '@/shared/presentation/dto/level.dto';
-import { OrganizationCategoryDto } from '@/shared/presentation/dto/organization-category.dto';
+import { OrganizationWithCategoryDto } from '@/shared/presentation/dto/organization-with-category.dto';
 import { OrganizationDto } from '@/shared/presentation/dto/organization.dto';
 import { RankDto } from '@/shared/presentation/dto/rank.dto';
 import { RoleCategoryDto } from '@/shared/presentation/dto/role-category.dto';
 import { RoleWithCategoryDto } from '@/shared/presentation/dto/role-with-category.dto';
+import { RoleDto } from '@/shared/presentation/dto/role.dto';
 import { ThemeDto } from '@/shared/presentation/dto/theme.dto';
 import { VenueDto } from '@/shared/presentation/dto/venue.dto';
 
-import { CatalogService } from './catalog.service';
+import { ResolveOrganizationsRequest } from './dto/resolve-organizations.request';
+import { ResolveRolesRequest } from './dto/resolve-roles.request';
+import { ResolveVenuesRequest } from './dto/resolve-venues.request';
+import { EventTypesService } from './event-types.service';
+import { FormatsService } from './formats.service';
+import { LevelsService } from './levels.service';
+import { OrganizationsService } from './organizations.service';
+import { RanksService } from './ranks.service';
+import { RolesService } from './roles.service';
+import { ThemesService } from './themes.service';
+import { VenuesService } from './venues.service';
 
 @ApiTags('Catalog')
 @Controller('catalog')
 @ApiInternalServerErrorResponse({ description: 'Ошибка чтения каталога.' })
 export class CatalogController {
-  constructor(private readonly catalogService: CatalogService) {}
+  constructor(
+    private readonly eventTypes: EventTypesService,
+    private readonly formats: FormatsService,
+    private readonly levels: LevelsService,
+    private readonly organizations: OrganizationsService,
+    private readonly ranks: RanksService,
+    private readonly roles: RolesService,
+    private readonly themes: ThemesService,
+    private readonly venues: VenuesService,
+  ) {}
 
   @Get('buildings')
   @ApiOperation({
@@ -46,176 +58,7 @@ export class CatalogController {
     type: [BuildingDto],
   })
   getBuildings(): Promise<BuildingDto[]> {
-    return this.resolve(this.catalogService.getBuildings());
-  }
-
-  @Get('event-types')
-  @ApiOperation({
-    summary: 'Получить все типы мероприятия',
-    description: 'Возвращает все доступные типы мероприятия.',
-  })
-  @ApiOkResponse({
-    description: 'Типы мероприятия успешно получены.',
-    type: [EventTypeDto],
-  })
-  getEventTypes(): Promise<EventTypeDto[]> {
-    return this.resolve(this.catalogService.getEventTypes());
-  }
-
-  @Get('formats')
-  @ApiOperation({
-    summary: 'Получить все форматы',
-    description: 'Возвращает все доступные форматы проведения мероприятия.',
-  })
-  @ApiOkResponse({
-    description: 'Форматы успешно получены.',
-    type: [FormatDto],
-  })
-  getFormats(): Promise<FormatDto[]> {
-    return this.resolve(this.catalogService.getFormats());
-  }
-
-  @Get('levels')
-  @ApiOperation({
-    summary: 'Получить все уровни',
-    description: 'Возвращает все доступные уровни мероприятия.',
-  })
-  @ApiOkResponse({ description: 'Уровни успешно получены.', type: [LevelDto] })
-  getLevels(): Promise<LevelDto[]> {
-    return this.resolve(this.catalogService.getLevels());
-  }
-
-  @Get('organizations')
-  @ApiOperation({
-    summary: 'Получить все организации',
-    description: 'Возвращает все доступные уровни организации.',
-  })
-  @ApiOkResponse({
-    description: 'Организации успешно получены.',
-    type: [OrganizationDto],
-  })
-  getOrganizations(): Promise<OrganizationDto[]> {
-    return this.resolve(this.catalogService.getOrganizations());
-  }
-
-  @Get('organization-categories')
-  @ApiOperation({
-    summary: 'Получить корневые категории организаций',
-    description: 'Возвращает категории организаций верхнего уровня.',
-  })
-  @ApiOkResponse({
-    description: 'Корневые категории успешно получены.',
-    type: [OrganizationCategoryDto],
-  })
-  getOrganizationCategories(): Promise<OrganizationCategoryDto[]> {
-    return this.resolve(this.catalogService.getOrganizationCategories());
-  }
-
-  @Get('organization-categories/:categoryId/children')
-  @ApiOperation({
-    summary: 'Получить дочерние категории организаций',
-    description: 'Возвращает дочерние категории заданной категории.',
-  })
-  @ApiParam({
-    name: 'categoryId',
-    type: String,
-    description: 'Идентификатор родительской категории.',
-    example: '00000000-0000-0000-0000-000000000000',
-  })
-  @ApiOkResponse({
-    description: 'Дочерние категории успешно получены.',
-    type: [OrganizationCategoryDto],
-  })
-  @ApiNotFoundResponse({ description: 'Категория организации не найдена.' })
-  getOrganizationChildCategories(
-    @Param('categoryId') categoryId: string,
-  ): Promise<OrganizationCategoryDto[]> {
-    return this.resolve(
-      this.catalogService.getOrganizationChildCategories(categoryId),
-    );
-  }
-
-  @Get('organization-categories/:categoryId/organizations')
-  @ApiOperation({
-    summary: 'Получить организации категории',
-    description:
-      'Возвращает все организации, относящиеся к заданной категории.',
-  })
-  @ApiParam({
-    name: 'categoryId',
-    type: String,
-    description: 'Идентификатор категории организации.',
-    example: '00000000-0000-0000-0000-000000000000',
-  })
-  @ApiOkResponse({
-    description: 'Организации категории успешно получены.',
-    type: [OrganizationDto],
-  })
-  @ApiNotFoundResponse({ description: 'Категория организации не найдена.' })
-  getOrganizationsByCategory(
-    @Param('categoryId') categoryId: string,
-  ): Promise<OrganizationDto[]> {
-    return this.resolve(
-      this.catalogService.getOrganizationsByCategory(categoryId),
-    );
-  }
-
-  @Get('ranks')
-  @ApiOperation({
-    summary: 'Получить все ранги гостей',
-    description: 'Возвращает все доступные ранги гостей мероприятия.',
-  })
-  @ApiOkResponse({
-    description: 'Ранги гостей успешно получены.',
-    type: [RankDto],
-  })
-  getRanks(): Promise<RankDto[]> {
-    return this.resolve(this.catalogService.getRanks());
-  }
-
-  @Get('role-categories')
-  @ApiOperation({
-    summary: 'Получить все категории ролей',
-    description: 'Возвращает все доступные категории ролей участников.',
-  })
-  @ApiOkResponse({
-    description: 'Категории ролей успешно получены.',
-    type: [RoleCategoryDto],
-  })
-  getRoleCategories(): Promise<RoleCategoryDto[]> {
-    return this.resolve(this.catalogService.getRoleCategories());
-  }
-
-  @Get('role-categories/:categoryId/roles')
-  @ApiOperation({
-    summary: 'Получить роли категории',
-    description: 'Возвращает все роли, относящиеся к заданной категории.',
-  })
-  @ApiParam({
-    name: 'categoryId',
-    type: String,
-    description: 'Идентификатор категории роли.',
-    example: '00000000-0000-0000-0000-000000000000',
-  })
-  @ApiOkResponse({
-    description: 'Роли категории успешно получены.',
-    type: [RoleWithCategoryDto],
-  })
-  @ApiNotFoundResponse({ description: 'Категория роли не найдена.' })
-  getRolesByCategory(
-    @Param('categoryId') categoryId: string,
-  ): Promise<RoleWithCategoryDto[]> {
-    return this.resolve(this.catalogService.getRolesByCategory(categoryId));
-  }
-
-  @Get('themes')
-  @ApiOperation({
-    summary: 'Получить все темы',
-    description: 'Возвращает все доступные темы мероприятий.',
-  })
-  @ApiOkResponse({ description: 'Темы успешно получены.', type: [ThemeDto] })
-  getThemes(): Promise<ThemeDto[]> {
-    return this.resolve(this.catalogService.getThemes());
+    return this.venues.getAllBuildings();
   }
 
   @Get('buildings/:buildingId/venues')
@@ -234,20 +77,159 @@ export class CatalogController {
     type: [VenueDto],
   })
   @ApiNotFoundResponse({ description: 'Здание не найдено.' })
-  getVenuesByBuilding(
+  getVenuesByBuildingId(
     @Param('buildingId') buildingId: string,
   ): Promise<VenueDto[]> {
-    return this.resolve(this.catalogService.getVenuesByBuilding(buildingId));
+    return this.venues.getBuildingVenues(buildingId);
   }
 
-  private resolve<T>(result: ResultAsync<T, CatalogError>): Promise<T> {
-    return result.match(
-      (value) => value,
-      (error) => {
-        if (error.kind === 'NotFound')
-          throw new NotFoundException(error.message);
-        throw new InternalServerErrorException(error.message);
-      },
-    );
+  @Post('venues/resolve')
+  @ApiOperation({
+    summary: 'Разрешить места проведения',
+    description: 'Возвращает список мест проведения по их идентификаторам.',
+  })
+  @ApiOkResponse({
+    description: 'Места проведения успешно разрешены.',
+    type: [VenueDto],
+  })
+  resolveVenues(@Body() dto: ResolveVenuesRequest): Promise<VenueDto[]> {
+    return this.venues.resolveVenues(dto.ids);
+  }
+
+  @Get('event-types')
+  @ApiOperation({
+    summary: 'Получить все типы мероприятия',
+    description: 'Возвращает все доступные типы мероприятия.',
+  })
+  @ApiOkResponse({
+    description: 'Типы мероприятия успешно получены.',
+    type: [EventTypeDto],
+  })
+  getEventTypes(): Promise<EventTypeDto[]> {
+    return this.eventTypes.getAllEventTypes();
+  }
+
+  @Get('formats')
+  @ApiOperation({
+    summary: 'Получить все форматы',
+    description: 'Возвращает все доступные форматы проведения мероприятия.',
+  })
+  @ApiOkResponse({
+    description: 'Форматы успешно получены.',
+    type: [FormatDto],
+  })
+  getFormats(): Promise<FormatDto[]> {
+    return this.formats.getAllFormats();
+  }
+
+  @Get('levels')
+  @ApiOperation({
+    summary: 'Получить все уровни',
+    description: 'Возвращает все доступные уровни мероприятия.',
+  })
+  @ApiOkResponse({ description: 'Уровни успешно получены.', type: [LevelDto] })
+  getLevels(): Promise<LevelDto[]> {
+    return this.levels.getAllLevels();
+  }
+
+  @Get('organizations')
+  @ApiOperation({
+    summary: 'Получить все организации',
+    description: 'Возвращает все доступные уровни организации.',
+  })
+  @ApiOkResponse({
+    description: 'Организации успешно получены.',
+    type: [OrganizationDto],
+  })
+  getOrganizations(): Promise<OrganizationDto[]> {
+    return this.organizations.getAllOrganizations();
+  }
+
+  @Get('organizations/resolve')
+  @ApiOperation({
+    summary: 'Разрешить организации',
+    description: 'Возвращает список организаций по их идентификаторам.',
+  })
+  @ApiOkResponse({
+    description: 'Организации успешно разрешены.',
+    type: [OrganizationWithCategoryDto],
+  })
+  resolveOrganizations(
+    @Body() dto: ResolveOrganizationsRequest,
+  ): Promise<OrganizationWithCategoryDto[]> {
+    return this.organizations.resolveOrganizations(dto.ids);
+  }
+
+  @Get('ranks')
+  @ApiOperation({
+    summary: 'Получить все ранги гостей',
+    description: 'Возвращает все доступные ранги гостей мероприятия.',
+  })
+  @ApiOkResponse({
+    description: 'Ранги гостей успешно получены.',
+    type: [RankDto],
+  })
+  getRanks(): Promise<RankDto[]> {
+    return this.ranks.getAllRanks();
+  }
+
+  @Get('role-categories')
+  @ApiOperation({
+    summary: 'Получить все категории ролей',
+    description: 'Возвращает все доступные категории ролей участников.',
+  })
+  @ApiOkResponse({
+    description: 'Категории ролей успешно получены.',
+    type: [RoleCategoryDto],
+  })
+  getRoleCategories(): Promise<RoleCategoryDto[]> {
+    return this.roles.getAllRoleCategories();
+  }
+
+  @Get('role-categories/:categoryId/roles')
+  @ApiOperation({
+    summary: 'Получить роли категории',
+    description: 'Возвращает все роли, относящиеся к заданной категории.',
+  })
+  @ApiParam({
+    name: 'categoryId',
+    type: String,
+    description: 'Идентификатор категории роли.',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @ApiOkResponse({
+    description: 'Роли категории успешно получены.',
+    type: [RoleDto],
+  })
+  @ApiNotFoundResponse({ description: 'Категория роли не найдена.' })
+  getCategoryRoles(
+    @Param('categoryId') categoryId: string,
+  ): Promise<RoleDto[]> {
+    return this.roles.getCategoryRoles(categoryId);
+  }
+
+  @Get('roles/resolve')
+  @ApiOperation({
+    summary: 'Разрешить роли',
+    description: 'Возвращает список ролей по их идентификаторам.',
+  })
+  @ApiOkResponse({
+    description: 'Роли успешно разрешены.',
+    type: [RoleWithCategoryDto],
+  })
+  resolveRoles(
+    @Body() dto: ResolveRolesRequest,
+  ): Promise<RoleWithCategoryDto[]> {
+    return this.roles.resolveRoles(dto.ids);
+  }
+
+  @Get('themes')
+  @ApiOperation({
+    summary: 'Получить все темы',
+    description: 'Возвращает все доступные темы мероприятий.',
+  })
+  @ApiOkResponse({ description: 'Темы успешно получены.', type: [ThemeDto] })
+  getThemes(): Promise<ThemeDto[]> {
+    return this.themes.getAllThemes();
   }
 }

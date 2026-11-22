@@ -10,6 +10,13 @@ export class RoleDto {
   declare id: string;
 
   @ApiProperty({
+    description: 'Идентификатор категории роли',
+    example: '00000000-0000-0000-0000-000000000000',
+  })
+  @IsUUID('loose')
+  declare categoryId: string;
+
+  @ApiProperty({
     description: 'Название роли',
     example: 'главный организатор',
   })
