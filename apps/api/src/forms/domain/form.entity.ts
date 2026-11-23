@@ -2,9 +2,9 @@ import { err, ok, Result } from 'neverthrow';
 
 import { FormsError } from './errors';
 import { FormDocumentEntity } from './form-document.entity';
-import { Guest } from './guest.entity';
-import { Member } from './member.entity';
-import { Participants } from './participants.entity';
+import { Guest } from '@/shared/domain/guest.entity';
+import { Member } from '@/shared/domain/member.entity';
+import { Participants } from '@/shared/domain/participants.entity';
 import { FormStatus } from './status.enum';
 import Instant = Temporal.Instant;
 import Now = Temporal.Now;

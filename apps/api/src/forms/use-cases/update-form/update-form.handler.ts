@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ResultAsync, okAsync } from 'neverthrow';
+import { okAsync, ResultAsync } from 'neverthrow';
 
 import { CatalogService } from '@/catalog/external/catalog.service';
 import { FormsError } from '@/forms/domain/errors';
 import { AccessDecision, FormAccess } from '@/forms/domain/form-access.policy';
 import { FormUpdate } from '@/forms/domain/form.entity';
-import { Guest } from '@/forms/domain/guest.entity';
-import { Member } from '@/forms/domain/member.entity';
-import { Participants } from '@/forms/domain/participants.entity';
+import { Guest } from '@/shared/domain/guest.entity';
+import { Member } from '@/shared/domain/member.entity';
+import { Participants } from '@/shared/domain/participants.entity';
 import { FormRepository } from '@/forms/infra/repository/form.repository';
 import { FormType } from '@/forms/use-cases/get-form/get-form.data';
 import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';

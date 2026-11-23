@@ -1,11 +1,11 @@
-import { Result, err } from 'neverthrow';
+import { err, Result } from 'neverthrow';
 
 import { FormsError } from '@/forms/domain/errors';
 import { FormDocumentEntity } from '@/forms/domain/form-document.entity';
 import { FormEntity } from '@/forms/domain/form.entity';
-import { Guest } from '@/forms/domain/guest.entity';
-import { Member } from '@/forms/domain/member.entity';
-import { Participants } from '@/forms/domain/participants.entity';
+import { Guest } from '@/shared/domain/guest.entity';
+import { Member } from '@/shared/domain/member.entity';
+import { Participants } from '@/shared/domain/participants.entity';
 import {
   dateToInstant,
   dateToPlainDateTime,

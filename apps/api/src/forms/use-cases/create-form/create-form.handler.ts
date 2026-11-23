@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Result, ResultAsync, err, ok } from 'neverthrow';
+import { err, ok, Result, ResultAsync } from 'neverthrow';
 
 import { FormsError } from '@/forms/domain/errors';
 import { FormEntity } from '@/forms/domain/form.entity';
-import { Guest } from '@/forms/domain/guest.entity';
-import { Member } from '@/forms/domain/member.entity';
-import { Participants } from '@/forms/domain/participants.entity';
+import { Guest } from '@/shared/domain/guest.entity';
+import { Member } from '@/shared/domain/member.entity';
+import { Participants } from '@/shared/domain/participants.entity';
 import { FormRepository } from '@/forms/infra/repository/form.repository';
 import {
   AuthenticatedUser,

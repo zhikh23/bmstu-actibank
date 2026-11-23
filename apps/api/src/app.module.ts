@@ -10,6 +10,7 @@ import { CatalogModule } from '@/catalog/catalog.module';
 import { FilesModule } from '@/files/files.module';
 import { FormsModule } from '@/forms/forms.module';
 import { StudentsModule } from '@/students/students.module';
+import { EventsModule } from '@/events/events.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { StudentsModule } from '@/students/students.module';
     FilesModule,
     FormsModule,
     StudentsModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
