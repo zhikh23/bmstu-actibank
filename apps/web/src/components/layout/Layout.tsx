@@ -8,6 +8,7 @@ import { stores } from '@/stores';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import styles from './layout.module.css';
+import { UserRole } from '@/types/user';
 
 export const Layout = observer(function Layout() {
   const { auth } = stores;
@@ -23,12 +24,18 @@ export const Layout = observer(function Layout() {
     }
   }, [auth.status]);
 
+  const hasRole = (role: UserRole): boolean => {
+    return auth.me?.roles.includes(role) ?? false;
+  }
+
   return (
     <div className={styles.page}>
       <Navbar />
       <div className={styles.body}>
         <Sidebar
           open={menuOpen}
+          isApplicant={hasRole('applicant')}
+          isModerator={hasRole('moderator')}
           onToggle={() => setMenuOpen((open) => !open)}
         />
         <main className={styles.main}>

@@ -33,12 +33,16 @@ import { RoleWithCategory } from '@/types/role-with-category';
 import { Student, StudentSummary } from '@/types/student';
 import { Me } from '@/types/user';
 import { VenueWithBuilding } from '@/types/venue-with-building';
+import { EventsApi, ListEventsQuery } from '@/api/EventsApi';
+import { EventsList } from '@/types/events-list';
+import { eventsListItemToDomain } from '@/adapters/events.adapter';
 
 const authApi = new AuthApi();
 const formsApi = new FormsApi();
 const catalogApi = new CatalogApi();
 const studentsApi = new StudentsApi();
 const filesApi = new FilesApi();
+const eventsApi = new EventsApi();
 
 export const httpApi = {
   async getMe(): Promise<Me> {
@@ -176,4 +180,9 @@ export const httpApi = {
     const roles = await catalogApi.resolveRoles(ids);
     return roles.map(roleWithCategoryToDomain);
   },
+
+  async listEvents(query: ListEventsQuery): Promise<EventsList> {
+    const events = await eventsApi.listEvents(query);
+    return events.map(eventsListItemToDomain);
+  }
 };

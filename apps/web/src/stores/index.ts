@@ -11,6 +11,7 @@ import { StudentStore } from './student.store';
 import { StudentsStore } from './students.store';
 import { ThemesStore } from './themes.store';
 import { VenueCatalogStore } from './venue-catalog.store';
+import { EventsStore } from '@/stores/events.store';
 
 export interface Stores {
   auth: AuthStore;
@@ -24,6 +25,7 @@ export interface Stores {
   venues: VenueCatalogStore;
   selectedVenues: SelectedVenuesStore;
   selectedRoles: SelectedRolesStore;
+  events: EventsStore;
 }
 
 const api = httpApi;
@@ -41,6 +43,7 @@ export function createStores(): Stores {
     venues: new VenueCatalogStore(api),
     selectedVenues: new SelectedVenuesStore(api),
     selectedRoles: new SelectedRolesStore(api),
+    events: new EventsStore(api),
   };
 }
 

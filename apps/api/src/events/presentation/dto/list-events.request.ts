@@ -1,4 +1,4 @@
-import { IsArray, IsDate, IsEnum, IsOptional } from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
 import {
   ListEventsSortBy,
   ListEventsSortOrder,
@@ -26,11 +26,18 @@ export class ListEventsRequest {
   declare search?: string;
 
   @IsOptional()
-  @Transform(({ value }) => {
-    if (value === undefined) return undefined;
-    return Array.isArray(value) ? value : [value];
-  })
   @IsArray()
+  @Transform(({ value }) =>
+    value === undefined
+      ? undefined
+      : Array.isArray(value)
+        ? value
+        : String(value)
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean),
+  )
+  @IsString({ each: true })
   declare organizerIds?: string[];
 
   @IsOptional()
