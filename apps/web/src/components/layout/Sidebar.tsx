@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Button } from 'primereact/button';
 
@@ -6,6 +6,8 @@ import styles from './sidebar.module.css';
 
 interface SidebarProps {
   open: boolean;
+  isApplicant: boolean;
+  isModerator: boolean;
   onToggle: () => void;
 }
 
@@ -36,7 +38,12 @@ function MenuCategory({ title, children }: MenuCategoryProps) {
   );
 }
 
-export function Sidebar({ open, onToggle }: SidebarProps) {
+export function Sidebar({
+  open,
+  isApplicant,
+  isModerator,
+  onToggle,
+}: SidebarProps) {
   const linkClassName = ({ isActive }: { isActive: boolean }): string =>
     `${styles.menuLink} ${isActive ? styles.menuLinkActive : ''}`;
 
@@ -47,9 +54,11 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
     >
       <nav className={styles.navigation}>
         <MenuCategory title="Заявки">
-          <NavLink to="/forms/new" className={linkClassName}>
-            Подать заявку
-          </NavLink>
+          {isApplicant && (
+            <NavLink to="/forms/new" className={linkClassName}>
+              Подать заявку
+            </NavLink>
+          )}
           <NavLink to="/forms" end className={linkClassName}>
             Все заявки
           </NavLink>
@@ -61,11 +70,13 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
           </NavLink>
         </MenuCategory>
 
-        <MenuCategory title="Модератору">
-          <NavLink to="/catalog" className={linkClassName}>
-            Каталог
-          </NavLink>
-        </MenuCategory>
+        {isModerator && (
+          <MenuCategory title="Модератору">
+            <NavLink to="/catalog" className={linkClassName}>
+              Каталог
+            </NavLink>
+          </MenuCategory>
+        )}
       </nav>
 
       <Button
