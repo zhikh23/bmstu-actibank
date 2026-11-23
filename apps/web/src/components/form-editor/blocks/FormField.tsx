@@ -1,4 +1,4 @@
-import type { FieldBlock } from './form-config';
+import type { FieldBlock } from '../form-config';
 import { DateBlockField } from './DateBlockField';
 import { SelectBlockField, type SelectOption } from './SelectBlockField';
 import { TextBlockField } from './TextBlockField';

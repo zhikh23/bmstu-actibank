@@ -3,9 +3,9 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { stores } from '@/stores';
-import { FormDraft, defaultFormDraft } from '@/types/form-draft';
-import { FormEditor } from '@/pages/forms/ui/FormEditor';
-import styles from '@/pages/forms/new/NewFormPage.module.css';
+import { defaultFormDraft, FormDraft } from '@/types/form-draft';
+import { FormEditor } from '@/components/form-editor/FormEditor';
+import styles from './EditFormPage.module.css';
 
 export const EditFormPage = observer(function EditFormPage() {
   const { id } = useParams();

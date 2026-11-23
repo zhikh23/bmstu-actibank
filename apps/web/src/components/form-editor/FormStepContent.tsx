@@ -1,6 +1,6 @@
 import type { FormBlock } from './form-config';
-import { FormField } from './FormField';
-import type { SelectOption } from './SelectBlockField';
+import { FormField } from './blocks/FormField';
+import type { SelectOption } from './blocks/SelectBlockField';
 import styles from './FormStepContent.module.css';
 import { FormDraft } from '@/types/form-draft';
 

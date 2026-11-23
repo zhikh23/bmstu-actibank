@@ -1,4 +1,4 @@
-import { FormsTable } from '@/pages/forms/ui/FormsTable';
+import { FormsTable } from '@/components/forms-table/FormsTable';
 import { stores } from '@/stores';
 import styles from './FormsPage.module.css';
 import { observer } from 'mobx-react-lite';

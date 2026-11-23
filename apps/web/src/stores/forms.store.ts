@@ -116,6 +116,7 @@ export class FormsStore {
   }
 
   async generateDocument(id: string): Promise<string | null> {
+    this.actionLoading = true;
     this.actionError = null;
     try {
       return await this.api.generateFormDocument(id);
@@ -126,6 +127,10 @@ export class FormsStore {
       });
       console.error('FormsStore: generate document failed', cause);
       return null;
+    } finally {
+      runInAction(() => {
+        this.actionLoading = false;
+      });
     }
   }
 

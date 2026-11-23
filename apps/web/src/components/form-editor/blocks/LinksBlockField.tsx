@@ -1,6 +1,6 @@
 import { Chips } from 'primereact/chips';
 
-import type { LinksBlock } from './form-config';
+import type { LinksBlock } from '../form-config';
 import type { FormDraft } from '@/types/form-draft';
 import styles from './FormField.module.css';
 

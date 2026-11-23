@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 
 import type { FormDraft } from '@/types/form-draft';
-import type { TeamBlock } from './form-config';
+import type { TeamBlock } from '../form-config';
 import styles from './TeamBlockField.module.css';
 import { stores } from '@/stores';
 import { TeamMember } from '@/types/team-member';

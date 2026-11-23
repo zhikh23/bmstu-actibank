@@ -1,7 +1,7 @@
 import { InputTextarea } from 'primereact/inputtextarea';
 import { InputText } from 'primereact/inputtext';
 
-import type { TextBlock } from './form-config';
+import type { TextBlock } from '../form-config';
 import type { FormDraft } from '@/types/form-draft';
 import styles from './FormField.module.css';
 

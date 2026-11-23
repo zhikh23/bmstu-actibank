@@ -3,8 +3,8 @@ import { observer } from 'mobx-react-lite';
 
 import { stores } from '@/stores';
 import { defaultFormDraft } from '@/types/form-draft';
-import { FormEditor } from '@/pages/forms/ui/FormEditor';
 import styles from './NewFormPage.module.css';
+import { FormEditor } from '@/components/form-editor/FormEditor';
 
 export const NewFormPage = observer(function NewFormPage() {
   const navigate = useNavigate();

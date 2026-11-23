@@ -1,6 +1,6 @@
 import { Calendar } from 'primereact/calendar';
 
-import type { DateBlock } from './form-config';
+import type { DateBlock } from '../form-config';
 import type { FormDraft } from '@/types/form-draft';
 import styles from './FormField.module.css';
 

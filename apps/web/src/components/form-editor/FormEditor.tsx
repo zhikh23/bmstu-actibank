@@ -4,12 +4,12 @@ import { Message } from 'primereact/message';
 
 import { stores } from '@/stores';
 import { FormDraft } from '@/types/form-draft';
-import { FormActions } from '@/pages/forms/new/FormActions';
-import { FormStepContent } from '@/pages/forms/new/FormStepContent';
-import { FormStepNavigation } from '@/pages/forms/new/FormStepNavigation';
-import { formSteps } from '@/pages/forms/new/form-config';
-import type { SelectOption } from '@/pages/forms/new/SelectBlockField';
-import styles from '@/pages/forms/new/NewFormPage.module.css';
+import { EditorActions } from '@/components/form-editor/EditorActions';
+import { FormStepContent } from '@/components/form-editor/FormStepContent';
+import { FormStepNavigation } from '@/components/form-editor/FormStepNavigation';
+import { formSteps } from '@/components/form-editor/form-config';
+import type { SelectOption } from '@/components/form-editor/blocks/SelectBlockField';
+import styles from './FormEditor.module.css';
 
 interface FormEditorProps {
   initialDraft: FormDraft;
@@ -175,7 +175,7 @@ export const FormEditor = observer(function FormEditor({
           }}
         />
       </div>
-      <FormActions
+      <EditorActions
         isFirstStep={activeStep === 0}
         isLastStep={activeStep === formSteps.length - 1}
         submitting={forms.submitting}

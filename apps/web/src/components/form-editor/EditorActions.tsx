@@ -1,6 +1,6 @@
 import { Button } from 'primereact/button';
 
-import styles from './FormActions.module.css';
+import styles from './EditorActions.module.css';
 
 interface FormActionsProps {
   isFirstStep: boolean;
@@ -11,7 +11,7 @@ interface FormActionsProps {
   onNext: () => void;
 }
 
-export function FormActions({
+export function EditorActions({
   isFirstStep,
   isLastStep,
   submitting = false,

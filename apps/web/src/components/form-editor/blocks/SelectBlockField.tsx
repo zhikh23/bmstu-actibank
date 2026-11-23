@@ -1,6 +1,6 @@
 import { MultiSelect } from 'primereact/multiselect';
 
-import type { MultiSelectBlock } from './form-config';
+import type { MultiSelectBlock } from '../form-config';
 import type { FormDraft } from '@/types/form-draft';
 import styles from './FormField.module.css';
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 
-import type { VenuesBlock } from './form-config';
+import type { VenuesBlock } from '../form-config';
 import type { FormDraft } from '@/types/form-draft';
 import styles from './VenuesBlockField.module.css';
 import { observer } from 'mobx-react-lite';
