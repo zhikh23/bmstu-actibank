@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './EventsTable.module.css';
 import { formatDateTime } from '@/shared/lib/format-date';
 import { EventsListItem } from '@/types/events-list';
+import { Organization } from '@/types/catalog';
 
 export type EventsSortBy = 'name' | 'start' | 'createdAt';
 export type EventsSortOrder = 'asc' | 'desc';
@@ -51,6 +52,7 @@ function SortHeader({
 
 interface EventsTableProps {
   events: EventsListItem[];
+  organizations: Organization[];
   sortBy?: EventsSortBy;
   sortOrder?: EventsSortOrder;
   onSort?: (sortBy: EventsSortBy) => void;
@@ -59,6 +61,7 @@ interface EventsTableProps {
 
 export function EventsTable({
   events,
+  organizations,
   sortBy,
   sortOrder,
   onSort,
@@ -104,7 +107,28 @@ export function EventsTable({
               <td colSpan={6} className={styles.rowCell}>
                 <Link className={styles.rowLink} to={`/events/${event.id}`}>
                   <span className={styles.slug}>{event.slug}</span>
-                  <span className={styles.name}>{event.name}</span>
+                  <span className={styles.nameCell}>
+                    <span className={styles.name}>{event.name}</span>
+                    {event.organizers.length > 0 && (
+                      <span className={styles.organizers}>
+                        {event.organizers.map((organizerId) => {
+                          const organization = organizations.find(
+                            ({ id }) => id === organizerId,
+                          );
+
+                          return (
+                            <span
+                              className={styles.organizer}
+                              key={organizerId}
+                              title={organization?.name ?? organizerId}
+                            >
+                              {organization?.name ?? 'Организация не найдена'}
+                            </span>
+                          );
+                        })}
+                      </span>
+                    )}
+                  </span>
                   <span className={styles.eventDates}>
                     <span>{formatDateTime(event.start)}</span>
                     <span>{formatDateTime(event.end)}</span>
