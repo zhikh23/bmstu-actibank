@@ -90,10 +90,8 @@ export const EventsPage = observer(function EventsPage() {
       {items.length !== 0 && (
         <EventsTable
           events={events.items}
-          organizations={organizations.items}
           sortBy={events.sortBy}
           sortOrder={events.sortOrder}
-          onSort={(sortBy) => events.setSort(sortBy)}
         />
       )}
     </section>
