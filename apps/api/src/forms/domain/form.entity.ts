@@ -136,11 +136,13 @@ export class FormEntity {
 
     if (
       init.reason != null &&
-      ![FormStatus.Draft, FormStatus.Rejected].includes(init.status)
+      ![FormStatus.Draft, FormStatus.Rejected, FormStatus.Canceled].includes(
+        init.status,
+      )
     ) {
       return err(
         FormsError.invariant(
-          'reason may be non-null only if form is draft or rejected',
+          `reason may be non-null only if form status in [${FormStatus.Draft}, ${FormStatus.Rejected}, ${FormStatus.Canceled}]`,
         ),
       );
     }
@@ -176,10 +178,14 @@ export class FormEntity {
       );
     }
 
-    if (init.status != FormStatus.Draft && init.document?.hasScan() !== true) {
+    if (
+      init.status != FormStatus.Draft &&
+      init.status != FormStatus.Canceled &&
+      init.document?.hasScan() !== true
+    ) {
       return err(
         FormsError.invariant(
-          'form must have attached document with scan if status is not draft',
+          'form must have attached document with scan if status is not draft or canceled',
         ),
       );
     }

@@ -9,6 +9,14 @@ export const later = Temporal.Instant.from('2026-01-02T00:00:00Z');
 export const start = Temporal.PlainDateTime.from('2026-06-01T10:00:00');
 export const end = Temporal.PlainDateTime.from('2026-06-01T12:00:00');
 
+export const document = FormDocumentEntity.restore({
+  id: 'form-doc-1',
+  generatedId: 'gen-1',
+  createdAt: now,
+  scanId: 'scan-1',
+  uploadedAt: later,
+})._unsafeUnwrap();
+
 export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
   id: 'form-1',
   slug: '123ABC',
@@ -32,8 +40,8 @@ export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
   document: FormDocumentEntity.restore({
     id: 'form-doc-1',
     generatedId: 'gen-1',
-    scanId: 'scan-1',
     createdAt: now,
+    scanId: null,
     uploadedAt: null,
   })._unsafeUnwrap(),
   createdAt: now,
@@ -47,21 +55,26 @@ export const baseInit = (overrides: Partial<FormInit> = {}): FormInit => ({
 
 const STATUS_DEFAULTS: Record<FormStatus, Partial<FormInit>> = {
   [FormStatus.Draft]: {},
-  [FormStatus.Pending]: {},
+  [FormStatus.Pending]: {
+    document,
+  },
   [FormStatus.Canceled]: {
     canceledAt: later,
   },
   [FormStatus.Reviewing]: {
     reviewerId: 'mod-1',
+    document,
   },
   [FormStatus.Approved]: {
     reviewerId: 'mod-1',
     reviewedAt: later,
+    document,
   },
   [FormStatus.Rejected]: {
     reason: 'some reason',
     reviewerId: 'mod-1',
     reviewedAt: later,
+    document,
   },
 };
 
