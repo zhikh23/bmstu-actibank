@@ -180,6 +180,8 @@ export class FormsService {
       start: form.start.toISOString(),
       end: form.end.toISOString(),
       createdAt: form.createdAt.toISOString(),
+      updatedAt: form.updatedAt.toISOString(),
+      reviewedAt: form.reviewedAt ? form.reviewedAt.toISOString() : undefined,
     };
   }
 

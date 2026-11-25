@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Result, ResultAsync, errAsync, okAsync } from 'neverthrow';
+import { errAsync, okAsync, Result, ResultAsync } from 'neverthrow';
 import { Repository } from 'typeorm';
 
 import { FormsError } from '@/forms/domain/errors';
@@ -9,7 +9,8 @@ import { FormEntity } from '@/forms/domain/form.entity';
 import { FormMapper } from './form.mapper';
 import { FormModel } from './form.model';
 
-export type SortBy = 'createdAt' | 'start';
+export type SortBy =
+  'name' | 'start' | 'createdAt' | 'updatedAt' | 'reviewedAt';
 export type SortOrder = 'asc' | 'desc';
 
 export type GetAllFormsQuery = {
@@ -104,8 +105,11 @@ export class FormRepository {
 
   getAll(q: GetAllFormsQuery): ResultAsync<FormEntity[], FormsError> {
     const sortColumn: Record<SortBy, string> = {
-      createdAt: 'form.created_at',
+      name: 'form.name',
       start: 'form.start',
+      createdAt: 'form.created_at',
+      updatedAt: 'form.updated_at',
+      reviewedAt: 'form.reviewed_at',
     };
     const sortOrder: Record<SortOrder, 'ASC' | 'DESC'> = {
       asc: 'ASC',

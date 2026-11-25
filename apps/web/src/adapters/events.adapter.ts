@@ -16,7 +16,9 @@ export const eventsListItemSchema = z.object({
 
 export type EventsListItemContract = z.infer<typeof eventsListItemSchema>;
 
-export function eventsListItemToDomain(raw: EventsListItemContract): EventsListItem {
+export function eventsListItemToDomain(
+  raw: EventsListItemContract,
+): EventsListItem {
   return {
     ...raw,
     start: new Date(raw.start),

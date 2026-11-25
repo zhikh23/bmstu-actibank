@@ -67,8 +67,9 @@ export class FormsController {
   @ApiQuery({
     name: 'sortBy',
     required: false,
-    enum: ['createdAt', 'start'],
-    description: 'Поле сортировки: дата создания или время начала формы.',
+    enum: ['start', 'createdAt', 'updatedAt'],
+    description:
+      'Поле сортировки: дата создания, обновления или время начала формы.',
     example: 'createdAt',
   })
   @ApiQuery({

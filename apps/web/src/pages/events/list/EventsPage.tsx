@@ -11,7 +11,13 @@ export const EventsPage = observer(function EventsPage() {
 
   useEffect(() => {
     void events.load();
-  }, [events, events.search, events.sortBy, events.sortOrder, events.organizerIds]);
+  }, [
+    events,
+    events.search,
+    events.sortBy,
+    events.sortOrder,
+    events.organizerIds,
+  ]);
 
   useEffect(() => {
     void organizations.load();

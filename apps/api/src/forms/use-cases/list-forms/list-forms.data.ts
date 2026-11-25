@@ -1,7 +1,8 @@
 import { FormStatus } from '@/forms/domain/status.enum';
 import { AuthenticatedUser } from '@/shared/domain/authenticated-user.entity';
 
-export type ListFormsSortBy = 'createdAt' | 'start';
+export type ListFormsSortBy =
+  'name' | 'start' | 'createdAt' | 'updatedAt' | 'reviewedAt';
 export type ListFormsSortOrder = 'asc' | 'desc';
 
 export type ListFormsQuery = {
@@ -21,4 +22,6 @@ export type FormSummary = {
   status: FormStatus;
   submitterId: string;
   createdAt: Date;
+  updatedAt: Date;
+  reviewedAt?: Date;
 };

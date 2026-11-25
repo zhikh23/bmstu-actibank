@@ -8,6 +8,13 @@ import {
 
 import { httpClient } from './http';
 
+export interface ListFormsQuery {
+  sortBy?: 'start' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+  status?:
+    'draft' | 'pending' | 'approved' | 'reviewing' | 'cancelled' | 'rejected';
+}
+
 export class FormsApi {
   constructor(private http = httpClient) {}
 

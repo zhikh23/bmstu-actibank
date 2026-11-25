@@ -57,6 +57,20 @@ export class ListFormsItem {
     format: 'date-time',
   })
   declare createdAt: string;
+
+  @ApiProperty({
+    description: 'Дата и время последнего обновления формы',
+    example: '2026-01-01T17:00:00',
+    format: 'date-time',
+  })
+  declare updatedAt: string;
+
+  @ApiProperty({
+    description: 'Дата и время рассмотрения формы',
+    example: '2026-01-01T17:00:00',
+    format: 'date-time',
+  })
+  declare reviewedAt?: string;
 }
 
 export type ListFormsResponse = ListFormsItem[];

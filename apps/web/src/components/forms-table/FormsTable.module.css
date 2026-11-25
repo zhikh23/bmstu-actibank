@@ -1,83 +1,36 @@
-.tableContainer {
-  width: 100%;
-  overflow-x: auto;
+.table {
   border: 1px solid var(--color-gray-light);
   border-radius: 16px;
-  background: var(--color-white);
   box-shadow: 0 8px 24px rgba(28, 54, 84, 0.08);
-}
-
-.table {
-  --table-columns: 64px minmax(240px, 1fr) 220px 200px 180px 24px;
-  width: 100%;
-  min-width: 936px;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.table thead tr {
-  display: grid;
-  grid-template-columns: var(--table-columns);
-  gap: 16px;
-  padding: 0 24px;
-  background: var(--color-gray-light);
+  font-size: 13px;
 }
 
 .table th {
-  padding: 20px 0;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 700;
+  background-color: var(--color-gray-light);
   white-space: nowrap;
 }
 
-.table td {
-  padding: 0;
-  border-top: 1px solid var(--color-gray-light);
-  color: var(--color-dark);
-  font-size: 15px;
+.nameRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.rowLink {
-  display: grid;
-  grid-template-columns: var(--table-columns);
-  align-items: center;
-  gap: 16px;
-  min-height: 84px;
-  padding: 16px 24px;
-  color: inherit;
-  transition:
-    background-color 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.rowLink:hover,
-.rowLink:focus-visible {
-  position: relative;
-  z-index: 1;
-  background: #f5faff;
-  box-shadow: inset 4px 0 0 var(--color-primary);
-}
-
-.rowLink:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -2px;
-}
-
-.slug {
-  color: var(--color-text-secondary);
-  font-weight: 700;
-}
-
-.name {
-  min-width: 0;
+.nameRow span {
   overflow: hidden;
-  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.eventDates {
+.name {
+  font-weight: bold;
+}
+
+.description {
+  color: var(--color-text-secondary);
+}
+
+.dates {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -85,7 +38,7 @@
   white-space: nowrap;
 }
 
-.eventDates span + span::before {
+.dates span + span::before {
   margin-right: 6px;
   color: var(--color-placeholder);
   content: 'до';
@@ -93,11 +46,11 @@
 
 .status {
   width: fit-content;
+  font-size: 13px;
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: 2rem;
   background: var(--color-gray-light);
   color: var(--color-text-secondary);
-  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -116,21 +69,4 @@
 .status-canceled {
   background: #ffeded;
   color: #b42318;
-}
-
-.arrow {
-  color: var(--color-primary);
-  font-size: 16px;
-  transition: transform 160ms ease;
-}
-
-.state {
-  padding: 64px 24px;
-  color: var(--color-text-muted);
-  text-align: center;
-}
-
-.rowLink:hover .arrow,
-.rowLink:focus-visible .arrow {
-  transform: translateX(4px);
 }

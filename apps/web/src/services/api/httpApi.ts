@@ -184,5 +184,5 @@ export const httpApi = {
   async listEvents(query: ListEventsQuery): Promise<EventsList> {
     const events = await eventsApi.listEvents(query);
     return events.map(eventsListItemToDomain);
-  }
+  },
 };

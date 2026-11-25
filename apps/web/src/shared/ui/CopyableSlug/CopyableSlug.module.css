@@ -1,0 +1,11 @@
+.slug {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.slug i {
+  color: var(--color-placeholder);
+  font-size: 0.75rem;
+}

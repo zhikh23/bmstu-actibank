@@ -35,6 +35,10 @@ export class ListFormsHandler {
         status: form.status,
         submitterId: form.submitterId,
         createdAt: instantToDate(form.createdAt),
+        updatedAt: instantToDate(form.updatedAt),
+        reviewedAt: form.reviewedAt
+          ? instantToDate(form.reviewedAt)
+          : undefined,
       })),
     );
   }

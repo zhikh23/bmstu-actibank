@@ -72,12 +72,13 @@ export class EventsStore {
   setOrganizerIds(organizerIds: string[]) {
     const next = organizerIds.length > 0 ? organizerIds : undefined;
     if (
-      next === undefined && this.organizerIds === undefined
-      || next !== undefined
-        && this.organizerIds !== undefined
-        && next.length === this.organizerIds.length
-        && next.every((id, index) => id === this.organizerIds?.[index])
-    ) return;
+      (next === undefined && this.organizerIds === undefined) ||
+      (next !== undefined &&
+        this.organizerIds !== undefined &&
+        next.length === this.organizerIds.length &&
+        next.every((id, index) => id === this.organizerIds?.[index]))
+    )
+      return;
     this.organizerIds = next;
     this.loaded = false;
   }

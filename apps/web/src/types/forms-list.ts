@@ -10,6 +10,8 @@ export interface FormsListItem {
   status: FormStatus;
   submitterId: string;
   createdAt: Date;
+  updatedAt: Date;
+  reviewedAt: Date | null;
 }
 
 export type FormsList = FormsListItem[];

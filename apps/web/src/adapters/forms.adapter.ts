@@ -2,7 +2,7 @@ import z from 'zod';
 
 import { FormDetail } from '@/types/form-detail';
 import { FormDraft } from '@/types/form-draft';
-import { FormStatus } from '@/types/form-status';
+import { FormStatus, mapStatus } from '@/types/form-status';
 import { FormsListItem } from '@/types/forms-list';
 
 const zIsoDateString = (error?: string | undefined) => z.string().min(1, error);
@@ -25,15 +25,17 @@ export const formsListItemSchema = z.object({
   ]),
   submitterId: z.uuid(),
   createdAt: zIsoDateString(),
+  updatedAt: zIsoDateString(),
+  reviewedAt: zIsoDateString().nullable(),
 });
 
 export type FormsListItemContract = z.infer<typeof formsListItemSchema>;
 
-function mapStatus(s: string): FormStatus {
-  return FormStatus.all().includes(s as FormStatus)
-    ? (s as FormStatus)
-    : 'draft';
-}
+//function mapStatus(s: string): FormStatus {
+//  return FormStatus.all().includes(s as FormStatus)
+//    ? (s as FormStatus)
+//    : 'draft';
+//}
 
 export function formToDomain(raw: FormsListItemContract): FormsListItem {
   return {
@@ -43,9 +45,11 @@ export function formToDomain(raw: FormsListItemContract): FormsListItem {
     description: raw.description,
     start: new Date(raw.start),
     end: new Date(raw.end),
-    status: mapStatus(raw.status),
+    status: mapStatus[raw.status] ?? FormStatus.Draft,
     submitterId: raw.submitterId,
     createdAt: new Date(raw.createdAt),
+    updatedAt: new Date(raw.updatedAt),
+    reviewedAt: raw.reviewedAt ? new Date(raw.reviewedAt) : null,
   };
 }
 
@@ -145,14 +149,7 @@ export const formDetailSchema = z.object({
       }),
     }),
   ),
-  status: z.enum([
-    'draft',
-    'pending',
-    'reviewing',
-    'approved',
-    'rejected',
-    'canceled',
-  ]),
+  status: z.enum(Object.values(FormStatus)),
   reason: z.string().nullable(),
   submitterId: z.string(),
   reviewerId: z.string().nullable(),
@@ -180,7 +177,7 @@ export interface GenerateDocumentResponseContract {
 export function formDetailToDomain(raw: FormDetailContract): FormDetail {
   return {
     ...raw,
-    status: mapStatus(raw.status),
+    status: mapStatus[raw.status] ?? FormStatus.Draft,
     start: new Date(raw.start),
     end: new Date(raw.end),
     createdAt: new Date(raw.createdAt),

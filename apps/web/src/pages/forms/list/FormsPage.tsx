@@ -12,7 +12,6 @@ export const FormsPage = observer(function FormsPage() {
     void forms.load();
   }, [forms]);
 
-  const items = forms.filtered;
   const loading = forms.loading && forms.items.length === 0;
   const failed = forms.error !== null && forms.items.length === 0;
 
@@ -40,15 +39,7 @@ export const FormsPage = observer(function FormsPage() {
 
       {failed && <p>Не удалось загрузить заявки. Попробуйте ещё раз.</p>}
 
-      {!loading && !failed && items.length === 0 && (
-        <p className={styles.emptyState}>
-          {forms.searchQuery.trim()
-            ? 'По вашему запросу заявок не найдено'
-            : 'Здесь пока пусто'}
-        </p>
-      )}
-
-      {items.length !== 0 && <FormsTable forms={forms.filtered} />}
+      {!loading && !failed && <FormsTable forms={forms.filtered} />}
     </section>
   );
 });

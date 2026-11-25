@@ -12,7 +12,7 @@ export class ListFormsRequest {
   declare status?: FormStatus;
 
   @IsOptional()
-  @IsEnum(['createdAt', 'start'])
+  @IsEnum(['name', 'start', 'createdAt', 'updatedAt', 'reviewedAt'])
   declare sortBy?: ListFormsSortBy;
 
   @IsOptional()

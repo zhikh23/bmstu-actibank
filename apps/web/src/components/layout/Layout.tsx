@@ -26,7 +26,7 @@ export const Layout = observer(function Layout() {
 
   const hasRole = (role: UserRole): boolean => {
     return auth.me?.roles.includes(role) ?? false;
-  }
+  };
 
   return (
     <div className={styles.page}>
